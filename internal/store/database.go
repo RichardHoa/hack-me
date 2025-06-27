@@ -28,6 +28,25 @@ func Open() (*sql.DB, error) {
 
 }
 
+func OpenTesting() (*sql.DB, error) {
+
+	db, err := sql.Open("pgx", "host=localhost user=postgres password=postgres dbname=postgres port=5433 sslmode=disable")
+
+	if err != nil {
+		return nil, fmt.Errorf("Error opening database connection: %w", err)
+	}
+
+	err = db.Ping()
+	if err != nil {
+		return nil, fmt.Errorf("Error opening database connection: %w", err)
+	}
+
+	fmt.Println(
+		"Connected to testing database")
+	return db, err
+
+}
+
 func MigrateFS(db *sql.DB, migrationFS fs.FS, dir string) error {
 	// set the base FS to migrations folder FS
 	goose.SetBaseFS(migrationFS)

@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"strings"
 	"time"
-
-	"github.com/jackc/pgconn"
 )
 
 type DBChallengeStore struct {
@@ -17,12 +15,21 @@ func NewChallengeStore(db *sql.DB) DBChallengeStore {
 	return DBChallengeStore{DB: db}
 }
 
+type PostChallengeRequest struct {
+	Name     string `json:"name"`
+	Category string `json:"category"`
+	Content  string `json:"content"`
+	UserID   string `json:"user_id"`
+}
+
 type Challenge struct {
-	Popular_score int       `json:"-"`
-	Name          string    `json:"name"`
-	Content       string    `json:"content"`
-	CreatedAt     time.Time `json:"created_at"`
-	UpdatedAt     time.Time `json:"updated_at"`
+	UserID    string    `json:"-"`
+	Username  string    `json:"user_name"`
+	Name      string    `json:"name"`
+	Category  string    `json:"category"`
+	Content   string    `json:"content"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 type Challenges []Challenge
 
@@ -34,12 +41,20 @@ type ChallengeFreeQuery struct {
 
 type ChallengeStore interface {
 	GetChallenges(query ChallengeFreeQuery) (*Challenges, error)
+	CreateChallenges(challenge *Challenge) error
 }
 
 func (challengeStore *DBChallengeStore) GetChallenges(freeQuery ChallengeFreeQuery) (*Challenges, error) {
 	baseQuery := `
-		SELECT name, content, created_at, updated_at, popular_score
-		FROM challenge
+		SELECT 
+			c.name, 
+			c.category,
+			c.content, 
+			c.created_at, 
+			c.updated_at, 
+			u.username
+		FROM challenge c
+		JOIN "user" u ON c.user_id = u.id
 	`
 	conditions := []string{}
 	args := []interface{}{}
@@ -70,26 +85,22 @@ func (challengeStore *DBChallengeStore) GetChallenges(freeQuery ChallengeFreeQue
 	switch strings.ToLower(freeQuery.Popularity) {
 	case "asc":
 		baseQuery += " ORDER BY popular_score ASC"
-	case "desc":
+	default:
 		baseQuery += " ORDER BY popular_score DESC"
 	}
 
 	rows, err := challengeStore.DB.Query(baseQuery, args...)
-
 	if err != nil {
-		if pgErr, ok := err.(*pgconn.PgError); ok && pgErr.Code == "22P02" {
-			// 22P02 = invalid_text_representation (often caused by invalid enum input)
-			return &Challenges{}, nil
-		}
 		return nil, err
 	}
+
 	defer rows.Close()
 
 	var challenges Challenges
 
 	for rows.Next() {
 		var c Challenge
-		err := rows.Scan(&c.Name, &c.Content, &c.CreatedAt, &c.UpdatedAt, &c.Popular_score)
+		err := rows.Scan(&c.Name, &c.Category, &c.Content, &c.CreatedAt, &c.UpdatedAt, &c.Username)
 		if err != nil {
 			return nil, err
 		}
@@ -101,4 +112,34 @@ func (challengeStore *DBChallengeStore) GetChallenges(freeQuery ChallengeFreeQue
 	}
 
 	return &challenges, nil
+}
+
+func (challengeStore *DBChallengeStore) CreateChallenges(challenge *Challenge) error {
+	query := `
+		INSERT INTO challenge (
+			name, 
+			content, 
+			user_id,
+			category,
+			created_at, 
+			updated_at
+		) VALUES ($1, $2, $3, $4, $5, $6)
+	`
+
+	_, err := challengeStore.DB.Exec(
+		query,
+		challenge.Name,
+		challenge.Content,
+		challenge.UserID,
+		challenge.Category,
+		time.Now(),
+		time.Now(),
+	)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+
 }

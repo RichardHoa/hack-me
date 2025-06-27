@@ -14,7 +14,7 @@ func main() {
 		PORT = 8080
 	)
 
-	application, err := app.NewApplication()
+	application, err := app.NewApplication(false)
 	if err != nil {
 		panic(err)
 	}
