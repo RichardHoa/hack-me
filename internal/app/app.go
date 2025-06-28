@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/RichardHoa/hack-me/internal/api"
+	"github.com/RichardHoa/hack-me/internal/constants"
 	"github.com/RichardHoa/hack-me/internal/store"
 	"github.com/RichardHoa/hack-me/migrations"
 )
@@ -19,10 +20,16 @@ type Application struct {
 
 func NewApplication(isTesting bool) (*Application, error) {
 	logger := log.New(os.Stdout, "", log.Ldate|log.Ltime)
+
 	var (
 		db  *sql.DB
 		err error
 	)
+
+	err = constants.LoadEnv()
+	if err != nil {
+		panic(err)
+	}
 
 	if isTesting {
 		db, err = store.OpenTesting()

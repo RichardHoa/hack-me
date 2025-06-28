@@ -105,7 +105,7 @@ func (handler *UserHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	accessToken, refreshToken, err := handler.UserStore.LoginUser(&user)
+	accessToken, refreshToken, err := handler.UserStore.LoginAndIssueTokens(&user)
 	if err != nil {
 		switch utils.ClassifyPgError(err) {
 		case constants.InvalidData:
@@ -113,8 +113,7 @@ func (handler *UserHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
 			utils.WriteJSON(w, http.StatusBadRequest, utils.Message{"message": "invalid data"})
 			return
 		default:
-			// NOTE: Test more data handling
-			handler.Logger.Printf("ERROR: RegisterNewUser > LoginUser: %v", err)
+			handler.Logger.Printf("ERROR: LoginUser > LoginUser: %v", err)
 			utils.WriteJSON(w, http.StatusInternalServerError, utils.Message{"message": constants.StatusInternalErrorMessage})
 			return
 
@@ -125,7 +124,7 @@ func (handler *UserHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		switch utils.ClassifyPgError(err) {
 		default:
-			handler.Logger.Printf("ERROR: RegisterNewUser > AddRefreshToken: %v", err)
+			handler.Logger.Printf("ERROR: LoginUser > AddRefreshToken: %v", err)
 			utils.WriteJSON(w, http.StatusInternalServerError, utils.Message{"message": constants.StatusInternalErrorMessage})
 			return
 
@@ -134,6 +133,7 @@ func (handler *UserHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
 
 	http.SetCookie(w, &http.Cookie{
 		Name:     "access_token",
+		Path:     "/",
 		Value:    accessToken,
 		Expires:  time.Now().Add(constants.AccessTokenTime),
 		MaxAge:   int(constants.AccessTokenTime.Seconds()),
@@ -144,6 +144,7 @@ func (handler *UserHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
 
 	http.SetCookie(w, &http.Cookie{
 		Name:     "refresh_token",
+		Path:     "/",
 		Value:    refreshToken,
 		Expires:  time.Now().Add(constants.RefreshTokenTime),
 		MaxAge:   int(constants.RefreshTokenTime.Seconds()),

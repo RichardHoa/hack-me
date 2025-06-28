@@ -1,14 +1,47 @@
 package constants
 
 import (
+	"errors"
 	"fmt"
+	"os"
 	"time"
+
+	"github.com/joho/godotenv"
+)
+
+func LoadEnv() error {
+	err := godotenv.Load(".env")
+	if err != nil {
+		err = godotenv.Load("../../.env")
+		if err != nil {
+			return err
+		}
+	}
+
+	RefreshTokenSecret = os.Getenv("REFRESHTOKENSECRET")
+	AccessTokenSecret = os.Getenv("ACCESSTOKENSECRET")
+	DevMode := os.Getenv("DEV_MODE")
+
+	if DevMode == "local" {
+		IsDevMode = true
+	} else {
+		IsDevMode = false
+	}
+
+	if RefreshTokenSecret == "" || AccessTokenSecret == "" {
+		return errors.New("Missing token secrets in .env")
+	}
+	return nil
+}
+
+var (
+	RefreshTokenSecret string
+	AccessTokenSecret  string
+	IsDevMode          bool
 )
 
 const (
 	StatusInternalErrorMessage = "Internal error"
-	RefreshTokenSecret         = "JWTSECRET, hahahahaha!"
-	AccessTokenSecret          = "AccesstokenSecert, haha"
 	AccessTokenTime            = 15 * time.Minute
 	RefreshTokenTime           = 7 * (24 * time.Hour)
 )

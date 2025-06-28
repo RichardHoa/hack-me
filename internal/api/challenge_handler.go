@@ -28,11 +28,13 @@ func (handler *ChallengeHandler) GetChallenges(w http.ResponseWriter, r *http.Re
 	popularity := query.Get("popularity")
 	categories := query["category"]
 	name := query.Get("name")
+	exactName := query.Get("exact-name")
 
 	freeQuery := store.ChallengeFreeQuery{
 		Popularity: popularity,
 		Category:   categories,
 		Name:       name,
+		ExactName:  exactName,
 	}
 
 	challenges, err := handler.ChallengeStore.GetChallenges(freeQuery)
@@ -52,11 +54,18 @@ func (handler *ChallengeHandler) GetChallenges(w http.ResponseWriter, r *http.Re
 }
 
 func (handler *ChallengeHandler) PostChallenge(w http.ResponseWriter, r *http.Request) {
+	userID, _, err := utils.ValidateTokensFromCookies(r)
+	if err != nil {
+		handler.Logger.Printf("ERROR: PostChallenge > JWT token checking: %v", err)
+		utils.WriteJSON(w, http.StatusBadRequest, utils.Message{"message": "Unauthorized"})
+		return
+	}
+
 	var req store.PostChallengeRequest
 
 	decoder := json.NewDecoder(r.Body)
 	decoder.DisallowUnknownFields()
-	err := decoder.Decode(&req)
+	err = decoder.Decode(&req)
 	if err != nil {
 		handler.Logger.Printf("ERROR: PostChallenge > json encoding: %v", err)
 		utils.WriteJSON(w, http.StatusInternalServerError, utils.Message{"message": constants.StatusInternalErrorMessage})
@@ -64,7 +73,7 @@ func (handler *ChallengeHandler) PostChallenge(w http.ResponseWriter, r *http.Re
 	}
 
 	challenge := store.Challenge{
-		UserID:   req.UserID,
+		UserID:   userID,
 		Name:     req.Name,
 		Content:  req.Content,
 		Category: req.Category,

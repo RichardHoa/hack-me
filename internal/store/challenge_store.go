@@ -37,6 +37,7 @@ type ChallengeFreeQuery struct {
 	Popularity string
 	Category   []string
 	Name       string
+	ExactName  string
 }
 
 type ChallengeStore interface {
@@ -57,13 +58,23 @@ func (challengeStore *DBChallengeStore) GetChallenges(freeQuery ChallengeFreeQue
 		JOIN "user" u ON c.user_id = u.id
 	`
 	conditions := []string{}
-	args := []interface{}{}
+	args := []any{}
 	argIndex := 1
 
+	if freeQuery.Name != "" && freeQuery.ExactName != "" {
+		return &Challenges{}, nil
+	}
 	// Filter by name (case-insensitive)
 	if freeQuery.Name != "" {
 		conditions = append(conditions, fmt.Sprintf("LOWER(name) LIKE LOWER($%d)", argIndex))
 		args = append(args, "%"+freeQuery.Name+"%")
+		argIndex++
+	}
+
+	// Filter by name (case sensitive, filter by exact)
+	if freeQuery.ExactName != "" {
+		conditions = append(conditions, fmt.Sprintf("name = $%d", argIndex))
+		args = append(args, freeQuery.ExactName)
 		argIndex++
 	}
 

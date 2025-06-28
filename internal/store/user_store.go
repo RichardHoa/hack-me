@@ -11,7 +11,6 @@ import (
 	"github.com/RichardHoa/hack-me/internal/constants"
 	"github.com/RichardHoa/hack-me/internal/utils"
 	"github.com/alexedwards/argon2id"
-	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 )
 
@@ -27,7 +26,7 @@ func NewUserStore(db *sql.DB) DBUserStore {
 
 type UserStore interface {
 	CreateUser(user *User) (uuid.UUID, error)
-	LoginUser(user *User) (accessToken string, refreshToken string, err error)
+	LoginAndIssueTokens(user *User) (accessToken string, refreshToken string, err error)
 }
 
 type Password struct {
@@ -114,7 +113,7 @@ func (userStore *DBUserStore) CreateUser(user *User) (uuid.UUID, error) {
 
 }
 
-func (userStore *DBUserStore) LoginUser(user *User) (accessToken string, refreshToken string, err error) {
+func (userStore *DBUserStore) LoginAndIssueTokens(user *User) (accessToken string, refreshToken string, err error) {
 
 	var userID string
 
@@ -154,27 +153,7 @@ func (userStore *DBUserStore) LoginUser(user *User) (accessToken string, refresh
 	fmt.Printf("USER ID: %v\n", userID)
 	user.ID = userID
 
-	// 1. Create Access Token
-	accessClaims := jwt.MapClaims{
-		"exp": time.Now().Add(constants.AccessTokenTime).Unix(),
-	}
-	accessTokenObj := jwt.NewWithClaims(jwt.SigningMethodHS256, accessClaims)
-	accessToken, err = accessTokenObj.SignedString([]byte(constants.AccessTokenSecret))
-	if err != nil {
-		return "", "", err
-	}
-
-	// 2. Create Refresh Token
-	refreshClaims := jwt.MapClaims{
-		"refresh_id": uuid.New().String(),
-		"user_id":    userID,
-		"exp":        time.Now().Add(constants.RefreshTokenTime).Unix(),
-	}
-	refreshTokenObj := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaims)
-	refreshToken, err = refreshTokenObj.SignedString([]byte(constants.RefreshTokenSecret))
-	if err != nil {
-		return "", "", err
-	}
+	accessToken, refreshToken, err = utils.CreateTokens(userID)
 
 	return accessToken, refreshToken, nil
 }
