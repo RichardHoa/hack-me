@@ -39,12 +39,13 @@ func (handler *ChallengeHandler) GetChallenges(w http.ResponseWriter, r *http.Re
 
 	challenges, err := handler.ChallengeStore.GetChallenges(freeQuery)
 	if err != nil {
-		switch utils.ClassifyPgError(err) {
+		handler.Logger.Printf("ERROR: GetChallenges -> storeGetChallenges: %v", err)
+		switch utils.ClassifyError(err) {
+		// invalid category query
 		case constants.PQInvalidTextRepresentation:
-			utils.WriteJSON(w, http.StatusOK, utils.Message{"data": nil})
+			utils.WriteJSON(w, http.StatusOK, utils.Message{"data": store.Challenges{}})
 			return
 		default:
-			handler.Logger.Printf("ERROR: GetChallenges: %v", err)
 			utils.WriteJSON(w, http.StatusInternalServerError, utils.Message{"message": constants.StatusInternalErrorMessage})
 			return
 		}
@@ -68,7 +69,7 @@ func (handler *ChallengeHandler) PostChallenge(w http.ResponseWriter, r *http.Re
 	err = decoder.Decode(&req)
 	if err != nil {
 		handler.Logger.Printf("ERROR: PostChallenge > json encoding: %v", err)
-		utils.WriteJSON(w, http.StatusInternalServerError, utils.Message{"message": constants.StatusInternalErrorMessage})
+		utils.WriteJSON(w, http.StatusBadRequest, utils.Message{"message": constants.StatusInvalidJSONMessage})
 		return
 	}
 
@@ -81,7 +82,7 @@ func (handler *ChallengeHandler) PostChallenge(w http.ResponseWriter, r *http.Re
 
 	err = handler.ChallengeStore.CreateChallenges(&challenge)
 	if err != nil {
-		switch utils.ClassifyPgError(err) {
+		switch utils.ClassifyError(err) {
 		case constants.PQUniqueViolation:
 			handler.Logger.Printf("User ID: %v try to add challenge name that already exist\n", challenge.UserID)
 			utils.WriteJSON(w, http.StatusBadRequest, utils.Message{"message": "Challenge name already exists"})
@@ -91,8 +92,9 @@ func (handler *ChallengeHandler) PostChallenge(w http.ResponseWriter, r *http.Re
 			utils.WriteJSON(w, http.StatusBadRequest, utils.Message{"message": "Invalid data"})
 			return
 		case constants.PQInvalidTextRepresentation:
+			// Invalid category field
 			handler.Logger.Printf("ERROR: Invalid Data format: %v", err)
-			utils.WriteJSON(w, http.StatusBadRequest, utils.Message{"message": "Invalid data"})
+			utils.WriteJSON(w, http.StatusBadRequest, utils.Message{"message": "Invalid category field"})
 			return
 		default:
 			handler.Logger.Printf("ERROR: PostChallenge > store CreateChallenges: %v", err)

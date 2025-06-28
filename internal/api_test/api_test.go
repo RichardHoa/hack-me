@@ -158,10 +158,10 @@ func TestUserSignUp(t *testing.T) {
 		expectedStatus int
 	}{
 		{
-			name: "Valid signup",
+			name: "Full signup with email and password",
 			payload: map[string]string{
 				"user_name":  "Richard Hoa",
-				"password":   "ThisIsAVerySEcurePasswordThatWon'tBeStop",
+				"password":   "StrongSecurePasswordThatWon'tBemarkAsInvalid",
 				"email":      "testEmail@gmail.com",
 				"image_link": "example.image.com",
 				"google_id":  "",
@@ -194,7 +194,7 @@ func TestUserSignUp(t *testing.T) {
 			expectedStatus: http.StatusBadRequest,
 		},
 		{
-			name: "Empty password field",
+			name: "Lacking password",
 			payload: map[string]string{
 				"user_name":  "fourth user",
 				"password":   "",
@@ -209,7 +209,7 @@ func TestUserSignUp(t *testing.T) {
 			name: "Password + Google ID",
 			payload: map[string]string{
 				"user_name":  "pwg_user",
-				"password":   "SuperSecure123ExtremelySecure",
+				"password":   "StrongSecurePasswordThatWon'tBemarkAsInvalid",
 				"email":      "pwg_user@gmail.com",
 				"image_link": "",
 				"google_id":  "google-uid-123",
@@ -221,7 +221,7 @@ func TestUserSignUp(t *testing.T) {
 			name: "Password + GitHub ID",
 			payload: map[string]string{
 				"user_name":  "pwh_user",
-				"password":   "AnotherSecurePass!UnberableSecurePassswordYouCan't",
+				"password":   "StrongSecurePasswordThatWon'tBemarkAsInvalid",
 				"email":      "pwh_user@gmail.com",
 				"image_link": "",
 				"google_id":  "",
@@ -245,7 +245,7 @@ func TestUserSignUp(t *testing.T) {
 			name: "All three auth fields present",
 			payload: map[string]string{
 				"user_name":  "full_user",
-				"password":   "AnotherPass123ExtremelyStuffPassword",
+				"password":   "StrongSecurePasswordThatWon'tBemarkAsInvalid",
 				"email":      "full_user@gmail.com",
 				"image_link": "",
 				"google_id":  "google-uid-789",
@@ -256,8 +256,8 @@ func TestUserSignUp(t *testing.T) {
 		{
 			name: "Duplicate username",
 			payload: map[string]string{
-				"user_name":  "full_user", // from previous test
-				"password":   "AnotherPass123ExtremelyStuffPassword",
+				"user_name":  "full_user",
+				"password":   "StrongSecurePasswordThatWon'tBemarkAsInvalid",
 				"email":      "dup_user1@gmail.com",
 				"image_link": "",
 				"google_id":  "",
@@ -269,7 +269,7 @@ func TestUserSignUp(t *testing.T) {
 			name: "Duplicate email",
 			payload: map[string]string{
 				"user_name":  "dup_user2",
-				"password":   "AnotherPass123ExtremelyStuffPassword",
+				"password":   "StrongSecurePasswordThatWon'tBemarkAsInvalid",
 				"email":      "full_user@gmail.com", // same email as above
 				"image_link": "",
 				"google_id":  "",
@@ -281,7 +281,7 @@ func TestUserSignUp(t *testing.T) {
 			name: "Duplicate Google ID",
 			payload: map[string]string{
 				"user_name":  "dup_user3",
-				"password":   "AnotherPass123",
+				"password":   "StrongSecurePasswordThatWon'tBemarkAsInvalid",
 				"email":      "dup_google@gmail.com",
 				"image_link": "",
 				"google_id":  "google-uid-789", // same as above
@@ -293,11 +293,35 @@ func TestUserSignUp(t *testing.T) {
 			name: "Duplicate GitHub ID",
 			payload: map[string]string{
 				"user_name":  "dup_user4",
-				"password":   "AnotherPass123",
+				"password":   "StrongSecurePasswordThatWon'tBemarkAsInvalid",
 				"email":      "dup_github@gmail.com",
 				"image_link": "",
 				"google_id":  "",
 				"github_id":  "github-uid-987", // same as above
+			},
+			expectedStatus: http.StatusBadRequest,
+		},
+		{
+			name: "Lacking email",
+			payload: map[string]string{
+				"user_name":  "lacking_email_user_1",
+				"password":   "StrongSecurePasswordThatWon'tBemarkAsInvalid",
+				"email":      "",
+				"image_link": "",
+				"google_id":  "",
+				"github_id":  "github-uid-very-unique",
+			},
+			expectedStatus: http.StatusBadRequest,
+		},
+		{
+			name: "Lacking username",
+			payload: map[string]string{
+				"user_name":  "",
+				"password":   "StrongSecurePasswordThatWon'tBemarkAsInvalid",
+				"email":      "lackingusername@gmail.com",
+				"image_link": "",
+				"google_id":  "",
+				"github_id":  "",
 			},
 			expectedStatus: http.StatusBadRequest,
 		},

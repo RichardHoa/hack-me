@@ -2,13 +2,11 @@ package api
 
 import (
 	"encoding/json"
-	"log"
-	"net/http"
-	"time"
-
 	"github.com/RichardHoa/hack-me/internal/constants"
 	"github.com/RichardHoa/hack-me/internal/store"
 	"github.com/RichardHoa/hack-me/internal/utils"
+	"log"
+	"net/http"
 )
 
 type UserHandler struct {
@@ -33,7 +31,7 @@ func (handler *UserHandler) RegisterNewUser(w http.ResponseWriter, r *http.Reque
 	decoder.DisallowUnknownFields()
 	err := decoder.Decode(&User)
 	if err != nil {
-		utils.WriteJSON(w, http.StatusBadRequest, utils.Message{"message": "invalid json format"})
+		utils.WriteJSON(w, http.StatusBadRequest, utils.Message{"message": constants.StatusInvalidJSONMessage})
 		return
 	}
 
@@ -57,20 +55,13 @@ func (handler *UserHandler) RegisterNewUser(w http.ResponseWriter, r *http.Reque
 
 	_, err = handler.UserStore.CreateUser(&User)
 	if err != nil {
-
-		switch utils.ClassifyPgError(err) {
+		switch utils.ClassifyError(err) {
 		case constants.PQUniqueViolation:
-			utils.WriteJSON(w, http.StatusBadRequest, utils.Message{"message": "user_name or email or github_id or google_id already exist"})
+			utils.WriteJSON(w, http.StatusBadRequest, utils.Message{"message": "user already exists"})
 			return
-
-		case constants.PQCheckViolation:
-			utils.WriteJSON(w, http.StatusBadRequest, utils.Message{"message": "one of the three field password, google_id, github_id must not be null"})
-			return
-
 		case constants.PQNotNullViolation:
 			utils.WriteJSON(w, http.StatusBadRequest, utils.Message{"message": "user_name, email must not be null"})
 			return
-
 		default:
 			handler.Logger.Printf("ERROR: RegisterNewUser > CreateUser: %v", err)
 			utils.WriteJSON(w, http.StatusInternalServerError, utils.Message{"message": constants.StatusInternalErrorMessage})
@@ -91,7 +82,7 @@ func (handler *UserHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
 	decoder.DisallowUnknownFields()
 	err := decoder.Decode(&user)
 	if err != nil {
-		utils.WriteJSON(w, http.StatusBadRequest, utils.Message{"message": "invalid json format"})
+		utils.WriteJSON(w, http.StatusBadRequest, utils.Message{"message": constants.StatusInvalidJSONMessage})
 		return
 	}
 
@@ -107,13 +98,12 @@ func (handler *UserHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
 
 	accessToken, refreshToken, err := handler.UserStore.LoginAndIssueTokens(&user)
 	if err != nil {
-		switch utils.ClassifyPgError(err) {
+		handler.Logger.Printf("ERROR: LoginUser > LoginAndIssueTokens: %v", err)
+		switch utils.ClassifyError(err) {
 		case constants.InvalidData:
-			// data is lacking in somewhere
 			utils.WriteJSON(w, http.StatusBadRequest, utils.Message{"message": "invalid data"})
 			return
 		default:
-			handler.Logger.Printf("ERROR: LoginUser > LoginUser: %v", err)
 			utils.WriteJSON(w, http.StatusInternalServerError, utils.Message{"message": constants.StatusInternalErrorMessage})
 			return
 
@@ -122,7 +112,7 @@ func (handler *UserHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
 
 	err = handler.TokenStore.AddRefreshToken(refreshToken, user.ID)
 	if err != nil {
-		switch utils.ClassifyPgError(err) {
+		switch utils.ClassifyError(err) {
 		default:
 			handler.Logger.Printf("ERROR: LoginUser > AddRefreshToken: %v", err)
 			utils.WriteJSON(w, http.StatusInternalServerError, utils.Message{"message": constants.StatusInternalErrorMessage})
@@ -131,28 +121,8 @@ func (handler *UserHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	http.SetCookie(w, &http.Cookie{
-		Name:     "access_token",
-		Path:     "/",
-		Value:    accessToken,
-		Expires:  time.Now().Add(constants.AccessTokenTime),
-		MaxAge:   int(constants.AccessTokenTime.Seconds()),
-		HttpOnly: false,
-		Secure:   false,
-		SameSite: http.SameSiteLaxMode,
-	})
+	utils.SendTokens(w, accessToken, refreshToken)
 
-	http.SetCookie(w, &http.Cookie{
-		Name:     "refresh_token",
-		Path:     "/",
-		Value:    refreshToken,
-		Expires:  time.Now().Add(constants.RefreshTokenTime),
-		MaxAge:   int(constants.RefreshTokenTime.Seconds()),
-		HttpOnly: true,
-		Secure:   false,
-		SameSite: http.SameSiteLaxMode,
-	})
-
-	utils.WriteJSON(w, http.StatusOK, utils.Message{"message": "Log in successfully"})
+	utils.WriteJSON(w, http.StatusOK, utils.Message{"message": "Successful authentication"})
 
 }

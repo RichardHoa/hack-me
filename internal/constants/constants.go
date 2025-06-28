@@ -2,7 +2,6 @@ package constants
 
 import (
 	"errors"
-	"fmt"
 	"os"
 	"time"
 
@@ -41,7 +40,8 @@ var (
 )
 
 const (
-	StatusInternalErrorMessage = "Internal error"
+	StatusInternalErrorMessage = "Internal server error"
+	StatusInvalidJSONMessage   = "Invalid JSON format"
 	AccessTokenTime            = 15 * time.Minute
 	RefreshTokenTime           = 7 * (24 * time.Hour)
 )
@@ -63,16 +63,14 @@ const (
 )
 
 var PQErrorMessages = map[string]int{
-	"23505":                             PQUniqueViolation,           // unique_violation
-	"23503":                             PQForeignKeyViolation,       // foreign_key_violation
-	"22P02":                             PQInvalidTextRepresentation, // invalid_text_representation (e.g. ENUM, int fail)
-	"23502":                             PQNotNullViolation,          // not_null_violation
-	"23514":                             PQCheckViolation,            // check_violation
-	"22003":                             PQNumericValueOutOfRange,    // numeric_value_out_of_range
-	"22P05":                             PQInvalidEnum,               // untranslatable character or invalid enum
-	"22P04":                             PQInvalidUUIDFormat,         // bad UUID text representation
-	"42804":                             PQDatatypeMismatch,          // datatype_mismatch
-	"42601":                             PQSyntaxError,               // syntax_error
-	fmt.Sprintf("%v", ResourceNotFound): ResourceNotFound,
-	fmt.Sprintf("%v", InvalidData):      InvalidData,
+	"23505": PQUniqueViolation,           // unique_violation
+	"23503": PQForeignKeyViolation,       // foreign_key_violation
+	"22P02": PQInvalidTextRepresentation, // invalid_text_representation (e.g. ENUM, int fail)
+	"23502": PQNotNullViolation,          // not_null_violation
+	"23514": PQCheckViolation,            // check_violation
+	"22003": PQNumericValueOutOfRange,    // numeric_value_out_of_range
+	"22P05": PQInvalidEnum,               // untranslatable character or invalid enum
+	"22P04": PQInvalidUUIDFormat,         // bad UUID text representation
+	"42804": PQDatatypeMismatch,          // datatype_mismatch
+	"42601": PQSyntaxError,               // syntax_error
 }

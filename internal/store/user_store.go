@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"strconv"
 	"time"
 
 	"github.com/RichardHoa/hack-me/internal/constants"
@@ -61,6 +60,10 @@ func (p *Password) UnmarshalJSON(data []byte) error {
 	p.PlainText = plain
 	return nil
 }
+
+var (
+	InvalidPasswordErr = errors.New("Invalid password")
+)
 
 func (userStore *DBUserStore) CreateUser(user *User) (uuid.UUID, error) {
 
@@ -134,18 +137,17 @@ func (userStore *DBUserStore) LoginAndIssueTokens(user *User) (accessToken strin
 			}
 			if !match {
 				// password not correct
-				fmt.Println("Invalid password")
-				return "", "", errors.New(strconv.Itoa(constants.InvalidData))
+				return "", "", utils.NewCustomAppError(constants.InvalidData, "Invalid password")
 			}
 		}
 
 	default:
-		return "", "", errors.New("missing login credentials")
+		return "", "", utils.NewCustomAppError(constants.InvalidData, "Missing loggin credentials")
 	}
 
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return "", "", errors.New(strconv.Itoa(constants.InvalidData))
+			return "", "", utils.NewCustomAppError(constants.InvalidData, "Cannot find user in the database")
 		}
 		return "", "", err
 	}
