@@ -2,9 +2,9 @@ package store
 
 import (
 	"database/sql"
-	"errors"
-	"github.com/golang-jwt/jwt/v5"
 	"time"
+
+	"github.com/RichardHoa/hack-me/internal/utils"
 )
 
 type DBTokenStore struct {
@@ -23,27 +23,12 @@ type TokenStore interface {
 
 func (tokenStore *DBTokenStore) AddRefreshToken(refreshToken string, userID string) error {
 
-	// Parse without verification
-	token, _, err := new(jwt.Parser).ParseUnverified(refreshToken, jwt.MapClaims{})
+	result, err := utils.ExtractClaimsFromJWT(refreshToken, []string{"refreshID"})
 	if err != nil {
 		return err
 	}
 
-	var refreshTokenID string
-
-	if claims, ok := token.Claims.(jwt.MapClaims); ok {
-		if id, exists := claims["refreshID"]; exists {
-			if idStr, ok := id.(string); ok {
-				refreshTokenID = idStr
-			} else {
-				return errors.New("refreshID is not a string")
-			}
-		} else {
-			return errors.New("No refreshID field in refresh token")
-		}
-	} else {
-		return errors.New("Invalid claims")
-	}
+	refreshTokenID := result[0]
 
 	query := `
 		INSERT INTO refresh_token (id, user_id, created_at, updated_at)

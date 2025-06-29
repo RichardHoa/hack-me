@@ -98,7 +98,7 @@ func (handler *UserHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	accessToken, refreshToken, err := handler.UserStore.LoginAndIssueTokens(&user)
+	accessToken, refreshToken, csrfToken, err := handler.UserStore.LoginAndIssueTokens(&user)
 	if err != nil {
 		handler.Logger.Printf("ERROR: LoginUser > LoginAndIssueTokens: %v", err)
 		switch utils.ClassifyError(err) {
@@ -123,7 +123,7 @@ func (handler *UserHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	utils.SendTokens(w, accessToken, refreshToken)
+	utils.SendTokens(w, accessToken, refreshToken, csrfToken)
 
 	utils.WriteJSON(w, http.StatusOK, utils.NewMessage("Successful authentication", "", ""))
 }

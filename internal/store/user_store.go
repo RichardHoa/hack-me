@@ -25,7 +25,7 @@ func NewUserStore(db *sql.DB) DBUserStore {
 
 type UserStore interface {
 	CreateUser(user *User) (uuid.UUID, error)
-	LoginAndIssueTokens(user *User) (accessToken string, refreshToken string, err error)
+	LoginAndIssueTokens(user *User) (accessToken, refreshToken, csrfToken string, err error)
 }
 
 type Password struct {
@@ -116,7 +116,7 @@ func (userStore *DBUserStore) CreateUser(user *User) (uuid.UUID, error) {
 
 }
 
-func (userStore *DBUserStore) LoginAndIssueTokens(user *User) (accessToken string, refreshToken string, err error) {
+func (userStore *DBUserStore) LoginAndIssueTokens(user *User) (accessToken, refreshToken, csrfToken string, err error) {
 
 	var userID string
 
@@ -133,11 +133,11 @@ func (userStore *DBUserStore) LoginAndIssueTokens(user *User) (accessToken strin
 		if err == nil {
 			match, cmpErr := argon2id.ComparePasswordAndHash(user.Password.PlainText, hashed)
 			if cmpErr != nil {
-				return "", "", cmpErr
+				return "", "", "", cmpErr
 			}
 			if !match {
 				// password not correct
-				return "", "", utils.NewCustomAppError(constants.InvalidData, "Invalid password")
+				return "", "", "", utils.NewCustomAppError(constants.InvalidData, "Invalid password")
 			}
 		}
 
@@ -147,15 +147,26 @@ func (userStore *DBUserStore) LoginAndIssueTokens(user *User) (accessToken strin
 
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return "", "", utils.NewCustomAppError(constants.InvalidData, "Cannot find user in the database")
+			return "", "", "", utils.NewCustomAppError(constants.InvalidData, "Cannot find user in the database")
 		}
-		return "", "", err
+		return "", "", "", err
 	}
 
-	fmt.Printf("USER ID: %v\n", userID)
 	user.ID = userID
 
 	accessToken, refreshToken, err = utils.CreateTokens(userID)
 
-	return accessToken, refreshToken, nil
+	result, err := utils.ExtractClaimsFromJWT(refreshToken, []string{"refreshID"})
+	if err != nil {
+		return "", "", "", utils.NewCustomAppError(constants.InternalError, fmt.Sprintf("fail to decode decode refreshToken %v", err))
+	}
+
+	refreshtokenID := result[0]
+
+	csrfToken, err = utils.CreateCSRFToken(refreshtokenID)
+	if err != nil {
+		return "", "", "", utils.NewCustomAppError(constants.InternalError, fmt.Sprintf("fail to create csrfToken %v", err))
+	}
+
+	return accessToken, refreshToken, csrfToken, nil
 }

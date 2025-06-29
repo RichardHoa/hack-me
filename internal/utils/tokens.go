@@ -1,7 +1,14 @@
 package utils
 
 import (
+	"crypto/hmac"
+	"crypto/rand"
+	"crypto/sha256"
+	"encoding/hex"
+	"errors"
+	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/RichardHoa/hack-me/internal/constants"
@@ -9,12 +16,23 @@ import (
 	"github.com/google/uuid"
 )
 
-func SendTokens(w http.ResponseWriter, accessToken string, refreshToken string) {
+func SendTokens(w http.ResponseWriter, accessToken, refreshToken, csrfToken string) {
 
 	http.SetCookie(w, &http.Cookie{
 		Name:     "accessToken",
 		Path:     "/",
 		Value:    accessToken,
+		Expires:  time.Now().Add(constants.AccessTokenTime),
+		MaxAge:   int(constants.AccessTokenTime.Seconds()),
+		HttpOnly: false,
+		Secure:   false,
+		SameSite: http.SameSiteLaxMode,
+	})
+
+	http.SetCookie(w, &http.Cookie{
+		Name:     "csrfToken",
+		Path:     "/",
+		Value:    csrfToken,
 		Expires:  time.Now().Add(constants.AccessTokenTime),
 		MaxAge:   int(constants.AccessTokenTime.Seconds()),
 		HttpOnly: false,
@@ -33,6 +51,97 @@ func SendTokens(w http.ResponseWriter, accessToken string, refreshToken string) 
 		SameSite: http.SameSiteLaxMode,
 	})
 
+}
+
+func ExtractClaimsFromJWT(tokenStr string, keys []string) ([]string, error) {
+	token, _, err := new(jwt.Parser).ParseUnverified(tokenStr, jwt.MapClaims{})
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse token: %w", err)
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return nil, errors.New("invalid token claims")
+	}
+
+	result := make([]string, len(keys))
+	for i, key := range keys {
+		val, exists := claims[key]
+		if !exists {
+			return nil, fmt.Errorf("missing claim: %s", key)
+		}
+		strVal, ok := val.(string)
+		if !ok {
+			return nil, fmt.Errorf("claim %s is not a string", key)
+		}
+		result[i] = strVal
+	}
+
+	return result, nil
+}
+
+func CheckCSRFToken(csrfToken string, sessionID string) (bool, error) {
+	// we use refreshTokenID as sessionID
+	parts := strings.Split(csrfToken, ".")
+	if len(parts) != 2 {
+		return false, errors.New("invalid CSRF token format")
+	}
+
+	hmacFromRequest := parts[0]
+	randomValue := parts[1]
+
+	message := fmt.Sprintf(
+		"%d!%s!%d!%s",
+		len(sessionID),
+		sessionID,
+		len(randomValue),
+		randomValue,
+	)
+
+	// Generate expected HMAC
+	h := hmac.New(sha256.New, []byte(constants.CSRFTokenSecret))
+	h.Write([]byte(message))
+	expectedHmac := h.Sum(nil)
+
+	hmacRequestBytes, err := hex.DecodeString(hmacFromRequest)
+	if err != nil {
+		return false, fmt.Errorf("invalid HMAC hex from request: %w", err)
+	}
+
+	// Safe compare
+	if !hmac.Equal(hmacRequestBytes, expectedHmac) {
+		fmt.Printf("CSRF Error: Invalid HMAC for sessionID: %s\n", sessionID)
+		fmt.Printf("HMAC from browser: %s, Expected HMAC: %s\n", hmacFromRequest, hex.EncodeToString(expectedHmac))
+		return false, nil
+	}
+
+	return true, nil
+}
+
+func CreateCSRFToken(sessionID string) (string, error) {
+	randomBytes := make([]byte, 64)
+	_, err := rand.Read(randomBytes)
+	if err != nil {
+		return "", fmt.Errorf("failed to generate random bytes: %w", err)
+	}
+	randomValueHex := hex.EncodeToString(randomBytes)
+
+	message := fmt.Sprintf(
+		"%d!%s!%d!%s",
+		len(sessionID),
+		sessionID,
+		len(randomValueHex),
+		randomValueHex,
+	)
+
+	// Generate HMAC
+	h := hmac.New(sha256.New, []byte(constants.CSRFTokenSecret))
+	h.Write([]byte(message))
+	hmacSum := h.Sum(nil)
+	hmacHex := hex.EncodeToString(hmacSum)
+
+	csrfToken := fmt.Sprintf("%s.%s", hmacHex, randomValueHex)
+	return csrfToken, nil
 }
 
 func CreateTokens(userID string) (accessToken string, refreshToken string, err error) {

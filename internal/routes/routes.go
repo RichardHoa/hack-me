@@ -25,6 +25,7 @@ func SetUpRoutes(app *app.Application) *chi.Mux {
 		fmt.Fprintf(w, "Service is available\n")
 	})
 
+	//TODO: Set up middleware to check for csrf token, remember to modify the test
 	router.Route("/challenges", func(r chi.Router) {
 		// GET /challenges?popularity=asc|desc&category=cat1&category=cat2&name=searchTerm
 		r.Get("/", app.ChallengeHandler.GetChallenges)

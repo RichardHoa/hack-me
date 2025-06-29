@@ -17,8 +17,9 @@ func LoadEnv() error {
 		}
 	}
 
-	RefreshTokenSecret = os.Getenv("REFRESHTOKENSECRET")
-	AccessTokenSecret = os.Getenv("ACCESSTOKENSECRET")
+	RefreshTokenSecret = os.Getenv("REFRESH_TOKEN_SECRET")
+	AccessTokenSecret = os.Getenv("ACCESS_TOKEN_SECRET")
+	CSRFTokenSecret = os.Getenv("CSRF_TOKEN_SECRET")
 	DevMode := os.Getenv("DEV_MODE")
 
 	if DevMode == "local" {
@@ -27,7 +28,7 @@ func LoadEnv() error {
 		IsDevMode = false
 	}
 
-	if RefreshTokenSecret == "" || AccessTokenSecret == "" {
+	if RefreshTokenSecret == "" || AccessTokenSecret == "" || CSRFTokenSecret == "" {
 		return errors.New("Missing token secrets in .env")
 	}
 	return nil
@@ -36,6 +37,7 @@ func LoadEnv() error {
 var (
 	RefreshTokenSecret string
 	AccessTokenSecret  string
+	CSRFTokenSecret    string
 	IsDevMode          bool
 )
 
@@ -67,7 +69,7 @@ const (
 	PQSyntaxError                      // 9
 	ResourceNotFound                   // 10
 	InvalidData                        // 11
-
+	InternalError                      // 12
 )
 
 var PQErrorMessages = map[string]int{
