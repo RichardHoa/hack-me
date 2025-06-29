@@ -3,7 +3,6 @@
 CREATE TABLE IF NOT EXISTS refresh_token (
     id UUID PRIMARY KEY,
     user_id UUID NOT NULL UNIQUE REFERENCES "user"(id) ON DELETE CASCADE,
-    token TEXT NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
