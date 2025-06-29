@@ -3,6 +3,7 @@ package store
 import (
 	"database/sql"
 	"fmt"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -19,17 +20,17 @@ type PostChallengeRequest struct {
 	Name     string `json:"name"`
 	Category string `json:"category"`
 	Content  string `json:"content"`
-	UserID   string `json:"user_id"`
+	UserID   string `json:"userID"`
 }
 
 type Challenge struct {
 	UserID    string    `json:"-"`
-	Username  string    `json:"user_name"`
+	UserName  string    `json:"userName"`
 	Name      string    `json:"name"`
 	Category  string    `json:"category"`
 	Content   string    `json:"content"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
 }
 type Challenges []Challenge
 
@@ -38,14 +39,22 @@ type ChallengeFreeQuery struct {
 	Category   []string
 	Name       string
 	ExactName  string
+	PageSize   string
+	Page       string
+}
+
+type MetaDataPage struct {
+	PageSize    string `json:"pageSize"`
+	CurrentPage string `json:"currentPage"`
+	MaxPage     string `json:"maxPage"`
 }
 
 type ChallengeStore interface {
-	GetChallenges(query ChallengeFreeQuery) (*Challenges, error)
+	GetChallenges(freeQuery ChallengeFreeQuery) (challenges Challenges, metaPage MetaDataPage, err error)
 	CreateChallenges(challenge *Challenge) error
 }
 
-func (challengeStore *DBChallengeStore) GetChallenges(freeQuery ChallengeFreeQuery) (*Challenges, error) {
+func (challengeStore *DBChallengeStore) GetChallenges(freeQuery ChallengeFreeQuery) (challenges Challenges, metaPage MetaDataPage, err error) {
 	baseQuery := `
 		SELECT 
 			c.name, 
@@ -57,12 +66,15 @@ func (challengeStore *DBChallengeStore) GetChallenges(freeQuery ChallengeFreeQue
 		FROM challenge c
 		JOIN "user" u ON c.user_id = u.id
 	`
+
+	countQuery := `SELECT COUNT(*) FROM challenge c`
+
 	conditions := []string{}
 	args := []any{}
 	argIndex := 1
 
 	if freeQuery.Name != "" && freeQuery.ExactName != "" {
-		return &Challenges{}, nil
+		return Challenges{}, MetaDataPage{}, nil
 	}
 	// Filter by name (case-insensitive)
 	if freeQuery.Name != "" {
@@ -90,7 +102,9 @@ func (challengeStore *DBChallengeStore) GetChallenges(freeQuery ChallengeFreeQue
 	}
 
 	if len(conditions) > 0 {
-		baseQuery += " WHERE " + strings.Join(conditions, " AND ")
+		whereClause := " WHERE " + strings.Join(conditions, " AND ")
+		baseQuery += whereClause
+		countQuery += whereClause
 	}
 
 	switch strings.ToLower(freeQuery.Popularity) {
@@ -100,29 +114,59 @@ func (challengeStore *DBChallengeStore) GetChallenges(freeQuery ChallengeFreeQue
 		baseQuery += " ORDER BY popular_score DESC"
 	}
 
+	pageSize := 10
+	if ps, err := strconv.Atoi(freeQuery.PageSize); err == nil && ps > 0 {
+		pageSize = ps
+	}
+
+	page := 1
+	if p, err := strconv.Atoi(freeQuery.Page); err == nil && p > 0 {
+		page = p
+	}
+
+	offset := (page - 1) * pageSize
+
+	// Add pagination to the main query
+	baseQuery += fmt.Sprintf(" LIMIT %d OFFSET %d", pageSize, offset)
+
+	var total int
+	err = challengeStore.DB.QueryRow(countQuery, args...).Scan(&total)
+	if err != nil {
+		return nil, MetaDataPage{}, err
+	}
+	maxPage := (total + pageSize - 1) / pageSize
+
+	if page > maxPage {
+		return Challenges{}, MetaDataPage{}, nil
+	}
+
+	metaPage = MetaDataPage{
+		MaxPage:     strconv.Itoa(maxPage),
+		PageSize:    strconv.Itoa(pageSize),
+		CurrentPage: strconv.Itoa(page),
+	}
+
 	rows, err := challengeStore.DB.Query(baseQuery, args...)
 	if err != nil {
-		return nil, err
+		return nil, MetaDataPage{}, err
 	}
 
 	defer rows.Close()
 
-	var challenges Challenges
-
 	for rows.Next() {
 		var c Challenge
-		err := rows.Scan(&c.Name, &c.Category, &c.Content, &c.CreatedAt, &c.UpdatedAt, &c.Username)
+		err := rows.Scan(&c.Name, &c.Category, &c.Content, &c.CreatedAt, &c.UpdatedAt, &c.UserName)
 		if err != nil {
-			return nil, err
+			return nil, MetaDataPage{}, err
 		}
 		challenges = append(challenges, c)
 	}
 
 	if err := rows.Err(); err != nil {
-		return nil, err
+		return nil, MetaDataPage{}, err
 	}
 
-	return &challenges, nil
+	return challenges, metaPage, nil
 }
 
 func (challengeStore *DBChallengeStore) CreateChallenges(challenge *Challenge) error {

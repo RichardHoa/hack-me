@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/http/cookiejar"
 	"net/http/httptest"
+	"net/url"
 	"testing"
 
 	"github.com/RichardHoa/hack-me/internal/app"
@@ -37,101 +38,20 @@ func makeRequestAndExpectStatus(t *testing.T, client *http.Client, method, url s
 		t.Errorf("Expected status %d, got %d", expectedStatus, resp.StatusCode)
 	}
 
-	return respBody // return to inspect cookies if needed
+	return respBody
 }
 
-func TestPostChallenge(t *testing.T) {
-	application, err := app.NewApplication(true)
-	if err != nil {
-		t.Fatalf("failed to create application: %v", err)
-	}
-	defer application.DB.Close()
-	defer cleanDB(application.DB)
+type testRequest struct {
+	method string
+	path   string
+	body   map[string]string
+}
 
-	router := routes.SetUpRoutes(application)
-	server := httptest.NewServer(router)
-	defer server.Close()
-
-	// 🍪 Create client with cookie jar
-	jar, _ := cookiejar.New(nil)
-	client := &http.Client{
-		Jar: jar,
-	}
-
-	signUpPayload := map[string]string{
-		"user_name":  "Richard Hoa",
-		"password":   "ThisIsAVerySEcurePasswordThatWon'tBeStop",
-		"email":      "testEmail@gmail.com",
-		"image_link": "example.image.com",
-		"google_id":  "",
-		"github_id":  "",
-	}
-
-	// register new user
-	makeRequestAndExpectStatus(t, client, "POST", server.URL+"/users", signUpPayload, http.StatusCreated)
-
-	loginPayload := map[string]string{
-		"password": "ThisIsAVerySEcurePasswordThatWon'tBeStop",
-		"email":    "testEmail@gmail.com",
-	}
-
-	// new user login
-	makeRequestAndExpectStatus(t, client, "POST", server.URL+"/users/login", loginPayload, http.StatusOK)
-
-	// parsedURL, err := url.Parse(server.URL)
-	// if err != nil {
-	// 	t.Fatalf("failed to parse server URL: %v", err)
-	// }
-	//
-	// for _, c := range client.Jar.Cookies(parsedURL) {
-	// 	t.Logf("Cookie: %s = %s", c.Name, c.Value)
-	// }
-
-	newChallengePayload := map[string]string{
-		"name":     "Vulnaribilities number 1",
-		"content":  "This is a very powerful challenge that no one will be able to defeat",
-		"category": "web hacking",
-	}
-
-	// post new challenge
-	makeRequestAndExpectStatus(t, client, "POST", server.URL+"/challenges", newChallengePayload, http.StatusCreated)
-
-	// verify the new challenge has been posted successfully
-	responseBody := makeRequestAndExpectStatus(t, client, "GET", server.URL+"/challenges", nil, http.StatusOK)
-
-	var parsedResponse map[string]any
-	if err := json.Unmarshal(responseBody, &parsedResponse); err != nil {
-		t.Fatalf("Failed to parse response: %v", err)
-	}
-
-	data, ok := parsedResponse["data"].([]any)
-	if !ok {
-		t.Fatalf(`Expected "data" to be a list, got: %#v`, parsedResponse["data"])
-	}
-	expectedName := newChallengePayload["name"]
-	expectedCategory := newChallengePayload["category"]
-	expectedUser := signUpPayload["user_name"]
-	expectedContent := newChallengePayload["content"]
-
-	found := false
-	for _, item := range data {
-		challenge, ok := item.(map[string]any)
-		if !ok {
-			continue
-		}
-
-		if challenge["name"] == expectedName &&
-			challenge["category"] == expectedCategory &&
-			challenge["user_name"] == expectedUser &&
-			challenge["content"] == expectedContent {
-			found = true
-			break
-		}
-	}
-
-	if !found {
-		t.Errorf("Expected challenge not found: name=%q, category=%q, user_name=%q", expectedName, expectedCategory, expectedUser)
-	}
+type testStep struct {
+	name         string
+	request      testRequest
+	expectStatus int
+	validate     func(t *testing.T, body []byte)
 }
 
 func TestUserSignUp(t *testing.T) {
@@ -160,168 +80,168 @@ func TestUserSignUp(t *testing.T) {
 		{
 			name: "Full signup with email and password",
 			payload: map[string]string{
-				"user_name":  "Richard Hoa",
-				"password":   "StrongSecurePasswordThatWon'tBemarkAsInvalid",
-				"email":      "testEmail@gmail.com",
-				"image_link": "example.image.com",
-				"google_id":  "",
-				"github_id":  "",
+				"userName":  "Richard Hoa",
+				"password":  "StrongSecurePasswordThatWon'tBemarkAsInvalid",
+				"email":     "testEmail@gmail.com",
+				"imageLink": "example.image.com",
+				"googleID":  "",
+				"githubID":  "",
 			},
 			expectedStatus: http.StatusCreated,
 		},
 		{
 			name: "Duplicate username and email",
 			payload: map[string]string{
-				"user_name":  "Richard Hoa",
-				"password":   "ThisIsAVerySEcurePasswordThatWon'tBeStop",
-				"email":      "testEmail@gmail.com",
-				"image_link": "example.image.com",
-				"google_id":  "",
-				"github_id":  "",
+				"userName":  "Richard Hoa",
+				"password":  "ThisIsAVerySEcurePasswordThatWon'tBeStop",
+				"email":     "testEmail@gmail.com",
+				"imageLink": "example.image.com",
+				"googleID":  "",
+				"githubID":  "",
 			},
 			expectedStatus: http.StatusBadRequest,
 		},
 		{
 			name: "Weak password",
 			payload: map[string]string{
-				"user_name":  "AnotherUser",
-				"password":   "HelloThere",
-				"email":      "another@gmail.com",
-				"image_link": "img.com",
-				"google_id":  "",
-				"github_id":  "",
+				"userName":  "AnotherUser",
+				"password":  "HelloThere",
+				"email":     "another@gmail.com",
+				"imageLink": "img.com",
+				"googleID":  "",
+				"githubID":  "",
 			},
 			expectedStatus: http.StatusBadRequest,
 		},
 		{
 			name: "Lacking password",
 			payload: map[string]string{
-				"user_name":  "fourth user",
-				"password":   "",
-				"email":      "anothertest@gmail.com",
-				"image_link": "img.com",
-				"google_id":  "",
-				"github_id":  "",
+				"userName":  "fourth user",
+				"password":  "",
+				"email":     "anothertest@gmail.com",
+				"imageLink": "img.com",
+				"googleID":  "",
+				"githubID":  "",
 			},
 			expectedStatus: http.StatusBadRequest,
 		},
 		{
 			name: "Password + Google ID",
 			payload: map[string]string{
-				"user_name":  "pwg_user",
-				"password":   "StrongSecurePasswordThatWon'tBemarkAsInvalid",
-				"email":      "pwg_user@gmail.com",
-				"image_link": "",
-				"google_id":  "google-uid-123",
-				"github_id":  "",
+				"userName":  "pwg_user",
+				"password":  "StrongSecurePasswordThatWon'tBemarkAsInvalid",
+				"email":     "pwg_user@gmail.com",
+				"imageLink": "",
+				"googleID":  "google-uid-123",
+				"githubID":  "",
 			},
 			expectedStatus: http.StatusCreated,
 		},
 		{
 			name: "Password + GitHub ID",
 			payload: map[string]string{
-				"user_name":  "pwh_user",
-				"password":   "StrongSecurePasswordThatWon'tBemarkAsInvalid",
-				"email":      "pwh_user@gmail.com",
-				"image_link": "",
-				"google_id":  "",
-				"github_id":  "github-uid-321",
+				"userName":  "pwh_user",
+				"password":  "StrongSecurePasswordThatWon'tBemarkAsInvalid",
+				"email":     "pwh_user@gmail.com",
+				"imageLink": "",
+				"googleID":  "",
+				"githubID":  "github-uid-321",
 			},
 			expectedStatus: http.StatusCreated,
 		},
 		{
 			name: "Google ID + GitHub ID",
 			payload: map[string]string{
-				"user_name":  "gg_user",
-				"password":   "",
-				"email":      "gg_user@gmail.com",
-				"image_link": "",
-				"google_id":  "google-uid-456",
-				"github_id":  "github-uid-654",
+				"userName":  "gg_user",
+				"password":  "",
+				"email":     "gg_user@gmail.com",
+				"imageLink": "",
+				"googleID":  "google-uid-456",
+				"githubID":  "github-uid-654",
 			},
 			expectedStatus: http.StatusCreated,
 		},
 		{
 			name: "All three auth fields present",
 			payload: map[string]string{
-				"user_name":  "full_user",
-				"password":   "StrongSecurePasswordThatWon'tBemarkAsInvalid",
-				"email":      "full_user@gmail.com",
-				"image_link": "",
-				"google_id":  "google-uid-789",
-				"github_id":  "github-uid-987",
+				"userName":  "full_user",
+				"password":  "StrongSecurePasswordThatWon'tBemarkAsInvalid",
+				"email":     "full_user@gmail.com",
+				"imageLink": "",
+				"googleID":  "google-uid-789",
+				"githubID":  "github-uid-987",
 			},
 			expectedStatus: http.StatusCreated,
 		},
 		{
 			name: "Duplicate username",
 			payload: map[string]string{
-				"user_name":  "full_user",
-				"password":   "StrongSecurePasswordThatWon'tBemarkAsInvalid",
-				"email":      "dup_user1@gmail.com",
-				"image_link": "",
-				"google_id":  "",
-				"github_id":  "",
+				"userName":  "full_user",
+				"password":  "StrongSecurePasswordThatWon'tBemarkAsInvalid",
+				"email":     "dup_user1@gmail.com",
+				"imageLink": "",
+				"googleID":  "",
+				"githubID":  "",
 			},
 			expectedStatus: http.StatusBadRequest,
 		},
 		{
 			name: "Duplicate email",
 			payload: map[string]string{
-				"user_name":  "dup_user2",
-				"password":   "StrongSecurePasswordThatWon'tBemarkAsInvalid",
-				"email":      "full_user@gmail.com", // same email as above
-				"image_link": "",
-				"google_id":  "",
-				"github_id":  "",
+				"userName":  "dup_user2",
+				"password":  "StrongSecurePasswordThatWon'tBemarkAsInvalid",
+				"email":     "full_user@gmail.com", // same email as above
+				"imageLink": "",
+				"googleID":  "",
+				"githubID":  "",
 			},
 			expectedStatus: http.StatusBadRequest,
 		},
 		{
 			name: "Duplicate Google ID",
 			payload: map[string]string{
-				"user_name":  "dup_user3",
-				"password":   "StrongSecurePasswordThatWon'tBemarkAsInvalid",
-				"email":      "dup_google@gmail.com",
-				"image_link": "",
-				"google_id":  "google-uid-789", // same as above
-				"github_id":  "",
+				"userName":  "dup_user3",
+				"password":  "StrongSecurePasswordThatWon'tBemarkAsInvalid",
+				"email":     "dup_google@gmail.com",
+				"imageLink": "",
+				"googleID":  "google-uid-789", // same as above
+				"githubID":  "",
 			},
 			expectedStatus: http.StatusBadRequest,
 		},
 		{
 			name: "Duplicate GitHub ID",
 			payload: map[string]string{
-				"user_name":  "dup_user4",
-				"password":   "StrongSecurePasswordThatWon'tBemarkAsInvalid",
-				"email":      "dup_github@gmail.com",
-				"image_link": "",
-				"google_id":  "",
-				"github_id":  "github-uid-987", // same as above
+				"userName":  "dup_user4",
+				"password":  "StrongSecurePasswordThatWon'tBemarkAsInvalid",
+				"email":     "dup_github@gmail.com",
+				"imageLink": "",
+				"googleID":  "",
+				"githubID":  "github-uid-987", // same as above
 			},
 			expectedStatus: http.StatusBadRequest,
 		},
 		{
 			name: "Lacking email",
 			payload: map[string]string{
-				"user_name":  "lacking_email_user_1",
-				"password":   "StrongSecurePasswordThatWon'tBemarkAsInvalid",
-				"email":      "",
-				"image_link": "",
-				"google_id":  "",
-				"github_id":  "github-uid-very-unique",
+				"userName":  "lacking_email_user_1",
+				"password":  "StrongSecurePasswordThatWon'tBemarkAsInvalid",
+				"email":     "",
+				"imageLink": "",
+				"googleID":  "",
+				"githubID":  "github-uid-very-unique",
 			},
 			expectedStatus: http.StatusBadRequest,
 		},
 		{
 			name: "Lacking username",
 			payload: map[string]string{
-				"user_name":  "",
-				"password":   "StrongSecurePasswordThatWon'tBemarkAsInvalid",
-				"email":      "lackingusername@gmail.com",
-				"image_link": "",
-				"google_id":  "",
-				"github_id":  "",
+				"userName":  "",
+				"password":  "StrongSecurePasswordThatWon'tBemarkAsInvalid",
+				"email":     "lackingusername@gmail.com",
+				"imageLink": "",
+				"googleID":  "",
+				"githubID":  "",
 			},
 			expectedStatus: http.StatusBadRequest,
 		},
@@ -332,4 +252,702 @@ func TestUserSignUp(t *testing.T) {
 			makeRequestAndExpectStatus(t, client, "POST", server.URL+"/users", tc.payload, tc.expectedStatus)
 		})
 	}
+}
+
+func TestChallengeWorkflow(t *testing.T) {
+	// Initialize application and server
+	application, err := app.NewApplication(true)
+	if err != nil {
+		t.Fatalf("failed to create application: %v", err)
+	}
+	defer application.DB.Close()
+	defer cleanDB(application.DB)
+
+	router := routes.SetUpRoutes(application)
+	server := httptest.NewServer(router)
+	defer server.Close()
+
+	// Create persistent client with cookie jar outside the test loop
+	jar, _ := cookiejar.New(nil)
+	client := &http.Client{Jar: jar}
+
+	// Test cases
+	tests := []struct {
+		name  string
+		steps []testStep
+	}{
+		{
+			name: "basic challenge creation and retrieval",
+			steps: []testStep{
+				{
+					name: "sign up test user",
+					request: testRequest{
+						method: "POST",
+						path:   "/users",
+						body: map[string]string{
+							"userName":  "Richard Hoa",
+							"password":  "ThisIsAVerySEcurePasswordThatWon'tBeStop",
+							"email":     "testEmail@gmail.com",
+							"imageLink": "example.image.com",
+						},
+					},
+					expectStatus: http.StatusCreated,
+				},
+				{
+					name: "login test user",
+					request: testRequest{
+						method: "POST",
+						path:   "/users/login",
+						body: map[string]string{
+							"email":    "testEmail@gmail.com",
+							"password": "ThisIsAVerySEcurePasswordThatWon'tBeStop",
+						},
+					},
+					expectStatus: http.StatusOK,
+				},
+				{
+					name: "create new challenge without name",
+					request: testRequest{
+						method: "POST",
+						path:   "/challenges",
+						body: map[string]string{
+							"name":     "",
+							"content":  "This is a very powerful challenge that no one will be able to defeat",
+							"category": "web hacking",
+						},
+					},
+					expectStatus: http.StatusBadRequest,
+				},
+				{
+					name: "create new challenge without content",
+					request: testRequest{
+						method: "POST",
+						path:   "/challenges",
+						body: map[string]string{
+							"name":     "Valid name here",
+							"content":  "",
+							"category": "web hacking",
+						},
+					},
+					expectStatus: http.StatusBadRequest,
+				},
+
+				{
+					name: "create new challenge without category",
+					request: testRequest{
+						method: "POST",
+						path:   "/challenges",
+						body: map[string]string{
+							"name":     "Valid name here",
+							"content":  "This is a very powerful challenge that no one will be able to defeat",
+							"category": "",
+						},
+					},
+					expectStatus: http.StatusBadRequest,
+				},
+
+				{
+					name: "create new challenge",
+					request: testRequest{
+						method: "POST",
+						path:   "/challenges",
+						body: map[string]string{
+							"name":     "Vulnaribilities number 1",
+							"content":  "This is a very powerful challenge that no one will be able to defeat",
+							"category": "web hacking",
+						},
+					},
+					expectStatus: http.StatusCreated,
+				},
+				{
+					name: "create similar name challenge 2",
+					request: testRequest{
+						method: "POST",
+						path:   "/challenges",
+						body: map[string]string{
+							"name":     "Vulnaribilities number 2",
+							"content":  "This is a very powerful challenge that no one will be able to defeat",
+							"category": "web hacking",
+						},
+					},
+					expectStatus: http.StatusCreated,
+				},
+				{
+					name: "create similar name challenge 3",
+					request: testRequest{
+						method: "POST",
+						path:   "/challenges",
+						body: map[string]string{
+							"name":     "Vulnaribilities number 3",
+							"content":  "This is a very powerful challenge that no one will be able to defeat",
+							"category": "web hacking",
+						},
+					},
+					expectStatus: http.StatusCreated,
+				},
+				{
+					name: "create reverse engineering challenge 1",
+					request: testRequest{
+						method: "POST",
+						path:   "/challenges",
+						body: map[string]string{
+							"name":     "Crackme v1",
+							"content":  "Reverse this binary",
+							"category": "reverse engineering",
+						},
+					},
+					expectStatus: http.StatusCreated,
+				},
+				{
+					name: "create crypto challenge 1",
+					request: testRequest{
+						method: "POST",
+						path:   "/challenges",
+						body: map[string]string{
+							"name":     "Weak RSA",
+							"content":  "Break this RSA",
+							"category": "crypto challenge",
+						},
+					},
+					expectStatus: http.StatusCreated,
+				},
+				{
+					name: "create forensics challenge 1",
+					request: testRequest{
+						method: "POST",
+						path:   "/challenges",
+						body: map[string]string{
+							"name":     "Deleted Files 1",
+							"content":  "Recover the document",
+							"category": "forensics",
+						},
+					},
+					expectStatus: http.StatusCreated,
+				},
+
+				{
+					name: "create forensics challenge 2",
+					request: testRequest{
+						method: "POST",
+						path:   "/challenges",
+						body: map[string]string{
+							"name":     "Deleted Files 2",
+							"content":  "Recover the document",
+							"category": "forensics",
+						},
+					},
+					expectStatus: http.StatusCreated,
+				},
+				{
+					name: "create forensics challenge 3",
+					request: testRequest{
+						method: "POST",
+						path:   "/challenges",
+						body: map[string]string{
+							"name":     "Deleted Files 3",
+							"content":  "Recover the document",
+							"category": "forensics",
+						},
+					},
+					expectStatus: http.StatusCreated,
+				},
+
+				{
+					name: "create forensics challenge 4",
+					request: testRequest{
+						method: "POST",
+						path:   "/challenges",
+						body: map[string]string{
+							"name":     "Deleted Files 4",
+							"content":  "Recover the document",
+							"category": "forensics",
+						},
+					},
+					expectStatus: http.StatusCreated,
+				},
+				{
+					name: "create forensics challenge 5",
+					request: testRequest{
+						method: "POST",
+						path:   "/challenges",
+						body: map[string]string{
+							"name":     "Deleted Files 5",
+							"content":  "Recover the document",
+							"category": "forensics",
+						},
+					},
+					expectStatus: http.StatusCreated,
+				},
+				{
+					name: "create forensics challenge 6",
+					request: testRequest{
+						method: "POST",
+						path:   "/challenges",
+						body: map[string]string{
+							"name":     "Deleted Files 6",
+							"content":  "Recover the document",
+							"category": "forensics",
+						},
+					},
+					expectStatus: http.StatusCreated,
+				},
+				{
+					name: "create forensics challenge 7",
+					request: testRequest{
+						method: "POST",
+						path:   "/challenges",
+						body: map[string]string{
+							"name":     "Deleted Files 7",
+							"content":  "Recover the document",
+							"category": "forensics",
+						},
+					},
+					expectStatus: http.StatusCreated,
+				},
+				{
+					name: "create forensics challenge 8",
+					request: testRequest{
+						method: "POST",
+						path:   "/challenges",
+						body: map[string]string{
+							"name":     "Deleted Files 8",
+							"content":  "Recover the document",
+							"category": "forensics",
+						},
+					},
+					expectStatus: http.StatusCreated,
+				},
+				{
+					name: "create forensics challenge 9",
+					request: testRequest{
+						method: "POST",
+						path:   "/challenges",
+						body: map[string]string{
+							"name":     "Deleted Files 9",
+							"content":  "Recover the document",
+							"category": "forensics",
+						},
+					},
+					expectStatus: http.StatusCreated,
+				},
+				{
+					name: "create forensics challenge 10",
+					request: testRequest{
+						method: "POST",
+						path:   "/challenges",
+						body: map[string]string{
+							"name":     "Deleted Files 10",
+							"content":  "Recover the document",
+							"category": "forensics",
+						},
+					},
+					expectStatus: http.StatusCreated,
+				},
+
+				{
+					name: "create forensics challenge 11",
+					request: testRequest{
+						method: "POST",
+						path:   "/challenges",
+						body: map[string]string{
+							"name":     "Deleted Files 11",
+							"content":  "Recover the document",
+							"category": "forensics",
+						},
+					},
+					expectStatus: http.StatusCreated,
+				},
+				{
+					name: "create web hacking challenge 2",
+					request: testRequest{
+						method: "POST",
+						path:   "/challenges",
+						body: map[string]string{
+							"name":     "SQL Injection",
+							"content":  "Bypass login",
+							"category": "web hacking",
+						},
+					},
+					expectStatus: http.StatusCreated,
+				},
+				{
+					name: "create embedded hacking challenge 2",
+					request: testRequest{
+						method: "POST",
+						path:   "/challenges",
+						body: map[string]string{
+							"name":     "IoT Backdoor",
+							"content":  "Find the backdoor",
+							"category": "embedded hacking",
+						},
+					},
+					expectStatus: http.StatusCreated,
+				},
+				{
+					name: "create reverse engineering challenge 2",
+					request: testRequest{
+						method: "POST",
+						path:   "/challenges",
+						body: map[string]string{
+							"name":     "Anti-Debug",
+							"content":  "Bypass protections",
+							"category": "reverse engineering",
+						},
+					},
+					expectStatus: http.StatusCreated,
+				},
+				{
+					name: "verify challenge appears in list",
+					request: testRequest{
+						method: "GET",
+						path:   "/challenges?pageSize=99999",
+					},
+					expectStatus: http.StatusOK,
+					validate: func(t *testing.T, body []byte) {
+						var parsed map[string]any
+						if err := json.Unmarshal(body, &parsed); err != nil {
+							t.Fatalf("Failed to parse response: %v", err)
+						}
+
+						data, ok := parsed["data"].([]any)
+						if !ok {
+							t.Fatalf(`Expected "data" to be a list, got: %#v`, parsed["data"])
+						}
+						expectedName := "Vulnaribilities number 1"
+						expectedCategory := "web hacking"
+						expectedUser := "Richard Hoa"
+						expectedContent := "This is a very powerful challenge that no one will be able to defeat"
+
+						found := false
+						for _, item := range data {
+							challenge, ok := item.(map[string]any)
+							if !ok {
+								continue
+							}
+
+							if challenge["name"] == expectedName &&
+								challenge["category"] == expectedCategory &&
+								challenge["userName"] == expectedUser &&
+								challenge["content"] == expectedContent {
+								found = true
+								break
+							}
+						}
+
+						if !found {
+							t.Errorf("Expected challenge not found: name=%q, category=%q, userName=%q", expectedName, expectedCategory, expectedUser)
+						}
+					},
+				},
+				{
+					name: "verify exact name search",
+					request: testRequest{
+						method: "GET",
+						path:   fmt.Sprintf("/challenges?exactName=%s", url.QueryEscape("Vulnaribilities number 1")),
+					},
+					expectStatus: http.StatusOK,
+					validate: func(t *testing.T, body []byte) {
+						var parsed map[string]any
+						if err := json.Unmarshal(body, &parsed); err != nil {
+							t.Fatalf("Failed to parse response: %v", err)
+						}
+
+						data, ok := parsed["data"].([]any)
+						if !ok {
+							t.Fatalf(`Expected "data" to be a list, got: %#v`, parsed["data"])
+						}
+						expectedName := "Vulnaribilities number 1"
+						expectedCategory := "web hacking"
+						expectedUser := "Richard Hoa"
+						expectedContent := "This is a very powerful challenge that no one will be able to defeat"
+
+						found := false
+						for _, item := range data {
+							challenge, ok := item.(map[string]any)
+							if !ok {
+								continue
+							}
+
+							if challenge["name"] == expectedName &&
+								challenge["category"] == expectedCategory &&
+								challenge["userName"] == expectedUser &&
+								challenge["content"] == expectedContent {
+								found = true
+								break
+							}
+						}
+
+						if !found {
+							t.Errorf("Expected challenge not found: name=%q, category=%q, userName=%q", expectedName, expectedCategory, expectedUser)
+						}
+					},
+				},
+				{
+					name: "Verify generic name",
+					request: testRequest{
+						method: "GET",
+						path:   fmt.Sprintf("/challenges?name=%s", url.QueryEscape("Vulnaribilities number")),
+					},
+					expectStatus: http.StatusOK,
+					validate: func(t *testing.T, body []byte) {
+						var parsed map[string]any
+						if err := json.Unmarshal(body, &parsed); err != nil {
+							t.Fatalf("Failed to parse response: %v", err)
+						}
+
+						data, ok := parsed["data"].([]any)
+						if !ok {
+							t.Fatalf(`Expected "data" to be a list, got: %#v`, parsed["data"])
+						}
+
+						if len(data) != 3 {
+							t.Fatalf("Expected 3 element but we get %v", data)
+						}
+
+					},
+				},
+				{
+					name: "Verify valid category",
+					request: testRequest{
+						method: "GET",
+						path:   fmt.Sprintf("/challenges?category=%s", url.QueryEscape("reverse engineering")),
+					},
+					expectStatus: http.StatusOK,
+					validate: func(t *testing.T, body []byte) {
+						var parsed map[string]any
+						if err := json.Unmarshal(body, &parsed); err != nil {
+							t.Fatalf("Failed to parse response: %v", err)
+						}
+
+						data, ok := parsed["data"].([]any)
+						if !ok {
+							t.Fatalf(`Expected "data" to be a list, got: %#v`, parsed["data"])
+						}
+
+						if len(data) != 2 {
+							t.Fatalf("Expected 2 element but we get %v", len(data))
+						}
+
+					},
+				},
+				{
+					name: "Verify invalid category",
+					request: testRequest{
+						method: "GET",
+						path:   fmt.Sprintf("/challenges?category=%s", url.QueryEscape("invalid category")),
+					},
+					expectStatus: http.StatusOK,
+					validate: func(t *testing.T, body []byte) {
+						var parsed map[string]any
+						if err := json.Unmarshal(body, &parsed); err != nil {
+							t.Fatalf("Failed to parse response: %v", err)
+						}
+
+						data := parsed["data"]
+
+						if data != nil {
+							t.Fatalf("Expected nil data but we get %v", data)
+						}
+
+					},
+				},
+
+				{
+					name: "Setting even pageSize",
+					request: testRequest{
+						method: "GET",
+						path:   "/challenges?pageSize=2",
+					},
+					expectStatus: http.StatusOK,
+					validate: func(t *testing.T, body []byte) {
+						var parsed map[string]any
+						if err := json.Unmarshal(body, &parsed); err != nil {
+							t.Fatalf("Failed to parse response: %v", err)
+						}
+
+						data, ok := parsed["data"].([]any)
+						if !ok {
+							t.Fatalf(`Expected "data" to be a list, got: %#v`, parsed["data"])
+						}
+
+						if len(data) != 2 {
+							t.Fatalf("Expect 2 data response but get %v", len(data))
+
+						}
+
+						metadata, ok := parsed["metadata"].(map[string]interface{})
+						if !ok {
+							t.Fatalf("Expected metadata to be a map, got: %T", parsed["metadata"])
+						}
+
+						if metadata["pageSize"] != "2" || metadata["currentPage"] != "1" || metadata["maxPage"] != "10" {
+							t.Fatalf("Expected metadata {pageSize:2, currentPage:1, maxPage:10}, got: %v", metadata)
+						}
+
+					},
+				},
+				{
+					name: "Setting even pageSize and specific page",
+					request: testRequest{
+						method: "GET",
+						path:   "/challenges?pageSize=2&page=2",
+					},
+					expectStatus: http.StatusOK,
+					validate: func(t *testing.T, body []byte) {
+						var parsed map[string]any
+						if err := json.Unmarshal(body, &parsed); err != nil {
+							t.Fatalf("Failed to parse response: %v", err)
+						}
+
+						data, ok := parsed["data"].([]any)
+						if !ok {
+							t.Fatalf(`Expected "data" to be a list, got: %#v`, parsed["data"])
+						}
+
+						if len(data) != 2 {
+							t.Fatalf("Expect 2 data response but get %v", len(data))
+
+						}
+
+						metadata, ok := parsed["metadata"].(map[string]interface{})
+						if !ok {
+							t.Fatalf("Expected metadata to be a map, got: %T", parsed["metadata"])
+						}
+
+						if metadata["pageSize"] != "2" || metadata["currentPage"] != "2" || metadata["maxPage"] != "10" {
+							t.Fatalf("Expected metadata {pageSize:2, currentPage:2, maxPage:10}, got: %v", metadata)
+						}
+
+					},
+				},
+				{
+					name: "Verify setting odd pageSize",
+					request: testRequest{
+						method: "GET",
+						path:   "/challenges?pageSize=3",
+					},
+					expectStatus: http.StatusOK,
+					validate: func(t *testing.T, body []byte) {
+						var parsed map[string]any
+						if err := json.Unmarshal(body, &parsed); err != nil {
+							t.Fatalf("Failed to parse response: %v", err)
+						}
+
+						data, ok := parsed["data"].([]any)
+						if !ok {
+							t.Fatalf(`Expected "data" to be a list, got: %#v`, parsed["data"])
+						}
+
+						if len(data) != 3 {
+							t.Fatalf("Expect 3 data response but get %v", len(data))
+
+						}
+
+						metadata, ok := parsed["metadata"].(map[string]interface{})
+						if !ok {
+							t.Fatalf("Expected metadata to be a map, got: %T", parsed["metadata"])
+						}
+
+						if metadata["pageSize"] != "3" || metadata["currentPage"] != "1" || metadata["maxPage"] != "7" {
+							t.Fatalf("Expected metadata {pageSize:3, currentPage:1, maxPage:7}, got: %v", metadata)
+						}
+
+					},
+				},
+				{
+					name: "Verify setting odd pageSize and page",
+					request: testRequest{
+						method: "GET",
+						path:   "/challenges?pageSize=3&page=2",
+					},
+					expectStatus: http.StatusOK,
+					validate: func(t *testing.T, body []byte) {
+						var parsed map[string]any
+						if err := json.Unmarshal(body, &parsed); err != nil {
+							t.Fatalf("Failed to parse response: %v", err)
+						}
+
+						data, ok := parsed["data"].([]any)
+						if !ok {
+							t.Fatalf(`Expected "data" to be a list, got: %#v`, parsed["data"])
+						}
+
+						if len(data) != 3 {
+							t.Fatalf("Expect 2 data response but get %v", len(data))
+
+						}
+
+						metadata, ok := parsed["metadata"].(map[string]interface{})
+						if !ok {
+							t.Fatalf("Expected metadata to be a map, got: %T", parsed["metadata"])
+						}
+
+						if metadata["pageSize"] != "3" || metadata["currentPage"] != "2" || metadata["maxPage"] != "7" {
+							t.Fatalf("Expected metadata {pageSize:3, currentPage:2, maxPage:7}, got: %v", metadata)
+						}
+
+					},
+				},
+
+				{
+					name: "Verify setting negative pageSize",
+					request: testRequest{
+						method: "GET",
+						path:   "/challenges?pageSize=-2",
+					},
+					expectStatus: http.StatusBadRequest,
+				},
+
+				{
+					name: "Verify setting 0 pageSize",
+					request: testRequest{
+						method: "GET",
+						path:   "/challenges?pageSize=0",
+					},
+					expectStatus: http.StatusBadRequest,
+				},
+				{
+					name: "Verify setting negative page",
+					request: testRequest{
+						method: "GET",
+						path:   "/challenges?page=-10",
+					},
+					expectStatus: http.StatusBadRequest,
+				},
+				{
+					name: "Verify setting 0 page",
+					request: testRequest{
+						method: "GET",
+						path:   "/challenges?page=0",
+					},
+					expectStatus: http.StatusBadRequest,
+				},
+				{
+					name: "Verify setting invalid page and pagaSize",
+					request: testRequest{
+						method: "GET",
+						path:   "/challenges?page=0&pageSize=0",
+					},
+					expectStatus: http.StatusBadRequest,
+				},
+			},
+		},
+	}
+
+	// Run test cases
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			for i, step := range tt.steps {
+				t.Run(fmt.Sprintf("step-%d-%s", i+1, step.name), func(t *testing.T) {
+					body := makeRequestAndExpectStatus(t, client, step.request.method, server.URL+step.request.path, step.request.body, step.expectStatus)
+
+					// Run custom validation if provided
+					if step.validate != nil {
+						step.validate(t, body)
+					}
+				})
+			}
+		})
+	}
+
 }

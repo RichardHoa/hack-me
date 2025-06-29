@@ -34,22 +34,22 @@ type Password struct {
 }
 
 type RegisterUserRequest struct {
-	Username  string   `json:"user_name"`
+	Username  string   `json:"userName"`
 	Password  Password `json:"password"`
 	Email     string   `json:"email"`
-	ImageLink string   `json:"image_link"`
-	GoogleID  string   `json:"google_id"`
-	GithubID  string   `json:"github_id"`
+	ImageLink string   `json:"imageLink"`
+	GoogleID  string   `json:"googleID"`
+	GithubID  string   `json:"githubID"`
 }
 
 type User struct {
 	ID        string   `json:"-"`
-	Username  string   `json:"user_name"`
+	Username  string   `json:"userName"`
 	Password  Password `json:"password"`
 	Email     string   `json:"email"`
-	ImageLink string   `json:"image_link"`
-	GoogleID  string   `json:"google_id"`
-	GithubID  string   `json:"github_id"`
+	ImageLink string   `json:"imageLink"`
+	GoogleID  string   `json:"googleID"`
+	GithubID  string   `json:"githubID"`
 }
 
 func (p *Password) UnmarshalJSON(data []byte) error {
@@ -142,7 +142,7 @@ func (userStore *DBUserStore) LoginAndIssueTokens(user *User) (accessToken strin
 		}
 
 	default:
-		return "", "", utils.NewCustomAppError(constants.InvalidData, "Missing loggin credentials")
+		panic("user_store > Missing login credentials while login")
 	}
 
 	if err != nil {

@@ -31,24 +31,29 @@ func (handler *UserHandler) RegisterNewUser(w http.ResponseWriter, r *http.Reque
 	decoder.DisallowUnknownFields()
 	err := decoder.Decode(&User)
 	if err != nil {
-		utils.WriteJSON(w, http.StatusBadRequest, utils.Message{"message": constants.StatusInvalidJSONMessage})
+		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(constants.StatusInvalidJSONMessage, constants.MSG_MALFORMED_REQUEST_DATA, "request"))
+		return
+	}
+
+	if User.Username == "" || User.Email == "" {
+		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("Two fields must exist", constants.MSG_LACKING_MANDATORY_FIELDS, "userName and email"))
 		return
 	}
 
 	if User.Password.PlainText == "" && User.GoogleID == "" && User.GithubID == "" {
-		utils.WriteJSON(w, http.StatusBadRequest, utils.Message{"message": "one of the three field password, google_id, github_id must not be null"})
+		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("One of the three fields must exist", constants.MSG_LACKING_MANDATORY_FIELDS, "googleID and githubID and password"))
 		return
 	}
 
 	if User.Password.PlainText != "" {
 		checkResult := utils.CheckPasswordValid(User.Password.PlainText)
 		if checkResult.Error == nil && checkResult.ErrorMessage != "" {
-			utils.WriteJSON(w, http.StatusBadRequest, utils.Message{"message": checkResult.ErrorMessage})
+			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("Invalid password", constants.MSG_INVALID_REQUEST_DATA, checkResult.ErrorMessage))
 			return
 		}
 
 		if checkResult.Error != nil && checkResult.ErrorMessage == "" {
-			utils.WriteJSON(w, http.StatusInternalServerError, utils.Message{"message": constants.StatusInternalErrorMessage})
+			utils.WriteJSON(w, http.StatusInternalServerError, utils.NewMessage(constants.StatusInternalErrorMessage, "", ""))
 			return
 		}
 	}
@@ -57,20 +62,17 @@ func (handler *UserHandler) RegisterNewUser(w http.ResponseWriter, r *http.Reque
 	if err != nil {
 		switch utils.ClassifyError(err) {
 		case constants.PQUniqueViolation:
-			utils.WriteJSON(w, http.StatusBadRequest, utils.Message{"message": "user already exists"})
-			return
-		case constants.PQNotNullViolation:
-			utils.WriteJSON(w, http.StatusBadRequest, utils.Message{"message": "user_name, email must not be null"})
+			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("User already exist", constants.MSG_INVALID_REQUEST_DATA, "userName or email"))
 			return
 		default:
 			handler.Logger.Printf("ERROR: RegisterNewUser > CreateUser: %v", err)
-			utils.WriteJSON(w, http.StatusInternalServerError, utils.Message{"message": constants.StatusInternalErrorMessage})
+			utils.WriteJSON(w, http.StatusInternalServerError, utils.NewMessage(constants.StatusInternalErrorMessage, "", ""))
 			return
 
 		}
 	}
 
-	utils.WriteJSON(w, http.StatusCreated, utils.Message{"message": "Register new user successfully"})
+	utils.WriteJSON(w, http.StatusCreated, utils.NewMessage("Register new user successfully", "", ""))
 
 }
 
@@ -82,17 +84,17 @@ func (handler *UserHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
 	decoder.DisallowUnknownFields()
 	err := decoder.Decode(&user)
 	if err != nil {
-		utils.WriteJSON(w, http.StatusBadRequest, utils.Message{"message": constants.StatusInvalidJSONMessage})
+		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(constants.StatusInvalidJSONMessage, constants.MSG_MALFORMED_REQUEST_DATA, "request"))
 		return
 	}
 
 	if user.GoogleID != "" && user.GithubID != "" {
-		utils.WriteJSON(w, http.StatusBadRequest, utils.Message{"message": "google_id, github_id cannot have value at the same time"})
+		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("googleID and githubID cannot coexist", constants.MSG_CONFLICTING_FIELDS, "googleID and githubID"))
 		return
 	}
 
 	if user.Password.PlainText == "" && user.GoogleID == "" && user.GithubID == "" {
-		utils.WriteJSON(w, http.StatusBadRequest, utils.Message{"message": "one of the three field password, google_id, github_id must not be null"})
+		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("One of the three fields must exist", constants.MSG_LACKING_MANDATORY_FIELDS, "googleID and githubID and password"))
 		return
 	}
 
@@ -101,10 +103,10 @@ func (handler *UserHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
 		handler.Logger.Printf("ERROR: LoginUser > LoginAndIssueTokens: %v", err)
 		switch utils.ClassifyError(err) {
 		case constants.InvalidData:
-			utils.WriteJSON(w, http.StatusBadRequest, utils.Message{"message": "invalid data"})
+			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("Either password is incorrect or user email does not exist", constants.MSG_INVALID_REQUEST_DATA, "email and password"))
 			return
 		default:
-			utils.WriteJSON(w, http.StatusInternalServerError, utils.Message{"message": constants.StatusInternalErrorMessage})
+			utils.WriteJSON(w, http.StatusInternalServerError, utils.NewMessage(constants.StatusInternalErrorMessage, "", ""))
 			return
 
 		}
@@ -115,7 +117,7 @@ func (handler *UserHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
 		switch utils.ClassifyError(err) {
 		default:
 			handler.Logger.Printf("ERROR: LoginUser > AddRefreshToken: %v", err)
-			utils.WriteJSON(w, http.StatusInternalServerError, utils.Message{"message": constants.StatusInternalErrorMessage})
+			utils.WriteJSON(w, http.StatusInternalServerError, utils.NewMessage(constants.StatusInternalErrorMessage, "", ""))
 			return
 
 		}
@@ -123,6 +125,5 @@ func (handler *UserHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
 
 	utils.SendTokens(w, accessToken, refreshToken)
 
-	utils.WriteJSON(w, http.StatusOK, utils.Message{"message": "Successful authentication"})
-
+	utils.WriteJSON(w, http.StatusOK, utils.NewMessage("Successful authentication", "", ""))
 }

@@ -42,8 +42,16 @@ var (
 const (
 	StatusInternalErrorMessage = "Internal server error"
 	StatusInvalidJSONMessage   = "Invalid JSON format"
+	UnauthorizedMessage        = "Unauthorized"
 	AccessTokenTime            = 15 * time.Minute
 	RefreshTokenTime           = 7 * (24 * time.Hour)
+)
+
+const (
+	MSG_INVALID_REQUEST_DATA     = "INVALID_REQUEST_DATA"
+	MSG_MALFORMED_REQUEST_DATA   = "MALFORMED_REQUEST_DATA"
+	MSG_CONFLICTING_FIELDS       = "CONFLICTING_FIELDS"
+	MSG_LACKING_MANDATORY_FIELDS = "LACKING_MANDATORY_FIELDS"
 )
 
 const (

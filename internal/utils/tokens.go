@@ -12,7 +12,7 @@ import (
 func SendTokens(w http.ResponseWriter, accessToken string, refreshToken string) {
 
 	http.SetCookie(w, &http.Cookie{
-		Name:     "access_token",
+		Name:     "accessToken",
 		Path:     "/",
 		Value:    accessToken,
 		Expires:  time.Now().Add(constants.AccessTokenTime),
@@ -23,7 +23,7 @@ func SendTokens(w http.ResponseWriter, accessToken string, refreshToken string) 
 	})
 
 	http.SetCookie(w, &http.Cookie{
-		Name:     "refresh_token",
+		Name:     "refreshToken",
 		Path:     "/",
 		Value:    refreshToken,
 		Expires:  time.Now().Add(constants.RefreshTokenTime),
@@ -50,10 +50,10 @@ func CreateTokens(userID string) (accessToken string, refreshToken string, err e
 
 	// 2. Create Refresh Token
 	refreshClaims := jwt.MapClaims{
-		"refresh_id": uuid.New().String(),
-		"user_id":    userID,
-		"exp":        time.Now().Add(constants.RefreshTokenTime).Unix(),
-		"iat":        time.Now().Unix(),
+		"refreshID": uuid.New().String(),
+		"userID":    userID,
+		"exp":       time.Now().Add(constants.RefreshTokenTime).Unix(),
+		"iat":       time.Now().Unix(),
 	}
 	refreshTokenObj := jwt.NewWithClaims(jwt.SigningMethodHS512, refreshClaims)
 	refreshToken, err = refreshTokenObj.SignedString([]byte(constants.RefreshTokenSecret))
@@ -67,7 +67,7 @@ func CreateTokens(userID string) (accessToken string, refreshToken string, err e
 
 func ValidateTokensFromCookies(r *http.Request) (userID string, refreshTokenID string, err error) {
 	// Access token: validate structure
-	accessCookie, err := r.Cookie("access_token")
+	accessCookie, err := r.Cookie("accessToken")
 	if err != nil || accessCookie.Value == "" {
 		return "", "", err
 	}
@@ -83,7 +83,7 @@ func ValidateTokensFromCookies(r *http.Request) (userID string, refreshTokenID s
 	}
 
 	// Refresh token: validate and extract claims
-	refreshCookie, err := r.Cookie("refresh_token")
+	refreshCookie, err := r.Cookie("refreshToken")
 	if err != nil || refreshCookie.Value == "" {
 		return "", "", err
 	}
@@ -103,8 +103,8 @@ func ValidateTokensFromCookies(r *http.Request) (userID string, refreshTokenID s
 		return "", "", err
 	}
 
-	userID, ok1 := claims["user_id"].(string)
-	refreshTokenID, ok2 := claims["refresh_id"].(string)
+	userID, ok1 := claims["userID"].(string)
+	refreshTokenID, ok2 := claims["refreshID"].(string)
 	if !ok1 || !ok2 {
 		return "", "", err
 	}

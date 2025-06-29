@@ -16,6 +16,20 @@ func BeautifyJSON(v interface{}) string {
 	}
 	return (string(bytes))
 }
+func NewMessage(message, errCode, errSource string) Message {
+	createdMessage := Message{"message": message}
+
+	if errCode != "" && errSource != "" {
+		createdMessage["errors"] = []Message{
+			{
+				"source": errSource,
+				"code":   errCode,
+			},
+		}
+	}
+
+	return createdMessage
+}
 
 func WriteJSON(w http.ResponseWriter, statusCode int, data Message) error {
 	jsonBytes, err := json.MarshalIndent(data, "", " ")
@@ -24,6 +38,7 @@ func WriteJSON(w http.ResponseWriter, statusCode int, data Message) error {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Language", "en-US")
 	w.WriteHeader(statusCode)
 
 	w.Write(jsonBytes)
