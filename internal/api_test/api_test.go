@@ -280,6 +280,19 @@ func TestChallengeWorkflow(t *testing.T) {
 			name: "basic challenge creation and retrieval",
 			steps: []testStep{
 				{
+					name: "Create new challenge without auth tokens",
+					request: testRequest{
+						method: "POST",
+						path:   "/challenges",
+						body: map[string]string{
+							"name":     "Vulnaribilities number 1",
+							"content":  "This is a very powerful challenge that no one will be able to defeat",
+							"category": "web hacking",
+						},
+					},
+					expectStatus: http.StatusUnauthorized,
+				},
+				{
 					name: "sign up test user",
 					request: testRequest{
 						method: "POST",

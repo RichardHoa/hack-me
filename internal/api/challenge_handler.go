@@ -97,7 +97,7 @@ func (handler *ChallengeHandler) PostChallenge(w http.ResponseWriter, r *http.Re
 	userID, _, err := utils.ValidateTokensFromCookies(r)
 	if err != nil {
 		handler.Logger.Printf("ERROR: PostChallenge > JWT token checking: %v", err)
-		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, "cookies"))
+		utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, "cookies"))
 
 		return
 	}

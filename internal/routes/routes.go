@@ -30,6 +30,7 @@ func SetUpRoutes(app *app.Application) *chi.Mux {
 		// GET /challenges?popularity=asc|desc&category=cat1&category=cat2&name=searchTerm
 		r.Get("/", app.ChallengeHandler.GetChallenges)
 
+		// r.Get("/", app.Middleware.RequireCSRFToken(app.ChallengeHandler.GetChallenges))
 		r.Post("/", app.ChallengeHandler.PostChallenge)
 
 	})

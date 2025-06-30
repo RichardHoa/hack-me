@@ -7,6 +7,7 @@ import (
 
 	"github.com/RichardHoa/hack-me/internal/api"
 	"github.com/RichardHoa/hack-me/internal/constants"
+	"github.com/RichardHoa/hack-me/internal/middleware"
 	"github.com/RichardHoa/hack-me/internal/store"
 	"github.com/RichardHoa/hack-me/migrations"
 )
@@ -16,6 +17,7 @@ type Application struct {
 	DB               *sql.DB
 	ChallengeHandler *api.ChallengeHandler
 	UserHandler      *api.UserHandler
+	Middleware       middleware.MiddleWare
 }
 
 func NewApplication(isTesting bool) (*Application, error) {
@@ -48,18 +50,23 @@ func NewApplication(isTesting bool) (*Application, error) {
 		panic(err)
 	}
 
+	//NOTE: store creation
 	challengeStore := store.NewChallengeStore(db)
 	userStore := store.NewUserStore(db)
 	tokenStore := store.NewTokenStore(db)
 
+	//NOTE: Middleware creation
 	challengeHandler := api.NewChallengeHandler(&challengeStore, logger)
 	userHandler := api.NewUserHandler(&userStore, &tokenStore, logger)
+
+	middleware := middleware.NewMiddleWare(logger)
 
 	application := &Application{
 		Logger:           logger,
 		DB:               db,
 		ChallengeHandler: challengeHandler,
 		UserHandler:      userHandler,
+		Middleware:       middleware,
 	}
 
 	return application, nil
