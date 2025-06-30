@@ -25,7 +25,7 @@ func (middleware *MiddleWare) RequireCSRFToken(next http.HandlerFunc) http.Handl
 			utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(
 				constants.UnauthorizedMessage,
 				constants.MSG_LACKING_MANDATORY_FIELDS,
-				"unknown",
+				"",
 			))
 			return
 		}
@@ -58,7 +58,7 @@ func (middleware *MiddleWare) RequireCSRFToken(next http.HandlerFunc) http.Handl
 			utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(
 				constants.UnauthorizedMessage,
 				constants.MSG_LACKING_MANDATORY_FIELDS,
-				"unknown",
+				"",
 			))
 			return
 		}

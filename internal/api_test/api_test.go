@@ -21,10 +21,24 @@ func cleanDB(db *sql.DB) {
 	// Repeat for other tables
 }
 
-func makeRequestAndExpectStatus(t *testing.T, client *http.Client, method, url string, payload map[string]string, expectedStatus int) []byte {
+func makeRequestAndExpectStatus(t *testing.T, client *http.Client, method, urlStr string, payload map[string]string, expectedStatus int) []byte {
 	body, _ := json.Marshal(payload)
-	req, _ := http.NewRequest(method, url, bytes.NewReader(body))
+	req, _ := http.NewRequest(method, urlStr, bytes.NewReader(body))
 	req.Header.Set("Content-Type", "application/json")
+
+	// Check for CSRF token in cookies
+	if client.Jar != nil {
+		u, err := url.Parse(urlStr)
+		if err == nil {
+			for _, cookie := range client.Jar.Cookies(u) {
+				t.Logf("cookie name: %v", cookie.Name)
+				if cookie.Name == "csrfToken" {
+					req.Header.Set("X-CSRF-Token", cookie.Value)
+					break
+				}
+			}
+		}
+	}
 
 	resp, err := client.Do(req)
 	if err != nil {
@@ -66,7 +80,6 @@ func TestUserSignUp(t *testing.T) {
 	server := httptest.NewServer(router)
 	defer server.Close()
 
-	// 🍪 Create client with cookie jar
 	jar, _ := cookiejar.New(nil)
 	client := &http.Client{
 		Jar: jar,
@@ -317,6 +330,19 @@ func TestChallengeWorkflow(t *testing.T) {
 						},
 					},
 					expectStatus: http.StatusOK,
+				},
+				{
+					name: "create new challenge with less than 3 character name",
+					request: testRequest{
+						method: "POST",
+						path:   "/challenges",
+						body: map[string]string{
+							"name":     "hs",
+							"content":  "This is a very powerful challenge that no one will be able to defeat",
+							"category": "web hacking",
+						},
+					},
+					expectStatus: http.StatusBadRequest,
 				},
 				{
 					name: "create new challenge without name",
@@ -720,6 +746,208 @@ func TestChallengeWorkflow(t *testing.T) {
 					},
 				},
 				{
+					name: "Modify challenge",
+					request: testRequest{
+						method: "PUT",
+						path:   "/challenges",
+						body: map[string]string{
+							"oldName":  "Deleted Files 2",
+							"name":     "New-Deleted-Files-2",
+							"content":  "New content for first modify challenge",
+							"category": "crypto challenge",
+						},
+					},
+					expectStatus: http.StatusOK,
+				},
+				{
+					name: "Verify the challenge has been modified",
+					request: testRequest{
+						method: "GET",
+						path:   fmt.Sprintf("/challenges?exactName=%s", url.QueryEscape("New-Deleted-Files-2")),
+					},
+					expectStatus: http.StatusOK,
+					validate: func(t *testing.T, body []byte) {
+						var parsed map[string]any
+						if err := json.Unmarshal(body, &parsed); err != nil {
+							t.Fatalf("Failed to parse response: %v", err)
+						}
+
+						data, ok := parsed["data"].([]any)
+						if !ok {
+							t.Fatalf(`Expected "data" to be a list, got: %#v`, parsed["data"])
+						}
+						expectedName := "New-Deleted-Files-2"
+						expectedCategory := "crypto challenge"
+						expectedUser := "Richard Hoa"
+						expectedContent := "New content for first modify challenge"
+
+						found := false
+						for _, item := range data {
+							challenge, ok := item.(map[string]any)
+							if !ok {
+								continue
+							}
+
+							if challenge["name"] == expectedName &&
+								challenge["category"] == expectedCategory &&
+								challenge["userName"] == expectedUser &&
+								challenge["content"] == expectedContent {
+								found = true
+								break
+							}
+						}
+
+						if !found {
+							t.Errorf("Expected challenge not found: name=%q, category=%q, userName=%q", expectedName, expectedCategory, expectedUser)
+						}
+					},
+				},
+				{
+					name: "Modify challenge name only",
+					request: testRequest{
+						method: "PUT",
+						path:   "/challenges",
+						body: map[string]string{
+							"oldName": "New-Deleted-Files-2",
+							"name":    "Updated-Name-Only",
+						},
+					},
+					expectStatus: http.StatusOK,
+				},
+				{
+					name: "Verify challenge name was modified",
+					request: testRequest{
+						method: "GET",
+						path:   fmt.Sprintf("/challenges?exactName=%s", url.QueryEscape("Updated-Name-Only")),
+					},
+					expectStatus: http.StatusOK,
+					validate: func(t *testing.T, body []byte) {
+						var parsed map[string]any
+						if err := json.Unmarshal(body, &parsed); err != nil {
+							t.Fatalf("Failed to parse response: %v", err)
+						}
+						data := parsed["data"].([]any)
+						if len(data) == 0 {
+							t.Fatalf("No challenges returned")
+						}
+						challenge := data[0].(map[string]any)
+						if challenge["name"] != "Updated-Name-Only" {
+							t.Errorf("Expected name 'Updated-Name-Only', got %q", challenge["name"])
+						}
+					},
+				},
+				{
+					name: "Modify challenge content only",
+					request: testRequest{
+						method: "PUT",
+						path:   "/challenges",
+						body: map[string]string{
+							"oldName": "Updated-Name-Only",
+							"content": "Updated content only",
+						},
+					},
+					expectStatus: http.StatusOK,
+				},
+				{
+					name: "Verify challenge content was modified",
+					request: testRequest{
+						method: "GET",
+						path:   fmt.Sprintf("/challenges?exactName=%s", url.QueryEscape("Updated-Name-Only")),
+					},
+					expectStatus: http.StatusOK,
+					validate: func(t *testing.T, body []byte) {
+						var parsed map[string]any
+						if err := json.Unmarshal(body, &parsed); err != nil {
+							t.Fatalf("Failed to parse response: %v", err)
+						}
+						data := parsed["data"].([]any)
+						if len(data) == 0 {
+							t.Fatalf("No challenges returned")
+						}
+						challenge := data[0].(map[string]any)
+						if challenge["content"] != "Updated content only" {
+							t.Errorf("Expected content 'Updated content only', got %q", challenge["content"])
+						}
+					},
+				},
+				{
+					name: "Modify challenge category only",
+					request: testRequest{
+						method: "PUT",
+						path:   "/challenges",
+						body: map[string]string{
+							"oldName":  "Updated-Name-Only",
+							"category": "embedded hacking",
+						},
+					},
+					expectStatus: http.StatusOK,
+				},
+				{
+					name: "Verify challenge category was modified",
+					request: testRequest{
+						method: "GET",
+						path:   fmt.Sprintf("/challenges?exactName=%s", url.QueryEscape("Updated-Name-Only")),
+					},
+					expectStatus: http.StatusOK,
+					validate: func(t *testing.T, body []byte) {
+						var parsed map[string]any
+						if err := json.Unmarshal(body, &parsed); err != nil {
+							t.Fatalf("Failed to parse response: %v", err)
+						}
+						data := parsed["data"].([]any)
+						if len(data) == 0 {
+							t.Fatalf("No challenges returned")
+						}
+						challenge := data[0].(map[string]any)
+						if challenge["category"] != "embedded hacking" {
+							t.Errorf("Expected category 'embedded hacking', got %q", challenge["category"])
+						}
+					},
+				},
+				{
+					name: "Cannot modify challenge that user does not own",
+					request: testRequest{
+						method: "PUT",
+						path:   "/challenges",
+						body: map[string]string{
+							// this old name does not belong to current user
+							"oldName": "XSS Lab",
+							"name":    "New name",
+						},
+					},
+					expectStatus: http.StatusUnauthorized,
+				},
+				{
+					name: "Cannot modify challenge that has no parameter",
+					request: testRequest{
+						method: "PUT",
+						path:   "/challenges",
+						body: map[string]string{
+							// this old name is valid
+							"oldName":  "Updated-Name-Only",
+							"name":     "",
+							"category": "",
+							"content":  "",
+						},
+					},
+					expectStatus: http.StatusBadRequest,
+				},
+				{
+					name: "Cannot modify challenge without oldName",
+					request: testRequest{
+						method: "PUT",
+						path:   "/challenges",
+						body: map[string]string{
+							"oldName":  "",
+							"name":     "New name",
+							"category": "new content",
+							"content":  "new category",
+						},
+					},
+					expectStatus: http.StatusBadRequest,
+				},
+
+				{
 					name: "Verify valid category",
 					request: testRequest{
 						method: "GET",
@@ -942,6 +1170,75 @@ func TestChallengeWorkflow(t *testing.T) {
 						path:   "/challenges?page=0&pageSize=0",
 					},
 					expectStatus: http.StatusBadRequest,
+				},
+				{
+					name: "Delete challenge",
+					request: testRequest{
+						method: "DELETE",
+						path:   "/challenges",
+						body: map[string]string{
+							"name": "Updated-Name-Only",
+						},
+					},
+					expectStatus: http.StatusOK,
+				},
+				{
+					name: "Verify challenge has been deleted",
+					request: testRequest{
+						method: "GET",
+						path:   fmt.Sprintf("/challenges?exactName=%s", url.QueryEscape("Updated-Name-Only")),
+					},
+					expectStatus: http.StatusOK,
+					validate: func(t *testing.T, body []byte) {
+						var parsed map[string]any
+						if err := json.Unmarshal(body, &parsed); err != nil {
+							t.Fatalf("Failed to parse response: %v", err)
+						}
+						data := parsed["data"].([]any)
+						if len(data) != 0 {
+							t.Fatalf("challenge still exist after being deleted %v", data)
+						}
+					},
+				},
+				{
+					name: "Cannot delete challenge that user does not own",
+					request: testRequest{
+						method: "DELETE",
+						path:   "/challenges",
+						body: map[string]string{
+							"name": "XSS Lab",
+						},
+					},
+					expectStatus: http.StatusUnauthorized,
+				},
+				{
+					name: "Cannot delete challenge that does not exist",
+					request: testRequest{
+						method: "DELETE",
+						path:   "/challenges",
+						body: map[string]string{
+							"name": "random challenge name that definitely do not exist in this test",
+						},
+					},
+					expectStatus: http.StatusUnauthorized,
+				},
+				{
+					name: "Cannot delete challenge that without name parameter",
+					request: testRequest{
+						method: "DELETE",
+						path:   "/challenges",
+						body:   map[string]string{},
+					},
+					expectStatus: http.StatusBadRequest,
+				},
+				{
+					name: "Cannot delete challenge that with name empty string",
+					request: testRequest{
+						method: "DELETE",
+						path:   "/challenges",
+						body:   map[string]string{"name": " "},
+					},
+					expectStatus: http.StatusUnauthorized,
 				},
 			},
 		},

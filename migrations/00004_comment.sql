@@ -2,15 +2,9 @@
 -- +goose StatementBegin
 CREATE TABLE IF NOT EXISTS comment (
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    
-    -- Recursive parent comment
     parent_id INT REFERENCES comment(id) ON DELETE CASCADE,
-
-    -- Associated to either a challenge or a challenge_response
     challenge_id INT REFERENCES challenge(id) ON DELETE CASCADE,
     challenge_response_id INT REFERENCES challenge_response(id) ON DELETE CASCADE,
-
-    -- The actual comment content
     user_id UUID NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
     content TEXT NOT NULL,
     

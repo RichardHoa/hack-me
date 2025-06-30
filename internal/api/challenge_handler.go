@@ -132,6 +132,9 @@ func (handler *ChallengeHandler) PostChallenge(w http.ResponseWriter, r *http.Re
 			handler.Logger.Printf("User ID: %v try to add challenge name that already exist\n", challenge.UserID)
 			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("Challenge name already exist", constants.MSG_INVALID_REQUEST_DATA, "name"))
 			return
+		case constants.PQCheckViolation:
+			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("Name must be more than 3 character", constants.MSG_INVALID_REQUEST_DATA, "name"))
+			return
 		case constants.PQForeignKeyViolation:
 			handler.Logger.Printf("ERROR: Invalid User ID: %v", challenge.UserID)
 			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, "cookies"))
@@ -149,4 +152,96 @@ func (handler *ChallengeHandler) PostChallenge(w http.ResponseWriter, r *http.Re
 	}
 
 	utils.WriteJSON(w, http.StatusCreated, utils.NewMessage("Post challenge successfully", "", ""))
+}
+
+func (handler *ChallengeHandler) DeleteChallege(w http.ResponseWriter, r *http.Request) {
+	userID, _, err := utils.ValidateTokensFromCookies(r)
+	if err != nil {
+		handler.Logger.Printf("ERROR: DeleteChallenge > JWT token checking: %v", err)
+		utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, "cookies"))
+		return
+	}
+
+	var req store.DeleteChallengeRequest
+
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&req)
+	if err != nil {
+		handler.Logger.Printf("ERROR: DeleteChallenge > json encoding: %v", err)
+		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(constants.StatusInvalidJSONMessage, constants.MSG_MALFORMED_REQUEST_DATA, "request"))
+		return
+	}
+
+	if req.Name == "" {
+		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("name cannot be empty", constants.MSG_MALFORMED_REQUEST_DATA, "name"))
+		return
+	}
+
+	err = handler.ChallengeStore.DeleteChallenge(req.Name, userID)
+	if err != nil {
+		switch utils.ClassifyError(err) {
+		case constants.LackingPermission:
+			handler.Logger.Printf("ERROR: DeleteChallenge > store Delete challenge: %v", err)
+			utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_INVALID_REQUEST_DATA, ""))
+			return
+		default:
+			handler.Logger.Printf("ERROR: DeleteChallenge > store Delete challenge: %v", err)
+			utils.WriteJSON(w, http.StatusInternalServerError, utils.NewMessage(constants.StatusInternalErrorMessage, "", ""))
+			return
+		}
+	}
+
+	utils.WriteJSON(w, http.StatusOK, utils.NewMessage("Challenge deleted", "", ""))
+
+}
+
+func (handler *ChallengeHandler) ModifyChallenge(w http.ResponseWriter, r *http.Request) {
+
+	userID, _, err := utils.ValidateTokensFromCookies(r)
+	if err != nil {
+		handler.Logger.Printf("ERROR: ModifyChallenge > JWT token checking: %v", err)
+		utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, "cookies"))
+		return
+	}
+
+	var req store.PutChallengeRequest
+
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&req)
+	if err != nil {
+		handler.Logger.Printf("ERROR: ModifyChallenge > json encoding: %v", err)
+		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(constants.StatusInvalidJSONMessage, constants.MSG_MALFORMED_REQUEST_DATA, "request"))
+		return
+	}
+
+	req.UserID = userID
+
+	if req.OldName == "" {
+		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("Previous challenge name must be provided", constants.MSG_LACKING_MANDATORY_FIELDS, "oldName"))
+		return
+	}
+
+	err = handler.ChallengeStore.ModifyChallenge(req)
+	if err != nil {
+		handler.Logger.Printf("ERROR: ModifyChallenge > store modify challenge: %v", err)
+		switch utils.ClassifyError(err) {
+		case constants.InvalidData:
+			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("One of the 3 field must not be null", constants.MSG_INVALID_REQUEST_DATA, "name, category, content"))
+			return
+		case constants.PQInvalidTextRepresentation:
+			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("invalid category value", constants.MSG_INVALID_REQUEST_DATA, "category"))
+			return
+		case constants.LackingPermission:
+			utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_INVALID_REQUEST_DATA, ""))
+			return
+		default:
+			utils.WriteJSON(w, http.StatusInternalServerError, utils.NewMessage(constants.StatusInternalErrorMessage, "", ""))
+			return
+		}
+	}
+
+	utils.WriteJSON(w, http.StatusOK, utils.NewMessage("Challenge has been updated successfully", "", ""))
+
 }

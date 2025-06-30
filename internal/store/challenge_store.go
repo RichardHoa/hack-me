@@ -6,6 +6,9 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/RichardHoa/hack-me/internal/constants"
+	"github.com/RichardHoa/hack-me/internal/utils"
 )
 
 type DBChallengeStore struct {
@@ -20,7 +23,19 @@ type PostChallengeRequest struct {
 	Name     string `json:"name"`
 	Category string `json:"category"`
 	Content  string `json:"content"`
-	UserID   string `json:"userID"`
+	UserID   string
+}
+
+type DeleteChallengeRequest struct {
+	Name string `json:"name"`
+}
+
+type PutChallengeRequest struct {
+	Name     string `json:"name"`
+	OldName  string `json:"oldName"`
+	Category string `json:"category"`
+	Content  string `json:"content"`
+	UserID   string
 }
 
 type Challenge struct {
@@ -52,6 +67,8 @@ type MetaDataPage struct {
 type ChallengeStore interface {
 	GetChallenges(freeQuery ChallengeFreeQuery) (challenges Challenges, metaPage MetaDataPage, err error)
 	CreateChallenges(challenge *Challenge) error
+	DeleteChallenge(challengeName string, userID string) error
+	ModifyChallenge(updatedChallenge PutChallengeRequest) error
 }
 
 func (challengeStore *DBChallengeStore) GetChallenges(freeQuery ChallengeFreeQuery) (challenges Challenges, metaPage MetaDataPage, err error) {
@@ -197,4 +214,80 @@ func (challengeStore *DBChallengeStore) CreateChallenges(challenge *Challenge) e
 
 	return nil
 
+}
+
+func (challengeStore *DBChallengeStore) DeleteChallenge(challengeName string, userID string) error {
+	query := `
+        DELETE FROM challenge 
+        WHERE name = $1 AND user_id = $2
+    `
+
+	result, err := challengeStore.DB.Exec(query, challengeName, userID)
+	if err != nil {
+		return err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return utils.NewCustomAppError(constants.InternalError, fmt.Sprintf("fail to check rows affected %v", err.Error()))
+	}
+
+	if rowsAffected == 0 {
+		return utils.NewCustomAppError(constants.LackingPermission, "challenge not found or the user don't have permission to delete it")
+	}
+
+	return nil
+}
+
+func (challengeStore *DBChallengeStore) ModifyChallenge(updatedChallenge PutChallengeRequest) error {
+	query := `UPDATE challenge SET `
+	params := []interface{}{}
+	paramCount := 1
+
+	if updatedChallenge.Name != "" {
+		query += fmt.Sprintf("name = $%d, ", paramCount)
+		params = append(params, updatedChallenge.Name)
+		paramCount++
+	}
+
+	if updatedChallenge.Category != "" {
+		query += fmt.Sprintf("category = $%d, ", paramCount)
+		params = append(params, updatedChallenge.Category)
+		paramCount++
+	}
+
+	if updatedChallenge.Content != "" {
+		query += fmt.Sprintf("content = $%d, ", paramCount)
+		params = append(params, updatedChallenge.Content)
+		paramCount++
+	}
+
+	// If no valid fields to update
+	if paramCount == 1 {
+		return utils.NewCustomAppError(constants.InvalidData, "No valid field provided for challenge update")
+	}
+
+	// Remove trailing comma and space
+	query = query[:len(query)-2]
+
+	// Add WHERE clause with both name and user_id check
+	query += fmt.Sprintf(", updated_at = now() WHERE name = $%d AND user_id = $%d", paramCount, paramCount+1)
+	params = append(params, updatedChallenge.OldName, updatedChallenge.UserID)
+
+	// Execute the update
+	result, err := challengeStore.DB.Exec(query, params...)
+	if err != nil {
+		return err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return utils.NewCustomAppError(constants.InternalError, fmt.Sprintf("fail to check rows affected %v", err.Error()))
+	}
+
+	if rowsAffected == 0 {
+		return utils.NewCustomAppError(constants.LackingPermission, "challenge not found or the user don't have permission to modify it")
+	}
+
+	return nil
 }

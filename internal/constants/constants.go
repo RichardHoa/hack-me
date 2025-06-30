@@ -70,6 +70,7 @@ const (
 	ResourceNotFound                   // 10
 	InvalidData                        // 11
 	InternalError                      // 12
+	LackingPermission                  // 13
 )
 
 var PQErrorMessages = map[string]int{

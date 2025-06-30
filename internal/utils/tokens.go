@@ -111,7 +111,6 @@ func CheckCSRFToken(csrfToken string, sessionID string) (bool, error) {
 	// Safe compare
 	if !hmac.Equal(hmacRequestBytes, expectedHmac) {
 		fmt.Printf("CSRF Error: Invalid HMAC for sessionID: %s\n", sessionID)
-		fmt.Printf("HMAC from browser: %s, Expected HMAC: %s\n", hmacFromRequest, hex.EncodeToString(expectedHmac))
 		return false, nil
 	}
 
