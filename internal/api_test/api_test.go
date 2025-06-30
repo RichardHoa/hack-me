@@ -345,6 +345,45 @@ func TestChallengeWorkflow(t *testing.T) {
 					expectStatus: http.StatusBadRequest,
 				},
 				{
+					name: "create new challenge with leading whitespace",
+					request: testRequest{
+						method: "POST",
+						path:   "/challenges",
+						body: map[string]string{
+							"name":     "       lots of white space in there",
+							"content":  "This is a very powerful challenge that no one will be able to defeat",
+							"category": "web hacking",
+						},
+					},
+					expectStatus: http.StatusBadRequest,
+				},
+				{
+					name: "create new challenge with trailing whitespace",
+					request: testRequest{
+						method: "POST",
+						path:   "/challenges",
+						body: map[string]string{
+							"name":     "lots of white space in there                       ",
+							"content":  "This is a very powerful challenge that no one will be able to defeat",
+							"category": "web hacking",
+						},
+					},
+					expectStatus: http.StatusBadRequest,
+				},
+				{
+					name: "create new challenge with both whitespace",
+					request: testRequest{
+						method: "POST",
+						path:   "/challenges",
+						body: map[string]string{
+							"name":     "                           lots of white space in there                       ",
+							"content":  "This is a very powerful challenge that no one will be able to defeat",
+							"category": "web hacking",
+						},
+					},
+					expectStatus: http.StatusBadRequest,
+				},
+				{
 					name: "create new challenge without name",
 					request: testRequest{
 						method: "POST",
@@ -926,6 +965,20 @@ func TestChallengeWorkflow(t *testing.T) {
 							// this old name is valid
 							"oldName":  "Updated-Name-Only",
 							"name":     "",
+							"category": "",
+							"content":  "",
+						},
+					},
+					expectStatus: http.StatusBadRequest,
+				},
+				{
+					name: "Cannot modify challenge name to name that already exist",
+					request: testRequest{
+						method: "PUT",
+						path:   "/challenges",
+						body: map[string]string{
+							"oldName":  "Updated-Name-Only",
+							"name":     "IoT Backdoor",
 							"category": "",
 							"content":  "",
 						},

@@ -18,7 +18,8 @@ END$$;
 -- Create challenge table
 CREATE TABLE IF NOT EXISTS challenge (
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    name TEXT NOT NULL UNIQUE CHECK(length(name) >= 3),
+    -- do not allow white space in name
+    name TEXT NOT NULL UNIQUE CHECK(length(trim(name)) >= 3 AND trim(name) = name),
     content TEXT NOT NULL,
     category challenge_category NOT NULL,
     popular_score INT NOT NULL DEFAULT 0,

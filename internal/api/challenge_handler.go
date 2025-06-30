@@ -133,7 +133,7 @@ func (handler *ChallengeHandler) PostChallenge(w http.ResponseWriter, r *http.Re
 			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("Challenge name already exist", constants.MSG_INVALID_REQUEST_DATA, "name"))
 			return
 		case constants.PQCheckViolation:
-			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("Name must be more than 3 character", constants.MSG_INVALID_REQUEST_DATA, "name"))
+			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("Name must be at least 3 characters long with no leading or trailing whitespace", constants.MSG_INVALID_REQUEST_DATA, "name"))
 			return
 		case constants.PQForeignKeyViolation:
 			handler.Logger.Printf("ERROR: Invalid User ID: %v", challenge.UserID)
@@ -232,6 +232,9 @@ func (handler *ChallengeHandler) ModifyChallenge(w http.ResponseWriter, r *http.
 			return
 		case constants.PQInvalidTextRepresentation:
 			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("invalid category value", constants.MSG_INVALID_REQUEST_DATA, "category"))
+			return
+		case constants.PQUniqueViolation:
+			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("new challenge name already exist", constants.MSG_INVALID_REQUEST_DATA, "name"))
 			return
 		case constants.LackingPermission:
 			utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_INVALID_REQUEST_DATA, ""))
