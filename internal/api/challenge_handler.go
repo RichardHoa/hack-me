@@ -223,12 +223,17 @@ func (handler *ChallengeHandler) ModifyChallenge(w http.ResponseWriter, r *http.
 		return
 	}
 
+	if req.Name == "" && req.Category == "" && req.Content == "" {
+		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("One of the three fields must exist", constants.MSG_LACKING_MANDATORY_FIELDS, "name, category, content"))
+		return
+	}
+
 	err = handler.ChallengeStore.ModifyChallenge(req)
 	if err != nil {
 		handler.Logger.Printf("ERROR: ModifyChallenge > store modify challenge: %v", err)
 		switch utils.ClassifyError(err) {
 		case constants.InvalidData:
-			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("One of the 3 field must not be null", constants.MSG_INVALID_REQUEST_DATA, "name, category, content"))
+			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("Challenge name already exist", constants.MSG_INVALID_REQUEST_DATA, "name"))
 			return
 		case constants.PQInvalidTextRepresentation:
 			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("invalid category value", constants.MSG_INVALID_REQUEST_DATA, "category"))

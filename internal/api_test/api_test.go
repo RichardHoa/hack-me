@@ -91,7 +91,7 @@ func TestUserSignUp(t *testing.T) {
 		expectedStatus int
 	}{
 		{
-			name: "Full signup with email and password",
+			name: "Sign up with password-Success",
 			payload: map[string]string{
 				"userName":  "Richard Hoa",
 				"password":  "StrongSecurePasswordThatWon'tBemarkAsInvalid",
@@ -103,7 +103,7 @@ func TestUserSignUp(t *testing.T) {
 			expectedStatus: http.StatusCreated,
 		},
 		{
-			name: "Duplicate username and email",
+			name: "Duplicate email and username-Failure",
 			payload: map[string]string{
 				"userName":  "Richard Hoa",
 				"password":  "ThisIsAVerySEcurePasswordThatWon'tBeStop",
@@ -115,7 +115,7 @@ func TestUserSignUp(t *testing.T) {
 			expectedStatus: http.StatusBadRequest,
 		},
 		{
-			name: "Weak password",
+			name: "Weak password-Failure",
 			payload: map[string]string{
 				"userName":  "AnotherUser",
 				"password":  "HelloThere",
@@ -127,7 +127,7 @@ func TestUserSignUp(t *testing.T) {
 			expectedStatus: http.StatusBadRequest,
 		},
 		{
-			name: "Lacking password",
+			name: "Lacking password-Failure",
 			payload: map[string]string{
 				"userName":  "fourth user",
 				"password":  "",
@@ -139,103 +139,7 @@ func TestUserSignUp(t *testing.T) {
 			expectedStatus: http.StatusBadRequest,
 		},
 		{
-			name: "Password + Google ID",
-			payload: map[string]string{
-				"userName":  "pwg_user",
-				"password":  "StrongSecurePasswordThatWon'tBemarkAsInvalid",
-				"email":     "pwg_user@gmail.com",
-				"imageLink": "",
-				"googleID":  "google-uid-123",
-				"githubID":  "",
-			},
-			expectedStatus: http.StatusCreated,
-		},
-		{
-			name: "Password + GitHub ID",
-			payload: map[string]string{
-				"userName":  "pwh_user",
-				"password":  "StrongSecurePasswordThatWon'tBemarkAsInvalid",
-				"email":     "pwh_user@gmail.com",
-				"imageLink": "",
-				"googleID":  "",
-				"githubID":  "github-uid-321",
-			},
-			expectedStatus: http.StatusCreated,
-		},
-		{
-			name: "Google ID + GitHub ID",
-			payload: map[string]string{
-				"userName":  "gg_user",
-				"password":  "",
-				"email":     "gg_user@gmail.com",
-				"imageLink": "",
-				"googleID":  "google-uid-456",
-				"githubID":  "github-uid-654",
-			},
-			expectedStatus: http.StatusCreated,
-		},
-		{
-			name: "All three auth fields present",
-			payload: map[string]string{
-				"userName":  "full_user",
-				"password":  "StrongSecurePasswordThatWon'tBemarkAsInvalid",
-				"email":     "full_user@gmail.com",
-				"imageLink": "",
-				"googleID":  "google-uid-789",
-				"githubID":  "github-uid-987",
-			},
-			expectedStatus: http.StatusCreated,
-		},
-		{
-			name: "Duplicate username",
-			payload: map[string]string{
-				"userName":  "full_user",
-				"password":  "StrongSecurePasswordThatWon'tBemarkAsInvalid",
-				"email":     "dup_user1@gmail.com",
-				"imageLink": "",
-				"googleID":  "",
-				"githubID":  "",
-			},
-			expectedStatus: http.StatusBadRequest,
-		},
-		{
-			name: "Duplicate email",
-			payload: map[string]string{
-				"userName":  "dup_user2",
-				"password":  "StrongSecurePasswordThatWon'tBemarkAsInvalid",
-				"email":     "full_user@gmail.com", // same email as above
-				"imageLink": "",
-				"googleID":  "",
-				"githubID":  "",
-			},
-			expectedStatus: http.StatusBadRequest,
-		},
-		{
-			name: "Duplicate Google ID",
-			payload: map[string]string{
-				"userName":  "dup_user3",
-				"password":  "StrongSecurePasswordThatWon'tBemarkAsInvalid",
-				"email":     "dup_google@gmail.com",
-				"imageLink": "",
-				"googleID":  "google-uid-789", // same as above
-				"githubID":  "",
-			},
-			expectedStatus: http.StatusBadRequest,
-		},
-		{
-			name: "Duplicate GitHub ID",
-			payload: map[string]string{
-				"userName":  "dup_user4",
-				"password":  "StrongSecurePasswordThatWon'tBemarkAsInvalid",
-				"email":     "dup_github@gmail.com",
-				"imageLink": "",
-				"googleID":  "",
-				"githubID":  "github-uid-987", // same as above
-			},
-			expectedStatus: http.StatusBadRequest,
-		},
-		{
-			name: "Lacking email",
+			name: "Lacking email-Failure",
 			payload: map[string]string{
 				"userName":  "lacking_email_user_1",
 				"password":  "StrongSecurePasswordThatWon'tBemarkAsInvalid",
@@ -247,7 +151,7 @@ func TestUserSignUp(t *testing.T) {
 			expectedStatus: http.StatusBadRequest,
 		},
 		{
-			name: "Lacking username",
+			name: "Lacking username-Failure",
 			payload: map[string]string{
 				"userName":  "",
 				"password":  "StrongSecurePasswordThatWon'tBemarkAsInvalid",
@@ -258,11 +162,107 @@ func TestUserSignUp(t *testing.T) {
 			},
 			expectedStatus: http.StatusBadRequest,
 		},
+		{
+			name: "Password and Google ID-Success",
+			payload: map[string]string{
+				"userName":  "pwg_user",
+				"password":  "StrongSecurePasswordThatWon'tBemarkAsInvalid",
+				"email":     "pwg_user@gmail.com",
+				"imageLink": "",
+				"googleID":  "google-uid-123",
+				"githubID":  "",
+			},
+			expectedStatus: http.StatusCreated,
+		},
+		{
+			name: "Password and Github ID-Success",
+			payload: map[string]string{
+				"userName":  "pwh_user",
+				"password":  "StrongSecurePasswordThatWon'tBemarkAsInvalid",
+				"email":     "pwh_user@gmail.com",
+				"imageLink": "",
+				"googleID":  "",
+				"githubID":  "github-uid-321",
+			},
+			expectedStatus: http.StatusCreated,
+		},
+		{
+			name: "Google ID and GitHub ID-Success",
+			payload: map[string]string{
+				"userName":  "gg_user",
+				"password":  "",
+				"email":     "gg_user@gmail.com",
+				"imageLink": "",
+				"googleID":  "google-uid-456",
+				"githubID":  "github-uid-654",
+			},
+			expectedStatus: http.StatusCreated,
+		},
+		{
+			name: "Password, google ID and Github ID-success",
+			payload: map[string]string{
+				"userName":  "full_user",
+				"password":  "StrongSecurePasswordThatWon'tBemarkAsInvalid",
+				"email":     "full_user@gmail.com",
+				"imageLink": "",
+				"googleID":  "google-uid-789",
+				"githubID":  "github-uid-987",
+			},
+			expectedStatus: http.StatusCreated,
+		},
+		{
+			name: "Duplicate username-Failure",
+			payload: map[string]string{
+				"userName":  "full_user",
+				"password":  "StrongSecurePasswordThatWon'tBemarkAsInvalid",
+				"email":     "dup_user1@gmail.com",
+				"imageLink": "",
+				"googleID":  "",
+				"githubID":  "",
+			},
+			expectedStatus: http.StatusBadRequest,
+		},
+		{
+			name: "Duplicate email-Failure",
+			payload: map[string]string{
+				"userName":  "dup_user2",
+				"password":  "StrongSecurePasswordThatWon'tBemarkAsInvalid",
+				"email":     "full_user@gmail.com", // same email as above
+				"imageLink": "",
+				"googleID":  "",
+				"githubID":  "",
+			},
+			expectedStatus: http.StatusBadRequest,
+		},
+		{
+			name: "Duplicate Google ID-Failure",
+			payload: map[string]string{
+				"userName":  "dup_user3",
+				"password":  "StrongSecurePasswordThatWon'tBemarkAsInvalid",
+				"email":     "dup_google@gmail.com",
+				"imageLink": "",
+				"googleID":  "google-uid-789", // same as above
+				"githubID":  "",
+			},
+			expectedStatus: http.StatusBadRequest,
+		},
+		{
+			name: "Duplicate GitHub ID-Failure",
+			payload: map[string]string{
+				"userName":  "dup_user4",
+				"password":  "StrongSecurePasswordThatWon'tBemarkAsInvalid",
+				"email":     "dup_github@gmail.com",
+				"imageLink": "",
+				"googleID":  "",
+				"githubID":  "github-uid-987", // same as above
+			},
+			expectedStatus: http.StatusBadRequest,
+		},
 	}
 
 	for i, tc := range tests {
 		t.Run(fmt.Sprintf("%02d-%s", i+1, tc.name), func(t *testing.T) {
-			makeRequestAndExpectStatus(t, client, "POST", server.URL+"/users", tc.payload, tc.expectedStatus)
+			makeRequestAndExpectStatus(t, client, "POST", server.URL+"/v1/users", tc.payload, tc.expectedStatus)
 		})
 	}
 }
@@ -290,13 +290,13 @@ func TestChallengeWorkflow(t *testing.T) {
 		steps []testStep
 	}{
 		{
-			name: "basic challenge creation and retrieval",
+			name: "",
 			steps: []testStep{
 				{
-					name: "Create new challenge without auth tokens",
+					name: "No auth tokens",
 					request: testRequest{
 						method: "POST",
-						path:   "/challenges",
+						path:   "/v1/challenges",
 						body: map[string]string{
 							"name":     "Vulnaribilities number 1",
 							"content":  "This is a very powerful challenge that no one will be able to defeat",
@@ -306,10 +306,10 @@ func TestChallengeWorkflow(t *testing.T) {
 					expectStatus: http.StatusUnauthorized,
 				},
 				{
-					name: "sign up test user",
+					name: "Sign up valid user",
 					request: testRequest{
 						method: "POST",
-						path:   "/users",
+						path:   "/v1/users",
 						body: map[string]string{
 							"userName":  "Richard Hoa",
 							"password":  "ThisIsAVerySEcurePasswordThatWon'tBeStop",
@@ -320,10 +320,10 @@ func TestChallengeWorkflow(t *testing.T) {
 					expectStatus: http.StatusCreated,
 				},
 				{
-					name: "login test user",
+					name: "Login test user",
 					request: testRequest{
 						method: "POST",
-						path:   "/users/login",
+						path:   "/v1/users/login",
 						body: map[string]string{
 							"email":    "testEmail@gmail.com",
 							"password": "ThisIsAVerySEcurePasswordThatWon'tBeStop",
@@ -332,10 +332,10 @@ func TestChallengeWorkflow(t *testing.T) {
 					expectStatus: http.StatusOK,
 				},
 				{
-					name: "create new challenge with less than 3 character name",
+					name: "challenge name less than 3 character",
 					request: testRequest{
 						method: "POST",
-						path:   "/challenges",
+						path:   "/v1/challenges",
 						body: map[string]string{
 							"name":     "hs",
 							"content":  "This is a very powerful challenge that no one will be able to defeat",
@@ -345,10 +345,10 @@ func TestChallengeWorkflow(t *testing.T) {
 					expectStatus: http.StatusBadRequest,
 				},
 				{
-					name: "create new challenge with leading whitespace",
+					name: "challenge name with leading white space",
 					request: testRequest{
 						method: "POST",
-						path:   "/challenges",
+						path:   "/v1/challenges",
 						body: map[string]string{
 							"name":     "       lots of white space in there",
 							"content":  "This is a very powerful challenge that no one will be able to defeat",
@@ -358,10 +358,10 @@ func TestChallengeWorkflow(t *testing.T) {
 					expectStatus: http.StatusBadRequest,
 				},
 				{
-					name: "create new challenge with trailing whitespace",
+					name: "challenge name with trailing whitespace",
 					request: testRequest{
 						method: "POST",
-						path:   "/challenges",
+						path:   "/v1/challenges",
 						body: map[string]string{
 							"name":     "lots of white space in there                       ",
 							"content":  "This is a very powerful challenge that no one will be able to defeat",
@@ -371,10 +371,10 @@ func TestChallengeWorkflow(t *testing.T) {
 					expectStatus: http.StatusBadRequest,
 				},
 				{
-					name: "create new challenge with both whitespace",
+					name: "challenge with both white space",
 					request: testRequest{
 						method: "POST",
-						path:   "/challenges",
+						path:   "/v1/challenges",
 						body: map[string]string{
 							"name":     "                           lots of white space in there                       ",
 							"content":  "This is a very powerful challenge that no one will be able to defeat",
@@ -384,10 +384,23 @@ func TestChallengeWorkflow(t *testing.T) {
 					expectStatus: http.StatusBadRequest,
 				},
 				{
-					name: "create new challenge without name",
+					name: "challenge name with white space only",
 					request: testRequest{
 						method: "POST",
-						path:   "/challenges",
+						path:   "/v1/challenges",
+						body: map[string]string{
+							"name":     " ",
+							"content":  "This is a very powerful challenge that no one will be able to defeat",
+							"category": "web hacking",
+						},
+					},
+					expectStatus: http.StatusBadRequest,
+				},
+				{
+					name: "no challenge name",
+					request: testRequest{
+						method: "POST",
+						path:   "/v1/challenges",
 						body: map[string]string{
 							"name":     "",
 							"content":  "This is a very powerful challenge that no one will be able to defeat",
@@ -397,10 +410,10 @@ func TestChallengeWorkflow(t *testing.T) {
 					expectStatus: http.StatusBadRequest,
 				},
 				{
-					name: "create new challenge without content",
+					name: "no challenge content",
 					request: testRequest{
 						method: "POST",
-						path:   "/challenges",
+						path:   "/v1/challenges",
 						body: map[string]string{
 							"name":     "Valid name here",
 							"content":  "",
@@ -411,10 +424,10 @@ func TestChallengeWorkflow(t *testing.T) {
 				},
 
 				{
-					name: "create new challenge without category",
+					name: "no challenge category",
 					request: testRequest{
 						method: "POST",
-						path:   "/challenges",
+						path:   "/v1/challenges",
 						body: map[string]string{
 							"name":     "Valid name here",
 							"content":  "This is a very powerful challenge that no one will be able to defeat",
@@ -423,12 +436,610 @@ func TestChallengeWorkflow(t *testing.T) {
 					},
 					expectStatus: http.StatusBadRequest,
 				},
-
 				{
-					name: "create new challenge",
+					name: "challenge with realistic conetent",
 					request: testRequest{
 						method: "POST",
-						path:   "/challenges",
+						path:   "/v1/challenges",
+						body: map[string]string{
+							"name": "Realistically long content",
+							"content": `
+								# Poenamque bis quantum caput tutaeque rerum
+
+								## Unam sub stabat Marte
+
+								Lorem *markdownum vincula* quam, pollice creditur sciret Iovis: pariter, et
+								raptu amplexu memorabat **virum**. Inpellit ossibus transferre Adoni et dignus,
+								lapides inpetus paupertatemque supernum ore; aequoreae.
+
+									 if (snmpCellEbook + 5 < 2) {
+										  port = layoutDrag;
+									 } else {
+										  homeComputer = python;
+										  operating -= ieeeMountainNetbios;
+									 }
+									 webcamAnimated = webcamIscsiEmoticon.multi(guiSoft);
+									 var constant = apple_rw_scareware;
+									 boot_reimage_box(volumeConsoleHsf, vci, function);
+
+								Corpore cum, quod vale et olor adpropera calentes
+								[pectore](http://bisque-sed.io/) pulsa suo arbore inquit, sine magna milite
+								voluistis. Sanguine volubile fameque: mutua [ultro
+								tuum](http://ferorredigar.net/ambiguis-medius.html) quidquid iuvat cum
+								invictumque solutus sub reparet dicta, [longoque](http://et.org/).
+
+									 redundancyNocIsp = 6 - sample_dbms_resources.bridgeFile.pebibyte_web_dial(
+												web_active);
+									 if (xpCore(srgbDesktop) <= ip_webmaster_pup - mirrored_gigahertz) {
+										  laptopMetalHtml = script_virus_click - 2;
+										  google_compiler.gif_twitter_shell.yobibyte(unicodeRgbIntegrated);
+									 } else {
+										  hypertext_real_ray = 745726;
+									 }
+									 if (network_gigabit_mouse.thermistor(denialFull, honeypot_vpn_grep, token)
+												== 3) {
+										  multitasking = plugDns;
+										  commercialComponentIllegal = -1 + 13 - hoverRaidBurn + mysql;
+									 } else {
+										  volumeMedia.ospf.wRemoteSan(sqlCrossSerp, personal);
+									 }
+
+								## Gestu aequoris simul videritis adire
+
+								Illa constitit manibusque mihi et coniunx, fratrisque in obstas iussorum multi,
+								et tuum fumida opposita ferrumque. Tam sanguinis, opacae enim rauco ignibus
+								Ismariis mando *si corpus* regebat [iuventae de
+								senem](http://ligatis-somno.net/). Nisi clara!
+
+								> Videbat pudet gnatae, evomit lues: lucemque et coniunx opus. Namque quae potui
+								> tacuit suum eat se clamatque Saturnia, silva. Reccidit castra sic ab Iliades
+								> dammis tempore dumque, nec ego des divesque multi.
+
+								Videt corripit de humo vehit rudis poenas Rex, nisi utile dentibus
+								[flava](http://nuncsui.com/) loquentem fisso; duo subiere, ille! Non illi haec
+								lunae dolorque conditaque tunc, spinea nato vox et glaciali castique.
+
+								Prospicit erit crimina Amphitryoniaden thalamo. Interdum vixque, torrem passa
+								omnia fateri dea fragiles, sidera alter ponti omnia, **loqui**. Clara sibi
+								aversa posse dixerat vulnera lapides oblitus.
+
+								Fuerat bisque aevi petens Idaeo acta breve simulac centum thalamos [salus
+								Marte](http://aut.net/) agebatur recolligat de tremula circum. Diversas
+								coniunxque orabam explorant fertur corpus silvestribus profuit nostrumque
+								nutrimen excidit ratione carmina, et. Loci adit gerat, sponte si memorque
+								perenni insula avidae, posset, per. [Audet vates
+								cantibus](http://buxo.net/domos) et, carinae ferrum adflatuque adspexit imas.
+								# Poenamque bis quantum caput tutaeque rerum
+
+								## Unam sub stabat Marte
+
+								Lorem *markdownum vincula* quam, pollice creditur sciret Iovis: pariter, et
+								raptu amplexu memorabat **virum**. Inpellit ossibus transferre Adoni et dignus,
+								lapides inpetus paupertatemque supernum ore; aequoreae.
+
+									 if (snmpCellEbook + 5 < 2) {
+										  port = layoutDrag;
+									 } else {
+										  homeComputer = python;
+										  operating -= ieeeMountainNetbios;
+									 }
+									 webcamAnimated = webcamIscsiEmoticon.multi(guiSoft);
+									 var constant = apple_rw_scareware;
+									 boot_reimage_box(volumeConsoleHsf, vci, function);
+
+								Corpore cum, quod vale et olor adpropera calentes
+								[pectore](http://bisque-sed.io/) pulsa suo arbore inquit, sine magna milite
+								voluistis. Sanguine volubile fameque: mutua [ultro
+								tuum](http://ferorredigar.net/ambiguis-medius.html) quidquid iuvat cum
+								invictumque solutus sub reparet dicta, [longoque](http://et.org/).
+
+									 redundancyNocIsp = 6 - sample_dbms_resources.bridgeFile.pebibyte_web_dial(
+												web_active);
+									 if (xpCore(srgbDesktop) <= ip_webmaster_pup - mirrored_gigahertz) {
+										  laptopMetalHtml = script_virus_click - 2;
+										  google_compiler.gif_twitter_shell.yobibyte(unicodeRgbIntegrated);
+									 } else {
+										  hypertext_real_ray = 745726;
+									 }
+									 if (network_gigabit_mouse.thermistor(denialFull, honeypot_vpn_grep, token)
+												== 3) {
+										  multitasking = plugDns;
+										  commercialComponentIllegal = -1 + 13 - hoverRaidBurn + mysql;
+									 } else {
+										  volumeMedia.ospf.wRemoteSan(sqlCrossSerp, personal);
+									 }
+
+								## Gestu aequoris simul videritis adire
+
+								Illa constitit manibusque mihi et coniunx, fratrisque in obstas iussorum multi,
+								et tuum fumida opposita ferrumque. Tam sanguinis, opacae enim rauco ignibus
+								Ismariis mando *si corpus* regebat [iuventae de
+								senem](http://ligatis-somno.net/). Nisi clara!
+
+								> Videbat pudet gnatae, evomit lues: lucemque et coniunx opus. Namque quae potui
+								> tacuit suum eat se clamatque Saturnia, silva. Reccidit castra sic ab Iliades
+								> dammis tempore dumque, nec ego des divesque multi.
+
+								Videt corripit de humo vehit rudis poenas Rex, nisi utile dentibus
+								[flava](http://nuncsui.com/) loquentem fisso; duo subiere, ille! Non illi haec
+								lunae dolorque conditaque tunc, spinea nato vox et glaciali castique.
+
+								Prospicit erit crimina Amphitryoniaden thalamo. Interdum vixque, torrem passa
+								omnia fateri dea fragiles, sidera alter ponti omnia, **loqui**. Clara sibi
+								aversa posse dixerat vulnera lapides oblitus.
+
+								Fuerat bisque aevi petens Idaeo acta breve simulac centum thalamos [salus
+								Marte](http://aut.net/) agebatur recolligat de tremula circum. Diversas
+								coniunxque orabam explorant fertur corpus silvestribus profuit nostrumque
+								nutrimen excidit ratione carmina, et. Loci adit gerat, sponte si memorque
+								perenni insula avidae, posset, per. [Audet vates
+								cantibus](http://buxo.net/domos) et, carinae ferrum adflatuque adspexit imas.
+								# Poenamque bis quantum caput tutaeque rerum
+
+								## Unam sub stabat Marte
+
+								Lorem *markdownum vincula* quam, pollice creditur sciret Iovis: pariter, et
+								raptu amplexu memorabat **virum**. Inpellit ossibus transferre Adoni et dignus,
+								lapides inpetus paupertatemque supernum ore; aequoreae.
+
+									 if (snmpCellEbook + 5 < 2) {
+										  port = layoutDrag;
+									 } else {
+										  homeComputer = python;
+										  operating -= ieeeMountainNetbios;
+									 }
+									 webcamAnimated = webcamIscsiEmoticon.multi(guiSoft);
+									 var constant = apple_rw_scareware;
+									 boot_reimage_box(volumeConsoleHsf, vci, function);
+
+								Corpore cum, quod vale et olor adpropera calentes
+								[pectore](http://bisque-sed.io/) pulsa suo arbore inquit, sine magna milite
+								voluistis. Sanguine volubile fameque: mutua [ultro
+								tuum](http://ferorredigar.net/ambiguis-medius.html) quidquid iuvat cum
+								invictumque solutus sub reparet dicta, [longoque](http://et.org/).
+
+									 redundancyNocIsp = 6 - sample_dbms_resources.bridgeFile.pebibyte_web_dial(
+												web_active);
+									 if (xpCore(srgbDesktop) <= ip_webmaster_pup - mirrored_gigahertz) {
+										  laptopMetalHtml = script_virus_click - 2;
+										  google_compiler.gif_twitter_shell.yobibyte(unicodeRgbIntegrated);
+									 } else {
+										  hypertext_real_ray = 745726;
+									 }
+									 if (network_gigabit_mouse.thermistor(denialFull, honeypot_vpn_grep, token)
+												== 3) {
+										  multitasking = plugDns;
+										  commercialComponentIllegal = -1 + 13 - hoverRaidBurn + mysql;
+									 } else {
+										  volumeMedia.ospf.wRemoteSan(sqlCrossSerp, personal);
+									 }
+
+								## Gestu aequoris simul videritis adire
+
+								Illa constitit manibusque mihi et coniunx, fratrisque in obstas iussorum multi,
+								et tuum fumida opposita ferrumque. Tam sanguinis, opacae enim rauco ignibus
+								Ismariis mando *si corpus* regebat [iuventae de
+								senem](http://ligatis-somno.net/). Nisi clara!
+
+								> Videbat pudet gnatae, evomit lues: lucemque et coniunx opus. Namque quae potui
+								> tacuit suum eat se clamatque Saturnia, silva. Reccidit castra sic ab Iliades
+								> dammis tempore dumque, nec ego des divesque multi.
+
+								Videt corripit de humo vehit rudis poenas Rex, nisi utile dentibus
+								[flava](http://nuncsui.com/) loquentem fisso; duo subiere, ille! Non illi haec
+								lunae dolorque conditaque tunc, spinea nato vox et glaciali castique.
+
+								Prospicit erit crimina Amphitryoniaden thalamo. Interdum vixque, torrem passa
+								omnia fateri dea fragiles, sidera alter ponti omnia, **loqui**. Clara sibi
+								aversa posse dixerat vulnera lapides oblitus.
+
+								Fuerat bisque aevi petens Idaeo acta breve simulac centum thalamos [salus
+								Marte](http://aut.net/) agebatur recolligat de tremula circum. Diversas
+								coniunxque orabam explorant fertur corpus silvestribus profuit nostrumque
+								nutrimen excidit ratione carmina, et. Loci adit gerat, sponte si memorque
+								perenni insula avidae, posset, per. [Audet vates
+								cantibus](http://buxo.net/domos) et, carinae ferrum adflatuque adspexit imas.
+								# Poenamque bis quantum caput tutaeque rerum
+
+								## Unam sub stabat Marte
+
+								Lorem *markdownum vincula* quam, pollice creditur sciret Iovis: pariter, et
+								raptu amplexu memorabat **virum**. Inpellit ossibus transferre Adoni et dignus,
+								lapides inpetus paupertatemque supernum ore; aequoreae.
+
+									 if (snmpCellEbook + 5 < 2) {
+										  port = layoutDrag;
+									 } else {
+										  homeComputer = python;
+										  operating -= ieeeMountainNetbios;
+									 }
+									 webcamAnimated = webcamIscsiEmoticon.multi(guiSoft);
+									 var constant = apple_rw_scareware;
+									 boot_reimage_box(volumeConsoleHsf, vci, function);
+
+								Corpore cum, quod vale et olor adpropera calentes
+								[pectore](http://bisque-sed.io/) pulsa suo arbore inquit, sine magna milite
+								voluistis. Sanguine volubile fameque: mutua [ultro
+								tuum](http://ferorredigar.net/ambiguis-medius.html) quidquid iuvat cum
+								invictumque solutus sub reparet dicta, [longoque](http://et.org/).
+
+									 redundancyNocIsp = 6 - sample_dbms_resources.bridgeFile.pebibyte_web_dial(
+												web_active);
+									 if (xpCore(srgbDesktop) <= ip_webmaster_pup - mirrored_gigahertz) {
+										  laptopMetalHtml = script_virus_click - 2;
+										  google_compiler.gif_twitter_shell.yobibyte(unicodeRgbIntegrated);
+									 } else {
+										  hypertext_real_ray = 745726;
+									 }
+									 if (network_gigabit_mouse.thermistor(denialFull, honeypot_vpn_grep, token)
+												== 3) {
+										  multitasking = plugDns;
+										  commercialComponentIllegal = -1 + 13 - hoverRaidBurn + mysql;
+									 } else {
+										  volumeMedia.ospf.wRemoteSan(sqlCrossSerp, personal);
+									 }
+
+								## Gestu aequoris simul videritis adire
+
+								Illa constitit manibusque mihi et coniunx, fratrisque in obstas iussorum multi,
+								et tuum fumida opposita ferrumque. Tam sanguinis, opacae enim rauco ignibus
+								Ismariis mando *si corpus* regebat [iuventae de
+								senem](http://ligatis-somno.net/). Nisi clara!
+
+								> Videbat pudet gnatae, evomit lues: lucemque et coniunx opus. Namque quae potui
+								> tacuit suum eat se clamatque Saturnia, silva. Reccidit castra sic ab Iliades
+								> dammis tempore dumque, nec ego des divesque multi.
+
+								Videt corripit de humo vehit rudis poenas Rex, nisi utile dentibus
+								[flava](http://nuncsui.com/) loquentem fisso; duo subiere, ille! Non illi haec
+								lunae dolorque conditaque tunc, spinea nato vox et glaciali castique.
+
+								Prospicit erit crimina Amphitryoniaden thalamo. Interdum vixque, torrem passa
+								omnia fateri dea fragiles, sidera alter ponti omnia, **loqui**. Clara sibi
+								aversa posse dixerat vulnera lapides oblitus.
+
+								Fuerat bisque aevi petens Idaeo acta breve simulac centum thalamos [salus
+								Marte](http://aut.net/) agebatur recolligat de tremula circum. Diversas
+								coniunxque orabam explorant fertur corpus silvestribus profuit nostrumque
+								nutrimen excidit ratione carmina, et. Loci adit gerat, sponte si memorque
+								perenni insula avidae, posset, per. [Audet vates
+								cantibus](http://buxo.net/domos) et, carinae ferrum adflatuque adspexit imas.
+								# Poenamque bis quantum caput tutaeque rerum
+
+								## Unam sub stabat Marte
+
+								Lorem *markdownum vincula* quam, pollice creditur sciret Iovis: pariter, et
+								raptu amplexu memorabat **virum**. Inpellit ossibus transferre Adoni et dignus,
+								lapides inpetus paupertatemque supernum ore; aequoreae.
+
+									 if (snmpCellEbook + 5 < 2) {
+										  port = layoutDrag;
+									 } else {
+										  homeComputer = python;
+										  operating -= ieeeMountainNetbios;
+									 }
+									 webcamAnimated = webcamIscsiEmoticon.multi(guiSoft);
+									 var constant = apple_rw_scareware;
+									 boot_reimage_box(volumeConsoleHsf, vci, function);
+
+								Corpore cum, quod vale et olor adpropera calentes
+								[pectore](http://bisque-sed.io/) pulsa suo arbore inquit, sine magna milite
+								voluistis. Sanguine volubile fameque: mutua [ultro
+								tuum](http://ferorredigar.net/ambiguis-medius.html) quidquid iuvat cum
+								invictumque solutus sub reparet dicta, [longoque](http://et.org/).
+
+									 redundancyNocIsp = 6 - sample_dbms_resources.bridgeFile.pebibyte_web_dial(
+												web_active);
+									 if (xpCore(srgbDesktop) <= ip_webmaster_pup - mirrored_gigahertz) {
+										  laptopMetalHtml = script_virus_click - 2;
+										  google_compiler.gif_twitter_shell.yobibyte(unicodeRgbIntegrated);
+									 } else {
+										  hypertext_real_ray = 745726;
+									 }
+									 if (network_gigabit_mouse.thermistor(denialFull, honeypot_vpn_grep, token)
+												== 3) {
+										  multitasking = plugDns;
+										  commercialComponentIllegal = -1 + 13 - hoverRaidBurn + mysql;
+									 } else {
+										  volumeMedia.ospf.wRemoteSan(sqlCrossSerp, personal);
+									 }
+
+								## Gestu aequoris simul videritis adire
+
+								Illa constitit manibusque mihi et coniunx, fratrisque in obstas iussorum multi,
+								et tuum fumida opposita ferrumque. Tam sanguinis, opacae enim rauco ignibus
+								Ismariis mando *si corpus* regebat [iuventae de
+								senem](http://ligatis-somno.net/). Nisi clara!
+
+								> Videbat pudet gnatae, evomit lues: lucemque et coniunx opus. Namque quae potui
+								> tacuit suum eat se clamatque Saturnia, silva. Reccidit castra sic ab Iliades
+								> dammis tempore dumque, nec ego des divesque multi.
+
+								Videt corripit de humo vehit rudis poenas Rex, nisi utile dentibus
+								[flava](http://nuncsui.com/) loquentem fisso; duo subiere, ille! Non illi haec
+								lunae dolorque conditaque tunc, spinea nato vox et glaciali castique.
+
+								Prospicit erit crimina Amphitryoniaden thalamo. Interdum vixque, torrem passa
+								omnia fateri dea fragiles, sidera alter ponti omnia, **loqui**. Clara sibi
+								aversa posse dixerat vulnera lapides oblitus.
+
+								Fuerat bisque aevi petens Idaeo acta breve simulac centum thalamos [salus
+								Marte](http://aut.net/) agebatur recolligat de tremula circum. Diversas
+								coniunxque orabam explorant fertur corpus silvestribus profuit nostrumque
+								nutrimen excidit ratione carmina, et. Loci adit gerat, sponte si memorque
+								perenni insula avidae, posset, per. [Audet vates
+								cantibus](http://buxo.net/domos) et, carinae ferrum adflatuque adspexit imas.
+								# Poenamque bis quantum caput tutaeque rerum
+
+								## Unam sub stabat Marte
+
+								Lorem *markdownum vincula* quam, pollice creditur sciret Iovis: pariter, et
+								raptu amplexu memorabat **virum**. Inpellit ossibus transferre Adoni et dignus,
+								lapides inpetus paupertatemque supernum ore; aequoreae.
+
+									 if (snmpCellEbook + 5 < 2) {
+										  port = layoutDrag;
+									 } else {
+										  homeComputer = python;
+										  operating -= ieeeMountainNetbios;
+									 }
+									 webcamAnimated = webcamIscsiEmoticon.multi(guiSoft);
+									 var constant = apple_rw_scareware;
+									 boot_reimage_box(volumeConsoleHsf, vci, function);
+
+								Corpore cum, quod vale et olor adpropera calentes
+								[pectore](http://bisque-sed.io/) pulsa suo arbore inquit, sine magna milite
+								voluistis. Sanguine volubile fameque: mutua [ultro
+								tuum](http://ferorredigar.net/ambiguis-medius.html) quidquid iuvat cum
+								invictumque solutus sub reparet dicta, [longoque](http://et.org/).
+
+									 redundancyNocIsp = 6 - sample_dbms_resources.bridgeFile.pebibyte_web_dial(
+												web_active);
+									 if (xpCore(srgbDesktop) <= ip_webmaster_pup - mirrored_gigahertz) {
+										  laptopMetalHtml = script_virus_click - 2;
+										  google_compiler.gif_twitter_shell.yobibyte(unicodeRgbIntegrated);
+									 } else {
+										  hypertext_real_ray = 745726;
+									 }
+									 if (network_gigabit_mouse.thermistor(denialFull, honeypot_vpn_grep, token)
+												== 3) {
+										  multitasking = plugDns;
+										  commercialComponentIllegal = -1 + 13 - hoverRaidBurn + mysql;
+									 } else {
+										  volumeMedia.ospf.wRemoteSan(sqlCrossSerp, personal);
+									 }
+
+								## Gestu aequoris simul videritis adire
+
+								Illa constitit manibusque mihi et coniunx, fratrisque in obstas iussorum multi,
+								et tuum fumida opposita ferrumque. Tam sanguinis, opacae enim rauco ignibus
+								Ismariis mando *si corpus* regebat [iuventae de
+								senem](http://ligatis-somno.net/). Nisi clara!
+
+								> Videbat pudet gnatae, evomit lues: lucemque et coniunx opus. Namque quae potui
+								> tacuit suum eat se clamatque Saturnia, silva. Reccidit castra sic ab Iliades
+								> dammis tempore dumque, nec ego des divesque multi.
+
+								Videt corripit de humo vehit rudis poenas Rex, nisi utile dentibus
+								[flava](http://nuncsui.com/) loquentem fisso; duo subiere, ille! Non illi haec
+								lunae dolorque conditaque tunc, spinea nato vox et glaciali castique.
+
+								Prospicit erit crimina Amphitryoniaden thalamo. Interdum vixque, torrem passa
+								omnia fateri dea fragiles, sidera alter ponti omnia, **loqui**. Clara sibi
+								aversa posse dixerat vulnera lapides oblitus.
+
+								Fuerat bisque aevi petens Idaeo acta breve simulac centum thalamos [salus
+								Marte](http://aut.net/) agebatur recolligat de tremula circum. Diversas
+								coniunxque orabam explorant fertur corpus silvestribus profuit nostrumque
+								nutrimen excidit ratione carmina, et. Loci adit gerat, sponte si memorque
+								perenni insula avidae, posset, per. [Audet vates
+								cantibus](http://buxo.net/domos) et, carinae ferrum adflatuque adspexit imas.
+								# Poenamque bis quantum caput tutaeque rerum
+
+								## Unam sub stabat Marte
+
+								Lorem *markdownum vincula* quam, pollice creditur sciret Iovis: pariter, et
+								raptu amplexu memorabat **virum**. Inpellit ossibus transferre Adoni et dignus,
+								lapides inpetus paupertatemque supernum ore; aequoreae.
+
+									 if (snmpCellEbook + 5 < 2) {
+										  port = layoutDrag;
+									 } else {
+										  homeComputer = python;
+										  operating -= ieeeMountainNetbios;
+									 }
+									 webcamAnimated = webcamIscsiEmoticon.multi(guiSoft);
+									 var constant = apple_rw_scareware;
+									 boot_reimage_box(volumeConsoleHsf, vci, function);
+
+								Corpore cum, quod vale et olor adpropera calentes
+								[pectore](http://bisque-sed.io/) pulsa suo arbore inquit, sine magna milite
+								voluistis. Sanguine volubile fameque: mutua [ultro
+								tuum](http://ferorredigar.net/ambiguis-medius.html) quidquid iuvat cum
+								invictumque solutus sub reparet dicta, [longoque](http://et.org/).
+
+									 redundancyNocIsp = 6 - sample_dbms_resources.bridgeFile.pebibyte_web_dial(
+												web_active);
+									 if (xpCore(srgbDesktop) <= ip_webmaster_pup - mirrored_gigahertz) {
+										  laptopMetalHtml = script_virus_click - 2;
+										  google_compiler.gif_twitter_shell.yobibyte(unicodeRgbIntegrated);
+									 } else {
+										  hypertext_real_ray = 745726;
+									 }
+									 if (network_gigabit_mouse.thermistor(denialFull, honeypot_vpn_grep, token)
+												== 3) {
+										  multitasking = plugDns;
+										  commercialComponentIllegal = -1 + 13 - hoverRaidBurn + mysql;
+									 } else {
+										  volumeMedia.ospf.wRemoteSan(sqlCrossSerp, personal);
+									 }
+
+								## Gestu aequoris simul videritis adire
+
+								Illa constitit manibusque mihi et coniunx, fratrisque in obstas iussorum multi,
+								et tuum fumida opposita ferrumque. Tam sanguinis, opacae enim rauco ignibus
+								Ismariis mando *si corpus* regebat [iuventae de
+								senem](http://ligatis-somno.net/). Nisi clara!
+
+								> Videbat pudet gnatae, evomit lues: lucemque et coniunx opus. Namque quae potui
+								> tacuit suum eat se clamatque Saturnia, silva. Reccidit castra sic ab Iliades
+								> dammis tempore dumque, nec ego des divesque multi.
+
+								Videt corripit de humo vehit rudis poenas Rex, nisi utile dentibus
+								[flava](http://nuncsui.com/) loquentem fisso; duo subiere, ille! Non illi haec
+								lunae dolorque conditaque tunc, spinea nato vox et glaciali castique.
+
+								Prospicit erit crimina Amphitryoniaden thalamo. Interdum vixque, torrem passa
+								omnia fateri dea fragiles, sidera alter ponti omnia, **loqui**. Clara sibi
+								aversa posse dixerat vulnera lapides oblitus.
+
+								Fuerat bisque aevi petens Idaeo acta breve simulac centum thalamos [salus
+								Marte](http://aut.net/) agebatur recolligat de tremula circum. Diversas
+								coniunxque orabam explorant fertur corpus silvestribus profuit nostrumque
+								nutrimen excidit ratione carmina, et. Loci adit gerat, sponte si memorque
+								perenni insula avidae, posset, per. [Audet vates
+								cantibus](http://buxo.net/domos) et, carinae ferrum adflatuque adspexit imas.
+								# Poenamque bis quantum caput tutaeque rerum
+
+								## Unam sub stabat Marte
+
+								Lorem *markdownum vincula* quam, pollice creditur sciret Iovis: pariter, et
+								raptu amplexu memorabat **virum**. Inpellit ossibus transferre Adoni et dignus,
+								lapides inpetus paupertatemque supernum ore; aequoreae.
+
+									 if (snmpCellEbook + 5 < 2) {
+										  port = layoutDrag;
+									 } else {
+										  homeComputer = python;
+										  operating -= ieeeMountainNetbios;
+									 }
+									 webcamAnimated = webcamIscsiEmoticon.multi(guiSoft);
+									 var constant = apple_rw_scareware;
+									 boot_reimage_box(volumeConsoleHsf, vci, function);
+
+								Corpore cum, quod vale et olor adpropera calentes
+								[pectore](http://bisque-sed.io/) pulsa suo arbore inquit, sine magna milite
+								voluistis. Sanguine volubile fameque: mutua [ultro
+								tuum](http://ferorredigar.net/ambiguis-medius.html) quidquid iuvat cum
+								invictumque solutus sub reparet dicta, [longoque](http://et.org/).
+
+									 redundancyNocIsp = 6 - sample_dbms_resources.bridgeFile.pebibyte_web_dial(
+												web_active);
+									 if (xpCore(srgbDesktop) <= ip_webmaster_pup - mirrored_gigahertz) {
+										  laptopMetalHtml = script_virus_click - 2;
+										  google_compiler.gif_twitter_shell.yobibyte(unicodeRgbIntegrated);
+									 } else {
+										  hypertext_real_ray = 745726;
+									 }
+									 if (network_gigabit_mouse.thermistor(denialFull, honeypot_vpn_grep, token)
+												== 3) {
+										  multitasking = plugDns;
+										  commercialComponentIllegal = -1 + 13 - hoverRaidBurn + mysql;
+									 } else {
+										  volumeMedia.ospf.wRemoteSan(sqlCrossSerp, personal);
+									 }
+
+								## Gestu aequoris simul videritis adire
+
+								Illa constitit manibusque mihi et coniunx, fratrisque in obstas iussorum multi,
+								et tuum fumida opposita ferrumque. Tam sanguinis, opacae enim rauco ignibus
+								Ismariis mando *si corpus* regebat [iuventae de
+								senem](http://ligatis-somno.net/). Nisi clara!
+
+								> Videbat pudet gnatae, evomit lues: lucemque et coniunx opus. Namque quae potui
+								> tacuit suum eat se clamatque Saturnia, silva. Reccidit castra sic ab Iliades
+								> dammis tempore dumque, nec ego des divesque multi.
+
+								Videt corripit de humo vehit rudis poenas Rex, nisi utile dentibus
+								[flava](http://nuncsui.com/) loquentem fisso; duo subiere, ille! Non illi haec
+								lunae dolorque conditaque tunc, spinea nato vox et glaciali castique.
+
+								Prospicit erit crimina Amphitryoniaden thalamo. Interdum vixque, torrem passa
+								omnia fateri dea fragiles, sidera alter ponti omnia, **loqui**. Clara sibi
+								aversa posse dixerat vulnera lapides oblitus.
+
+								Fuerat bisque aevi petens Idaeo acta breve simulac centum thalamos [salus
+								Marte](http://aut.net/) agebatur recolligat de tremula circum. Diversas
+								coniunxque orabam explorant fertur corpus silvestribus profuit nostrumque
+								nutrimen excidit ratione carmina, et. Loci adit gerat, sponte si memorque
+								perenni insula avidae, posset, per. [Audet vates
+								cantibus](http://buxo.net/domos) et, carinae ferrum adflatuque adspexit imas.
+								# Poenamque bis quantum caput tutaeque rerum
+
+								## Unam sub stabat Marte
+
+								Lorem *markdownum vincula* quam, pollice creditur sciret Iovis: pariter, et
+								raptu amplexu memorabat **virum**. Inpellit ossibus transferre Adoni et dignus,
+								lapides inpetus paupertatemque supernum ore; aequoreae.
+
+									 if (snmpCellEbook + 5 < 2) {
+										  port = layoutDrag;
+									 } else {
+										  homeComputer = python;
+										  operating -= ieeeMountainNetbios;
+									 }
+									 webcamAnimated = webcamIscsiEmoticon.multi(guiSoft);
+									 var constant = apple_rw_scareware;
+									 boot_reimage_box(volumeConsoleHsf, vci, function);
+
+								Corpore cum, quod vale et olor adpropera calentes
+								[pectore](http://bisque-sed.io/) pulsa suo arbore inquit, sine magna milite
+								voluistis. Sanguine volubile fameque: mutua [ultro
+								tuum](http://ferorredigar.net/ambiguis-medius.html) quidquid iuvat cum
+								invictumque solutus sub reparet dicta, [longoque](http://et.org/).
+
+									 redundancyNocIsp = 6 - sample_dbms_resources.bridgeFile.pebibyte_web_dial(
+												web_active);
+									 if (xpCore(srgbDesktop) <= ip_webmaster_pup - mirrored_gigahertz) {
+										  laptopMetalHtml = script_virus_click - 2;
+										  google_compiler.gif_twitter_shell.yobibyte(unicodeRgbIntegrated);
+									 } else {
+										  hypertext_real_ray = 745726;
+									 }
+									 if (network_gigabit_mouse.thermistor(denialFull, honeypot_vpn_grep, token)
+												== 3) {
+										  multitasking = plugDns;
+										  commercialComponentIllegal = -1 + 13 - hoverRaidBurn + mysql;
+									 } else {
+										  volumeMedia.ospf.wRemoteSan(sqlCrossSerp, personal);
+									 }
+
+								## Gestu aequoris simul videritis adire
+
+								Illa constitit manibusque mihi et coniunx, fratrisque in obstas iussorum multi,
+								et tuum fumida opposita ferrumque. Tam sanguinis, opacae enim rauco ignibus
+								Ismariis mando *si corpus* regebat [iuventae de
+								senem](http://ligatis-somno.net/). Nisi clara!
+
+								> Videbat pudet gnatae, evomit lues: lucemque et coniunx opus. Namque quae potui
+								> tacuit suum eat se clamatque Saturnia, silva. Reccidit castra sic ab Iliades
+								> dammis tempore dumque, nec ego des divesque multi.
+
+								Videt corripit de humo vehit rudis poenas Rex, nisi utile dentibus
+								[flava](http://nuncsui.com/) loquentem fisso; duo subiere, ille! Non illi haec
+								lunae dolorque conditaque tunc, spinea nato vox et glaciali castique.
+
+								Prospicit erit crimina Amphitryoniaden thalamo. Interdum vixque, torrem passa
+								omnia fateri dea fragiles, sidera alter ponti omnia, **loqui**. Clara sibi
+								aversa posse dixerat vulnera lapides oblitus.
+
+								Fuerat bisque aevi petens Idaeo acta breve simulac centum thalamos [salus
+								Marte](http://aut.net/) agebatur recolligat de tremula circum. Diversas
+								coniunxque orabam explorant fertur corpus silvestribus profuit nostrumque
+								nutrimen excidit ratione carmina, et. Loci adit gerat, sponte si memorque
+								perenni insula avidae, posset, per. [Audet vates
+								cantibus](http://buxo.net/domos) et, carinae ferrum adflatuque adspexit imas.
+							`,
+							"category": "forensics",
+						},
+					},
+					expectStatus: http.StatusCreated,
+				},
+				{
+					name: "valid challenge",
+					request: testRequest{
+						method: "POST",
+						path:   "/v1/challenges",
 						body: map[string]string{
 							"name":     "Vulnaribilities number 1",
 							"content":  "This is a very powerful challenge that no one will be able to defeat",
@@ -438,10 +1049,23 @@ func TestChallengeWorkflow(t *testing.T) {
 					expectStatus: http.StatusCreated,
 				},
 				{
-					name: "create similar name challenge 2",
+					name: "new valid challenge with emoji name",
 					request: testRequest{
 						method: "POST",
-						path:   "/challenges",
+						path:   "/v1/challenges",
+						body: map[string]string{
+							"name":     "🚀挑战🔥",
+							"content":  "Recover the document",
+							"category": "forensics",
+						},
+					},
+					expectStatus: http.StatusCreated,
+				},
+				{
+					name: "new valid challenge",
+					request: testRequest{
+						method: "POST",
+						path:   "/v1/challenges",
 						body: map[string]string{
 							"name":     "Vulnaribilities number 2",
 							"content":  "This is a very powerful challenge that no one will be able to defeat",
@@ -451,10 +1075,10 @@ func TestChallengeWorkflow(t *testing.T) {
 					expectStatus: http.StatusCreated,
 				},
 				{
-					name: "create similar name challenge 3",
+					name: "new valid challenge",
 					request: testRequest{
 						method: "POST",
-						path:   "/challenges",
+						path:   "/v1/challenges",
 						body: map[string]string{
 							"name":     "Vulnaribilities number 3",
 							"content":  "This is a very powerful challenge that no one will be able to defeat",
@@ -464,10 +1088,10 @@ func TestChallengeWorkflow(t *testing.T) {
 					expectStatus: http.StatusCreated,
 				},
 				{
-					name: "create reverse engineering challenge 1",
+					name: "new valid challenge",
 					request: testRequest{
 						method: "POST",
-						path:   "/challenges",
+						path:   "/v1/challenges",
 						body: map[string]string{
 							"name":     "Crackme v1",
 							"content":  "Reverse this binary",
@@ -477,10 +1101,10 @@ func TestChallengeWorkflow(t *testing.T) {
 					expectStatus: http.StatusCreated,
 				},
 				{
-					name: "create crypto challenge 1",
+					name: "new valid challenge",
 					request: testRequest{
 						method: "POST",
-						path:   "/challenges",
+						path:   "/v1/challenges",
 						body: map[string]string{
 							"name":     "Weak RSA",
 							"content":  "Break this RSA",
@@ -490,10 +1114,10 @@ func TestChallengeWorkflow(t *testing.T) {
 					expectStatus: http.StatusCreated,
 				},
 				{
-					name: "create forensics challenge 1",
+					name: "new valid challenge",
 					request: testRequest{
 						method: "POST",
-						path:   "/challenges",
+						path:   "/v1/challenges",
 						body: map[string]string{
 							"name":     "Deleted Files 1",
 							"content":  "Recover the document",
@@ -504,10 +1128,10 @@ func TestChallengeWorkflow(t *testing.T) {
 				},
 
 				{
-					name: "create forensics challenge 2",
+					name: "new valid challenge",
 					request: testRequest{
 						method: "POST",
-						path:   "/challenges",
+						path:   "/v1/challenges",
 						body: map[string]string{
 							"name":     "Deleted Files 2",
 							"content":  "Recover the document",
@@ -517,10 +1141,10 @@ func TestChallengeWorkflow(t *testing.T) {
 					expectStatus: http.StatusCreated,
 				},
 				{
-					name: "create forensics challenge 3",
+					name: "new valid challenge",
 					request: testRequest{
 						method: "POST",
-						path:   "/challenges",
+						path:   "/v1/challenges",
 						body: map[string]string{
 							"name":     "Deleted Files 3",
 							"content":  "Recover the document",
@@ -531,10 +1155,10 @@ func TestChallengeWorkflow(t *testing.T) {
 				},
 
 				{
-					name: "create forensics challenge 4",
+					name: "new valid challenge",
 					request: testRequest{
 						method: "POST",
-						path:   "/challenges",
+						path:   "/v1/challenges",
 						body: map[string]string{
 							"name":     "Deleted Files 4",
 							"content":  "Recover the document",
@@ -544,10 +1168,10 @@ func TestChallengeWorkflow(t *testing.T) {
 					expectStatus: http.StatusCreated,
 				},
 				{
-					name: "create forensics challenge 5",
+					name: "new valid challenge",
 					request: testRequest{
 						method: "POST",
-						path:   "/challenges",
+						path:   "/v1/challenges",
 						body: map[string]string{
 							"name":     "Deleted Files 5",
 							"content":  "Recover the document",
@@ -557,10 +1181,10 @@ func TestChallengeWorkflow(t *testing.T) {
 					expectStatus: http.StatusCreated,
 				},
 				{
-					name: "create forensics challenge 6",
+					name: "new valid challenge",
 					request: testRequest{
 						method: "POST",
-						path:   "/challenges",
+						path:   "/v1/challenges",
 						body: map[string]string{
 							"name":     "Deleted Files 6",
 							"content":  "Recover the document",
@@ -570,10 +1194,10 @@ func TestChallengeWorkflow(t *testing.T) {
 					expectStatus: http.StatusCreated,
 				},
 				{
-					name: "create forensics challenge 7",
+					name: "new valid challenge",
 					request: testRequest{
 						method: "POST",
-						path:   "/challenges",
+						path:   "/v1/challenges",
 						body: map[string]string{
 							"name":     "Deleted Files 7",
 							"content":  "Recover the document",
@@ -583,23 +1207,10 @@ func TestChallengeWorkflow(t *testing.T) {
 					expectStatus: http.StatusCreated,
 				},
 				{
-					name: "create forensics challenge 8",
+					name: "new valid challenge",
 					request: testRequest{
 						method: "POST",
-						path:   "/challenges",
-						body: map[string]string{
-							"name":     "Deleted Files 8",
-							"content":  "Recover the document",
-							"category": "forensics",
-						},
-					},
-					expectStatus: http.StatusCreated,
-				},
-				{
-					name: "create forensics challenge 9",
-					request: testRequest{
-						method: "POST",
-						path:   "/challenges",
+						path:   "/v1/challenges",
 						body: map[string]string{
 							"name":     "Deleted Files 9",
 							"content":  "Recover the document",
@@ -609,10 +1220,10 @@ func TestChallengeWorkflow(t *testing.T) {
 					expectStatus: http.StatusCreated,
 				},
 				{
-					name: "create forensics challenge 10",
+					name: "new valid challenge",
 					request: testRequest{
 						method: "POST",
-						path:   "/challenges",
+						path:   "/v1/challenges",
 						body: map[string]string{
 							"name":     "Deleted Files 10",
 							"content":  "Recover the document",
@@ -623,10 +1234,10 @@ func TestChallengeWorkflow(t *testing.T) {
 				},
 
 				{
-					name: "create forensics challenge 11",
+					name: "new valid challenge",
 					request: testRequest{
 						method: "POST",
-						path:   "/challenges",
+						path:   "/v1/challenges",
 						body: map[string]string{
 							"name":     "Deleted Files 11",
 							"content":  "Recover the document",
@@ -636,10 +1247,10 @@ func TestChallengeWorkflow(t *testing.T) {
 					expectStatus: http.StatusCreated,
 				},
 				{
-					name: "create web hacking challenge 2",
+					name: "new valid challenge",
 					request: testRequest{
 						method: "POST",
-						path:   "/challenges",
+						path:   "/v1/challenges",
 						body: map[string]string{
 							"name":     "SQL Injection",
 							"content":  "Bypass login",
@@ -649,10 +1260,10 @@ func TestChallengeWorkflow(t *testing.T) {
 					expectStatus: http.StatusCreated,
 				},
 				{
-					name: "create embedded hacking challenge 2",
+					name: "new valid challenge",
 					request: testRequest{
 						method: "POST",
-						path:   "/challenges",
+						path:   "/v1/challenges",
 						body: map[string]string{
 							"name":     "IoT Backdoor",
 							"content":  "Find the backdoor",
@@ -662,10 +1273,10 @@ func TestChallengeWorkflow(t *testing.T) {
 					expectStatus: http.StatusCreated,
 				},
 				{
-					name: "create reverse engineering challenge 2",
+					name: "new valid challenge",
 					request: testRequest{
 						method: "POST",
-						path:   "/challenges",
+						path:   "/v1/challenges",
 						body: map[string]string{
 							"name":     "Anti-Debug",
 							"content":  "Bypass protections",
@@ -675,120 +1286,32 @@ func TestChallengeWorkflow(t *testing.T) {
 					expectStatus: http.StatusCreated,
 				},
 				{
-					name: "verify challenge appears in list",
+					name: "duplicate challenge name",
 					request: testRequest{
-						method: "GET",
-						path:   "/challenges?pageSize=99999",
+						method: "POST",
+						path:   "/v1/challenges",
+						body: map[string]string{
+							"name": "Vulnaribilities number 1",
+						},
 					},
-					expectStatus: http.StatusOK,
-					validate: func(t *testing.T, body []byte) {
-						var parsed map[string]any
-						if err := json.Unmarshal(body, &parsed); err != nil {
-							t.Fatalf("Failed to parse response: %v", err)
-						}
-
-						data, ok := parsed["data"].([]any)
-						if !ok {
-							t.Fatalf(`Expected "data" to be a list, got: %#v`, parsed["data"])
-						}
-						expectedName := "Vulnaribilities number 1"
-						expectedCategory := "web hacking"
-						expectedUser := "Richard Hoa"
-						expectedContent := "This is a very powerful challenge that no one will be able to defeat"
-
-						found := false
-						for _, item := range data {
-							challenge, ok := item.(map[string]any)
-							if !ok {
-								continue
-							}
-
-							if challenge["name"] == expectedName &&
-								challenge["category"] == expectedCategory &&
-								challenge["userName"] == expectedUser &&
-								challenge["content"] == expectedContent {
-								found = true
-								break
-							}
-						}
-
-						if !found {
-							t.Errorf("Expected challenge not found: name=%q, category=%q, userName=%q", expectedName, expectedCategory, expectedUser)
-						}
-					},
+					expectStatus: http.StatusBadRequest,
 				},
 				{
-					name: "verify exact name search",
+					name: "duplicate challenge name(case-insensitive)",
 					request: testRequest{
-						method: "GET",
-						path:   fmt.Sprintf("/challenges?exactName=%s", url.QueryEscape("Vulnaribilities number 1")),
+						method: "POST",
+						path:   "/v1/challenges",
+						body: map[string]string{
+							"name": "VulNaRiBiliTiES nUmBer 1",
+						},
 					},
-					expectStatus: http.StatusOK,
-					validate: func(t *testing.T, body []byte) {
-						var parsed map[string]any
-						if err := json.Unmarshal(body, &parsed); err != nil {
-							t.Fatalf("Failed to parse response: %v", err)
-						}
-
-						data, ok := parsed["data"].([]any)
-						if !ok {
-							t.Fatalf(`Expected "data" to be a list, got: %#v`, parsed["data"])
-						}
-						expectedName := "Vulnaribilities number 1"
-						expectedCategory := "web hacking"
-						expectedUser := "Richard Hoa"
-						expectedContent := "This is a very powerful challenge that no one will be able to defeat"
-
-						found := false
-						for _, item := range data {
-							challenge, ok := item.(map[string]any)
-							if !ok {
-								continue
-							}
-
-							if challenge["name"] == expectedName &&
-								challenge["category"] == expectedCategory &&
-								challenge["userName"] == expectedUser &&
-								challenge["content"] == expectedContent {
-								found = true
-								break
-							}
-						}
-
-						if !found {
-							t.Errorf("Expected challenge not found: name=%q, category=%q, userName=%q", expectedName, expectedCategory, expectedUser)
-						}
-					},
-				},
-				{
-					name: "Verify generic name",
-					request: testRequest{
-						method: "GET",
-						path:   fmt.Sprintf("/challenges?name=%s", url.QueryEscape("Vulnaribilities number")),
-					},
-					expectStatus: http.StatusOK,
-					validate: func(t *testing.T, body []byte) {
-						var parsed map[string]any
-						if err := json.Unmarshal(body, &parsed); err != nil {
-							t.Fatalf("Failed to parse response: %v", err)
-						}
-
-						data, ok := parsed["data"].([]any)
-						if !ok {
-							t.Fatalf(`Expected "data" to be a list, got: %#v`, parsed["data"])
-						}
-
-						if len(data) != 3 {
-							t.Fatalf("Expected 3 element but we get %v", data)
-						}
-
-					},
+					expectStatus: http.StatusBadRequest,
 				},
 				{
 					name: "Modify challenge",
 					request: testRequest{
 						method: "PUT",
-						path:   "/challenges",
+						path:   "/v1/challenges",
 						body: map[string]string{
 							"oldName":  "Deleted Files 2",
 							"name":     "New-Deleted-Files-2",
@@ -802,7 +1325,7 @@ func TestChallengeWorkflow(t *testing.T) {
 					name: "Verify the challenge has been modified",
 					request: testRequest{
 						method: "GET",
-						path:   fmt.Sprintf("/challenges?exactName=%s", url.QueryEscape("New-Deleted-Files-2")),
+						path:   fmt.Sprintf("/v1/challenges?exactName=%s", url.QueryEscape("New-Deleted-Files-2")),
 					},
 					expectStatus: http.StatusOK,
 					validate: func(t *testing.T, body []byte) {
@@ -842,10 +1365,10 @@ func TestChallengeWorkflow(t *testing.T) {
 					},
 				},
 				{
-					name: "Modify challenge name only",
+					name: "Modify challenge name",
 					request: testRequest{
 						method: "PUT",
-						path:   "/challenges",
+						path:   "/v1/challenges",
 						body: map[string]string{
 							"oldName": "New-Deleted-Files-2",
 							"name":    "Updated-Name-Only",
@@ -854,10 +1377,10 @@ func TestChallengeWorkflow(t *testing.T) {
 					expectStatus: http.StatusOK,
 				},
 				{
-					name: "Verify challenge name was modified",
+					name: "Verify the challenge has been modified",
 					request: testRequest{
 						method: "GET",
-						path:   fmt.Sprintf("/challenges?exactName=%s", url.QueryEscape("Updated-Name-Only")),
+						path:   fmt.Sprintf("/v1/challenges?exactName=%s", url.QueryEscape("Updated-Name-Only")),
 					},
 					expectStatus: http.StatusOK,
 					validate: func(t *testing.T, body []byte) {
@@ -876,10 +1399,10 @@ func TestChallengeWorkflow(t *testing.T) {
 					},
 				},
 				{
-					name: "Modify challenge content only",
+					name: "Modify challenge content",
 					request: testRequest{
 						method: "PUT",
-						path:   "/challenges",
+						path:   "/v1/challenges",
 						body: map[string]string{
 							"oldName": "Updated-Name-Only",
 							"content": "Updated content only",
@@ -888,10 +1411,10 @@ func TestChallengeWorkflow(t *testing.T) {
 					expectStatus: http.StatusOK,
 				},
 				{
-					name: "Verify challenge content was modified",
+					name: "Verify the challenge has been modified",
 					request: testRequest{
 						method: "GET",
-						path:   fmt.Sprintf("/challenges?exactName=%s", url.QueryEscape("Updated-Name-Only")),
+						path:   fmt.Sprintf("/v1/challenges?exactName=%s", url.QueryEscape("Updated-Name-Only")),
 					},
 					expectStatus: http.StatusOK,
 					validate: func(t *testing.T, body []byte) {
@@ -910,10 +1433,10 @@ func TestChallengeWorkflow(t *testing.T) {
 					},
 				},
 				{
-					name: "Modify challenge category only",
+					name: "Modify challenge category",
 					request: testRequest{
 						method: "PUT",
-						path:   "/challenges",
+						path:   "/v1/challenges",
 						body: map[string]string{
 							"oldName":  "Updated-Name-Only",
 							"category": "embedded hacking",
@@ -922,10 +1445,10 @@ func TestChallengeWorkflow(t *testing.T) {
 					expectStatus: http.StatusOK,
 				},
 				{
-					name: "Verify challenge category was modified",
+					name: "Verify the challenge has been modified",
 					request: testRequest{
 						method: "GET",
-						path:   fmt.Sprintf("/challenges?exactName=%s", url.QueryEscape("Updated-Name-Only")),
+						path:   fmt.Sprintf("/v1/challenges?exactName=%s", url.QueryEscape("Updated-Name-Only")),
 					},
 					expectStatus: http.StatusOK,
 					validate: func(t *testing.T, body []byte) {
@@ -944,10 +1467,10 @@ func TestChallengeWorkflow(t *testing.T) {
 					},
 				},
 				{
-					name: "Cannot modify challenge that user does not own",
+					name: "Modify challenge user does not own",
 					request: testRequest{
 						method: "PUT",
-						path:   "/challenges",
+						path:   "/v1/challenges",
 						body: map[string]string{
 							// this old name does not belong to current user
 							"oldName": "XSS Lab",
@@ -957,10 +1480,38 @@ func TestChallengeWorkflow(t *testing.T) {
 					expectStatus: http.StatusUnauthorized,
 				},
 				{
-					name: "Cannot modify challenge that has no parameter",
+					name: "Modify challenge name that does not eixst",
 					request: testRequest{
 						method: "PUT",
-						path:   "/challenges",
+						path:   "/v1/challenges",
+						body: map[string]string{
+							"oldName":  "Updated-Name-Only",
+							"name":     "IoT Backdoor",
+							"category": "",
+							"content":  "",
+						},
+					},
+					expectStatus: http.StatusBadRequest,
+				},
+				{
+					name: "Modify challenge name that does not eixst(case-insensitive)",
+					request: testRequest{
+						method: "PUT",
+						path:   "/v1/challenges",
+						body: map[string]string{
+							"oldName":  "updated-naMe-only",
+							"name":     "IoT Backdoor",
+							"category": "",
+							"content":  "",
+						},
+					},
+					expectStatus: http.StatusBadRequest,
+				},
+				{
+					name: "No paramter",
+					request: testRequest{
+						method: "PUT",
+						path:   "/v1/challenges",
 						body: map[string]string{
 							// this old name is valid
 							"oldName":  "Updated-Name-Only",
@@ -972,24 +1523,10 @@ func TestChallengeWorkflow(t *testing.T) {
 					expectStatus: http.StatusBadRequest,
 				},
 				{
-					name: "Cannot modify challenge name to name that already exist",
+					name: "no oldName",
 					request: testRequest{
 						method: "PUT",
-						path:   "/challenges",
-						body: map[string]string{
-							"oldName":  "Updated-Name-Only",
-							"name":     "IoT Backdoor",
-							"category": "",
-							"content":  "",
-						},
-					},
-					expectStatus: http.StatusBadRequest,
-				},
-				{
-					name: "Cannot modify challenge without oldName",
-					request: testRequest{
-						method: "PUT",
-						path:   "/challenges",
+						path:   "/v1/challenges",
 						body: map[string]string{
 							"oldName":  "",
 							"name":     "New name",
@@ -999,12 +1536,78 @@ func TestChallengeWorkflow(t *testing.T) {
 					},
 					expectStatus: http.StatusBadRequest,
 				},
-
 				{
-					name: "Verify valid category",
+					name: "Exact name search",
 					request: testRequest{
 						method: "GET",
-						path:   fmt.Sprintf("/challenges?category=%s", url.QueryEscape("reverse engineering")),
+						path:   fmt.Sprintf("/v1/challenges?exactName=%s", url.QueryEscape("Vulnaribilities number 1")),
+					},
+					expectStatus: http.StatusOK,
+					validate: func(t *testing.T, body []byte) {
+						var parsed map[string]any
+						if err := json.Unmarshal(body, &parsed); err != nil {
+							t.Fatalf("Failed to parse response: %v", err)
+						}
+
+						data, ok := parsed["data"].([]any)
+						if !ok {
+							t.Fatalf(`Expected "data" to be a list, got: %#v`, parsed["data"])
+						}
+						expectedName := "Vulnaribilities number 1"
+						expectedCategory := "web hacking"
+						expectedUser := "Richard Hoa"
+						expectedContent := "This is a very powerful challenge that no one will be able to defeat"
+
+						found := false
+						for _, item := range data {
+							challenge, ok := item.(map[string]any)
+							if !ok {
+								continue
+							}
+
+							if challenge["name"] == expectedName &&
+								challenge["category"] == expectedCategory &&
+								challenge["userName"] == expectedUser &&
+								challenge["content"] == expectedContent {
+								found = true
+								break
+							}
+						}
+
+						if !found {
+							t.Errorf("Expected challenge not found: name=%q, category=%q, userName=%q", expectedName, expectedCategory, expectedUser)
+						}
+					},
+				},
+				{
+					name: "Generic name search",
+					request: testRequest{
+						method: "GET",
+						path:   fmt.Sprintf("/v1/challenges?name=%s", url.QueryEscape("Vulnaribilities number")),
+					},
+					expectStatus: http.StatusOK,
+					validate: func(t *testing.T, body []byte) {
+						var parsed map[string]any
+						if err := json.Unmarshal(body, &parsed); err != nil {
+							t.Fatalf("Failed to parse response: %v", err)
+						}
+
+						data, ok := parsed["data"].([]any)
+						if !ok {
+							t.Fatalf(`Expected "data" to be a list, got: %#v`, parsed["data"])
+						}
+
+						if len(data) != 3 {
+							t.Fatalf("Expected 3 element but we get %v", data)
+						}
+
+					},
+				},
+				{
+					name: "Query valid category",
+					request: testRequest{
+						method: "GET",
+						path:   fmt.Sprintf("/v1/challenges?category=%s", url.QueryEscape("reverse engineering")),
 					},
 					expectStatus: http.StatusOK,
 					validate: func(t *testing.T, body []byte) {
@@ -1025,10 +1628,10 @@ func TestChallengeWorkflow(t *testing.T) {
 					},
 				},
 				{
-					name: "Verify invalid category",
+					name: "Query invalid category",
 					request: testRequest{
 						method: "GET",
-						path:   fmt.Sprintf("/challenges?category=%s", url.QueryEscape("invalid category")),
+						path:   fmt.Sprintf("/v1/challenges?category=%s", url.QueryEscape("invalid category")),
 					},
 					expectStatus: http.StatusOK,
 					validate: func(t *testing.T, body []byte) {
@@ -1047,10 +1650,10 @@ func TestChallengeWorkflow(t *testing.T) {
 				},
 
 				{
-					name: "Setting even pageSize",
+					name: "Query even pageSize",
 					request: testRequest{
 						method: "GET",
-						path:   "/challenges?pageSize=2",
+						path:   "/v1/challenges?pageSize=2",
 					},
 					expectStatus: http.StatusOK,
 					validate: func(t *testing.T, body []byte) {
@@ -1081,10 +1684,10 @@ func TestChallengeWorkflow(t *testing.T) {
 					},
 				},
 				{
-					name: "Setting even pageSize and specific page",
+					name: "Query even pageSize and specific page",
 					request: testRequest{
 						method: "GET",
-						path:   "/challenges?pageSize=2&page=2",
+						path:   "/v1/challenges?pageSize=2&page=2",
 					},
 					expectStatus: http.StatusOK,
 					validate: func(t *testing.T, body []byte) {
@@ -1115,10 +1718,10 @@ func TestChallengeWorkflow(t *testing.T) {
 					},
 				},
 				{
-					name: "Verify setting odd pageSize",
+					name: "Query odd pageSize",
 					request: testRequest{
 						method: "GET",
-						path:   "/challenges?pageSize=3",
+						path:   "/v1/challenges?pageSize=3",
 					},
 					expectStatus: http.StatusOK,
 					validate: func(t *testing.T, body []byte) {
@@ -1149,10 +1752,10 @@ func TestChallengeWorkflow(t *testing.T) {
 					},
 				},
 				{
-					name: "Verify setting odd pageSize and page",
+					name: "Query odd pageSize and page",
 					request: testRequest{
 						method: "GET",
-						path:   "/challenges?pageSize=3&page=2",
+						path:   "/v1/challenges?pageSize=3&page=2",
 					},
 					expectStatus: http.StatusOK,
 					validate: func(t *testing.T, body []byte) {
@@ -1184,51 +1787,51 @@ func TestChallengeWorkflow(t *testing.T) {
 				},
 
 				{
-					name: "Verify setting negative pageSize",
+					name: "Query negative pageSize",
 					request: testRequest{
 						method: "GET",
-						path:   "/challenges?pageSize=-2",
+						path:   "/v1/challenges?pageSize=-2",
 					},
 					expectStatus: http.StatusBadRequest,
 				},
 
 				{
-					name: "Verify setting 0 pageSize",
+					name: "Query 0 pageSize",
 					request: testRequest{
 						method: "GET",
-						path:   "/challenges?pageSize=0",
+						path:   "/v1/challenges?pageSize=0",
 					},
 					expectStatus: http.StatusBadRequest,
 				},
 				{
-					name: "Verify setting negative page",
+					name: "Query negative page",
 					request: testRequest{
 						method: "GET",
-						path:   "/challenges?page=-10",
+						path:   "/v1/challenges?page=-10",
 					},
 					expectStatus: http.StatusBadRequest,
 				},
 				{
-					name: "Verify setting 0 page",
+					name: "Query 0 page",
 					request: testRequest{
 						method: "GET",
-						path:   "/challenges?page=0",
+						path:   "/v1/challenges?page=0",
 					},
 					expectStatus: http.StatusBadRequest,
 				},
 				{
-					name: "Verify setting invalid page and pagaSize",
+					name: "Query invalid page and pagaSize",
 					request: testRequest{
 						method: "GET",
-						path:   "/challenges?page=0&pageSize=0",
+						path:   "/v1/challenges?page=0&pageSize=0",
 					},
 					expectStatus: http.StatusBadRequest,
 				},
 				{
-					name: "Delete challenge",
+					name: "Delete challenge that user own",
 					request: testRequest{
 						method: "DELETE",
-						path:   "/challenges",
+						path:   "/v1/challenges",
 						body: map[string]string{
 							"name": "Updated-Name-Only",
 						},
@@ -1239,7 +1842,7 @@ func TestChallengeWorkflow(t *testing.T) {
 					name: "Verify challenge has been deleted",
 					request: testRequest{
 						method: "GET",
-						path:   fmt.Sprintf("/challenges?exactName=%s", url.QueryEscape("Updated-Name-Only")),
+						path:   fmt.Sprintf("/v1/challenges?exactName=%s", url.QueryEscape("Updated-Name-Only")),
 					},
 					expectStatus: http.StatusOK,
 					validate: func(t *testing.T, body []byte) {
@@ -1254,10 +1857,10 @@ func TestChallengeWorkflow(t *testing.T) {
 					},
 				},
 				{
-					name: "Cannot delete challenge that user does not own",
+					name: "challenge that user does not own",
 					request: testRequest{
 						method: "DELETE",
-						path:   "/challenges",
+						path:   "/v1/challenges",
 						body: map[string]string{
 							"name": "XSS Lab",
 						},
@@ -1265,10 +1868,10 @@ func TestChallengeWorkflow(t *testing.T) {
 					expectStatus: http.StatusUnauthorized,
 				},
 				{
-					name: "Cannot delete challenge that does not exist",
+					name: "challenge name that does not exist",
 					request: testRequest{
 						method: "DELETE",
-						path:   "/challenges",
+						path:   "/v1/challenges",
 						body: map[string]string{
 							"name": "random challenge name that definitely do not exist in this test",
 						},
@@ -1276,19 +1879,19 @@ func TestChallengeWorkflow(t *testing.T) {
 					expectStatus: http.StatusUnauthorized,
 				},
 				{
-					name: "Cannot delete challenge that without name parameter",
+					name: "no body parameter",
 					request: testRequest{
 						method: "DELETE",
-						path:   "/challenges",
+						path:   "/v1/challenges",
 						body:   map[string]string{},
 					},
 					expectStatus: http.StatusBadRequest,
 				},
 				{
-					name: "Cannot delete challenge that with name empty string",
+					name: "challenge name is empty string",
 					request: testRequest{
 						method: "DELETE",
-						path:   "/challenges",
+						path:   "/v1/challenges",
 						body:   map[string]string{"name": " "},
 					},
 					expectStatus: http.StatusUnauthorized,
@@ -1297,18 +1900,15 @@ func TestChallengeWorkflow(t *testing.T) {
 		},
 	}
 
+	test := tests[0]
 	// Run test cases
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			for i, step := range tt.steps {
-				t.Run(fmt.Sprintf("step-%d-%s", i+1, step.name), func(t *testing.T) {
-					body := makeRequestAndExpectStatus(t, client, step.request.method, server.URL+step.request.path, step.request.body, step.expectStatus)
+	for _, step := range test.steps {
+		t.Run(fmt.Sprintf("%s-%s-%d-%s", step.request.method, step.request.path, step.expectStatus, step.name), func(t *testing.T) {
+			body := makeRequestAndExpectStatus(t, client, step.request.method, server.URL+step.request.path, step.request.body, step.expectStatus)
 
-					// Run custom validation if provided
-					if step.validate != nil {
-						step.validate(t, body)
-					}
-				})
+			// Run custom validation if provided
+			if step.validate != nil {
+				step.validate(t, body)
 			}
 		})
 	}

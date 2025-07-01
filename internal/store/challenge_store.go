@@ -248,6 +248,21 @@ func (challengeStore *DBChallengeStore) ModifyChallenge(updatedChallenge PutChal
 		query += fmt.Sprintf("name = $%d, ", paramCount)
 		params = append(params, updatedChallenge.Name)
 		paramCount++
+
+		var count int
+		err := challengeStore.DB.QueryRow(`
+			SELECT COUNT(*) FROM challenge 
+			 WHERE lower(name) = lower($1)
+			`, updatedChallenge.Name).Scan(&count)
+
+		if err != nil {
+			return utils.NewCustomAppError(constants.InternalError, fmt.Sprintf("check name conflict failed: %v", err))
+		}
+
+		if count > 0 {
+			return utils.NewCustomAppError(constants.InvalidData, "challenge name already exists")
+		}
+
 	}
 
 	if updatedChallenge.Category != "" {
@@ -274,6 +289,7 @@ func (challengeStore *DBChallengeStore) ModifyChallenge(updatedChallenge PutChal
 	query += fmt.Sprintf(", updated_at = now() WHERE name = $%d AND user_id = $%d", paramCount, paramCount+1)
 	params = append(params, updatedChallenge.OldName, updatedChallenge.UserID)
 
+	fmt.Printf("query: %v, params: %v", query, params)
 	// Execute the update
 	result, err := challengeStore.DB.Exec(query, params...)
 	if err != nil {
@@ -286,7 +302,7 @@ func (challengeStore *DBChallengeStore) ModifyChallenge(updatedChallenge PutChal
 	}
 
 	if rowsAffected == 0 {
-		return utils.NewCustomAppError(constants.LackingPermission, "challenge not found or the user don't have permission to modify it")
+		return utils.NewCustomAppError(constants.LackingPermission, "user does not have permission to modify the challenge")
 	}
 
 	return nil

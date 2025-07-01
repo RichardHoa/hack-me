@@ -28,6 +28,8 @@ CREATE TABLE IF NOT EXISTS challenge (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+-- make sure name is case-insensitive unique
+CREATE UNIQUE INDEX unique_name_lower ON challenge (lower(name));
 
 -- Insert test data
 INSERT INTO challenge (name, content, category, popular_score, user_id)
