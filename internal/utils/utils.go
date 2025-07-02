@@ -2,8 +2,12 @@ package utils
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
+	"reflect"
+
+	"github.com/RichardHoa/hack-me/internal/constants"
 )
 
 type Message map[string]interface{}
@@ -42,6 +46,34 @@ func WriteJSON(w http.ResponseWriter, statusCode int, data Message) error {
 	w.WriteHeader(statusCode)
 
 	w.Write(jsonBytes)
+
+	return nil
+}
+
+func ValidateJSONFieldsNotEmpty(w http.ResponseWriter, input interface{}) error {
+	v := reflect.ValueOf(input)
+	if v.Kind() == reflect.Ptr {
+		v = v.Elem()
+	}
+	t := v.Type()
+
+	for i := 0; i < v.NumField(); i++ {
+		field := t.Field(i)
+		jsonTag := field.Tag.Get("json")
+		if jsonTag == "" || jsonTag == "-" {
+			continue
+		}
+
+		val := v.Field(i)
+		if val.Kind() == reflect.String && val.String() == "" {
+			WriteJSON(w, http.StatusBadRequest, NewMessage(
+				fmt.Sprintf("field '%s' is required and cannot be empty", jsonTag),
+				constants.MSG_LACKING_MANDATORY_FIELDS,
+				jsonTag,
+			))
+			return errors.New("Lacking required field")
+		}
+	}
 
 	return nil
 }

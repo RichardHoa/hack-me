@@ -113,8 +113,8 @@ func (handler *ChallengeHandler) PostChallenge(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	if req.Content == "" || req.Category == "" || req.Name == "" {
-		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("content, category, name must exist", constants.MSG_LACKING_MANDATORY_FIELDS, "content and category and name"))
+	err = utils.ValidateJSONFieldsNotEmpty(w, req)
+	if err != nil {
 		return
 	}
 
@@ -173,8 +173,8 @@ func (handler *ChallengeHandler) DeleteChallege(w http.ResponseWriter, r *http.R
 		return
 	}
 
-	if req.Name == "" {
-		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("name cannot be empty", constants.MSG_MALFORMED_REQUEST_DATA, "name"))
+	err = utils.ValidateJSONFieldsNotEmpty(w, req)
+	if err != nil {
 		return
 	}
 

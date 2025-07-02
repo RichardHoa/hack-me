@@ -17,7 +17,6 @@ CREATE TABLE IF NOT EXISTS "user" (
       github_id IS NOT NULL
     )
 );
-
 INSERT INTO "user" (id, username, email, image_link, password, google_id, github_id)
 VALUES
     ('d45aef9f-3a34-45f1-a55c-7c1d668aa8d0', 'alice', 'alice@example.com', 'https://example.com/avatar1.png', 'hashed_password_1', 'google-111','github-111'),

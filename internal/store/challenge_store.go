@@ -39,6 +39,7 @@ type PutChallengeRequest struct {
 }
 
 type Challenge struct {
+	ID        string    `json:"ID"`
 	UserID    string    `json:"-"`
 	UserName  string    `json:"userName"`
 	Name      string    `json:"name"`
@@ -74,6 +75,7 @@ type ChallengeStore interface {
 func (challengeStore *DBChallengeStore) GetChallenges(freeQuery ChallengeFreeQuery) (challenges Challenges, metaPage MetaDataPage, err error) {
 	baseQuery := `
 		SELECT 
+			c.id,
 			c.name, 
 			c.category,
 			c.content, 
@@ -172,7 +174,7 @@ func (challengeStore *DBChallengeStore) GetChallenges(freeQuery ChallengeFreeQue
 
 	for rows.Next() {
 		var c Challenge
-		err := rows.Scan(&c.Name, &c.Category, &c.Content, &c.CreatedAt, &c.UpdatedAt, &c.UserName)
+		err := rows.Scan(&c.ID, &c.Name, &c.Category, &c.Content, &c.CreatedAt, &c.UpdatedAt, &c.UserName)
 		if err != nil {
 			return nil, MetaDataPage{}, err
 		}

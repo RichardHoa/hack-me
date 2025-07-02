@@ -29,9 +29,16 @@ func SetUpRoutes(app *app.Application) *chi.Mux {
 		outerRouter.Route("/challenges", func(r chi.Router) {
 			// GET /challenges?popularity=asc|desc&category=cat1&category=cat2&name=searchTerm
 			r.Get("/", app.ChallengeHandler.GetChallenges)
-			r.Post("/", app.Middleware.RequireCSRFToken(app.ChallengeHandler.PostChallenge))
-			r.Put("/", app.Middleware.RequireCSRFToken(app.ChallengeHandler.ModifyChallenge))
-			r.Delete("/", app.Middleware.RequireCSRFToken(app.ChallengeHandler.DeleteChallege))
+			r.Post("/", (app.ChallengeHandler.PostChallenge))
+			r.Put("/", (app.ChallengeHandler.ModifyChallenge))
+			r.Delete("/", (app.ChallengeHandler.DeleteChallege))
+
+			r.Route("/response", func(innerRouter chi.Router) {
+				innerRouter.Post("/", app.ChallengeResponseHandler.PostChallengeResponse)
+				innerRouter.Put("/", app.ChallengeResponseHandler.ModifyChallengeResponse)
+				innerRouter.Delete("/", app.ChallengeResponseHandler.DeleteChallengeResponse)
+
+			})
 
 		})
 
