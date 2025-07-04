@@ -90,7 +90,7 @@ func (handler *ChallengeResponseHandler) ModifyChallengeResponse(w http.Response
 		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("challengeResponseID must exist", constants.MSG_LACKING_MANDATORY_FIELDS, "challengeResponseID"))
 	}
 
-	if req.Name == "" && req.Content == "" {
+	if req.Name == "" || req.Content == "" {
 		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("name or content field must exist", constants.MSG_LACKING_MANDATORY_FIELDS, "name, content"))
 	}
 
