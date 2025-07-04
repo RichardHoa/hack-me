@@ -87,6 +87,8 @@ func (handler *ChallengeHandler) GetChallenges(w http.ResponseWriter, r *http.Re
 		}
 	}
 
+	handler.Logger.Printf("Challenges %v", challenges)
+
 	utils.WriteJSON(w, http.StatusOK, utils.Message{
 		"metadata": metaPage,
 		"data":     challenges,

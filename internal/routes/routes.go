@@ -33,7 +33,8 @@ func SetUpRoutes(app *app.Application) *chi.Mux {
 			r.Put("/", (app.ChallengeHandler.ModifyChallenge))
 			r.Delete("/", (app.ChallengeHandler.DeleteChallege))
 
-			r.Route("/response", func(innerRouter chi.Router) {
+			r.Route("/responses", func(innerRouter chi.Router) {
+				innerRouter.Get("/", app.ChallengeResponseHandler.GetChallengeResponse)
 				innerRouter.Post("/", app.ChallengeResponseHandler.PostChallengeResponse)
 				innerRouter.Put("/", app.ChallengeResponseHandler.ModifyChallengeResponse)
 				innerRouter.Delete("/", app.ChallengeResponseHandler.DeleteChallengeResponse)

@@ -30,7 +30,7 @@ func (handler *ChallengeResponseHandler) PostChallengeResponse(w http.ResponseWr
 		return
 	}
 
-	var req store.ChallengeResponse
+	var req store.PostChallengeResponseRequest
 
 	decoder := json.NewDecoder(r.Body)
 	decoder.DisallowUnknownFields()
@@ -147,15 +147,47 @@ func (handler *ChallengeResponseHandler) DeleteChallengeResponse(w http.Response
 			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("Something wrong from your side", constants.MSG_INVALID_REQUEST_DATA, "unknown"))
 			return
 		case constants.LackingPermission:
-			utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage("Something wrong from your side", constants.MSG_INVALID_REQUEST_DATA, "unknown"))
+			utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage("Something wrong from your side", constants.MSG_INVALID_REQUEST_DATA, "challengeID"))
 			return
 		default:
-			handler.Logger.Printf("ERROR: PostChallengeResponse > store PostResponse: %v", err)
+			handler.Logger.Printf("ERROR: DeleteChallengeResponse > store DeleteResponse: %v", err)
 			utils.WriteJSON(w, http.StatusInternalServerError, utils.NewMessage(constants.StatusInternalErrorMessage, "", ""))
 			return
 		}
 
 	}
 
-	utils.WriteJSON(w, http.StatusCreated, utils.NewMessage("Challenge response deleted successfully", "", ""))
+	utils.WriteJSON(w, http.StatusOK, utils.NewMessage("Challenge response deleted successfully", "", ""))
+}
+
+func (handler *ChallengeResponseHandler) GetChallengeResponse(w http.ResponseWriter, r *http.Request) {
+
+	var req store.GetChallengeResponseRequest
+
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
+	err := decoder.Decode(&req)
+	if err != nil {
+		handler.Logger.Printf("ERROR: GetChallengeResponse > json encoding: %v", err)
+		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(constants.StatusInvalidJSONMessage, constants.MSG_MALFORMED_REQUEST_DATA, "request"))
+		return
+	}
+
+	responses, err := handler.ChallengeResponseStore.GetResponses(req)
+	if err != nil {
+		switch utils.ClassifyError(err) {
+		default:
+			handler.Logger.Printf("ERROR: GetChallengeResponse > store GetResponses: %v", err)
+			utils.WriteJSON(w, http.StatusInternalServerError, utils.NewMessage(constants.StatusInternalErrorMessage, "", ""))
+			return
+		}
+	}
+
+	handler.Logger.Printf("responses: %v", responses)
+
+	utils.WriteJSON(w, http.StatusOK, utils.Message{
+		"data": responses,
+	})
+	return
+
 }
