@@ -16,8 +16,8 @@ func NewMiddleWare(logger *log.Logger) MiddleWare {
 	return MiddleWare{Logger: logger}
 }
 
-func (middleware *MiddleWare) RequireCSRFToken(next http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
+func (middleware *MiddleWare) RequireCSRFToken(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		// 1: Get CSRF token from header
 		csrfToken := r.Header.Get("X-CSRF-Token")
@@ -64,6 +64,6 @@ func (middleware *MiddleWare) RequireCSRFToken(next http.HandlerFunc) http.Handl
 		}
 
 		// Step 4: Proceed to the next handler
-		next(w, r)
-	}
+		next.ServeHTTP(w, r)
+	})
 }

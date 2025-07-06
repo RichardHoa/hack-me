@@ -194,10 +194,8 @@ func (challengeStore *DBChallengeStore) CreateChallenges(challenge *Challenge) e
 			name, 
 			content, 
 			user_id,
-			category,
-			created_at, 
-			updated_at
-		) VALUES ($1, $2, $3, $4, $5, $6)
+			category
+		) VALUES ($1, $2, $3, $4)
 	`
 
 	_, err := challengeStore.DB.Exec(
@@ -206,8 +204,6 @@ func (challengeStore *DBChallengeStore) CreateChallenges(challenge *Challenge) e
 		challenge.Content,
 		challenge.UserID,
 		challenge.Category,
-		time.Now(),
-		time.Now(),
 	)
 
 	if err != nil {

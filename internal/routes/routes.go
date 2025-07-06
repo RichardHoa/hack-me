@@ -29,15 +29,28 @@ func SetUpRoutes(app *app.Application) *chi.Mux {
 		outerRouter.Route("/challenges", func(r chi.Router) {
 			// GET /challenges?popularity=asc|desc&category=cat1&category=cat2&name=searchTerm
 			r.Get("/", app.ChallengeHandler.GetChallenges)
-			r.Post("/", app.Middleware.RequireCSRFToken(app.ChallengeHandler.PostChallenge))
-			r.Put("/", app.Middleware.RequireCSRFToken(app.ChallengeHandler.ModifyChallenge))
-			r.Delete("/", app.Middleware.RequireCSRFToken(app.ChallengeHandler.DeleteChallege))
+
+			r.Group(func(csrfRouter chi.Router) {
+				// csrfRouter.Use(app.Middleware.RequireCSRFToken)
+				csrfRouter.Post("/", app.ChallengeHandler.PostChallenge)
+				csrfRouter.Put("/", app.ChallengeHandler.ModifyChallenge)
+				csrfRouter.Delete("/", app.ChallengeHandler.DeleteChallege)
+			})
 
 			r.Route("/responses", func(innerRouter chi.Router) {
 				innerRouter.Get("/", app.ChallengeResponseHandler.GetChallengeResponse)
-				innerRouter.Post("/", app.Middleware.RequireCSRFToken(app.ChallengeResponseHandler.PostChallengeResponse))
-				innerRouter.Put("/", app.Middleware.RequireCSRFToken(app.ChallengeResponseHandler.ModifyChallengeResponse))
-				innerRouter.Delete("/", app.Middleware.RequireCSRFToken(app.ChallengeResponseHandler.DeleteChallengeResponse))
+
+				innerRouter.Group(func(csrfRouter chi.Router) {
+					// csrfRouter.Use(app.Middleware.RequireCSRFToken)
+					csrfRouter.Post("/", app.ChallengeResponseHandler.PostChallengeResponse)
+					csrfRouter.Put("/", app.ChallengeResponseHandler.ModifyChallengeResponse)
+					csrfRouter.Delete("/", app.ChallengeResponseHandler.DeleteChallengeResponse)
+				})
+
+				innerRouter.Route("/votes", func(router chi.Router) {
+					router.Post("/", app.ChallengeresponseVoteHandler.PostVote)
+
+				})
 
 			})
 

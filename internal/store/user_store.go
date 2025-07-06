@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"time"
 
 	"github.com/RichardHoa/hack-me/internal/constants"
 	"github.com/RichardHoa/hack-me/internal/utils"
@@ -87,10 +86,8 @@ func (userStore *DBUserStore) CreateUser(user *User) (uuid.UUID, error) {
 			image_link,
 			password,
 			google_id,
-			github_id,
-			created_at,
-			updated_at
-		) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+			github_id
+		) VALUES ($1, $2, $3, $4, $5, $6, $7)
 	`
 
 	// fmt.Println(utils.BeautifyJSON(user))
@@ -104,8 +101,6 @@ func (userStore *DBUserStore) CreateUser(user *User) (uuid.UUID, error) {
 		utils.NullIfEmpty(hashedPassword),
 		utils.NullIfEmpty(user.GoogleID),
 		utils.NullIfEmpty(user.GithubID),
-		time.Now(),
-		time.Now(),
 	)
 
 	if err != nil {

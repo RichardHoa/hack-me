@@ -2,7 +2,6 @@ package store
 
 import (
 	"database/sql"
-	"time"
 
 	"github.com/RichardHoa/hack-me/internal/utils"
 )
@@ -31,12 +30,12 @@ func (tokenStore *DBTokenStore) AddRefreshToken(refreshToken string, userID stri
 	refreshTokenID := result[0]
 
 	query := `
-		INSERT INTO refresh_token (id, user_id, created_at, updated_at)
-		VALUES ($1, $2, $3, $4)
+		INSERT INTO refresh_token (id, user_id)
+		VALUES ($1, $2)
 		ON CONFLICT (user_id) DO UPDATE SET id = EXCLUDED.id, updated_at = now();
 	`
 
-	_, err = tokenStore.DB.Exec(query, refreshTokenID, userID, time.Now(), time.Now())
+	_, err = tokenStore.DB.Exec(query, refreshTokenID, userID)
 	if err != nil {
 		return err
 	}

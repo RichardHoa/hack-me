@@ -13,12 +13,13 @@ import (
 )
 
 type Application struct {
-	Logger                   *log.Logger
-	DB                       *sql.DB
-	ChallengeHandler         *api.ChallengeHandler
-	UserHandler              *api.UserHandler
-	ChallengeResponseHandler *api.ChallengeResponseHandler
-	Middleware               middleware.MiddleWare
+	Logger                       *log.Logger
+	DB                           *sql.DB
+	ChallengeHandler             *api.ChallengeHandler
+	UserHandler                  *api.UserHandler
+	ChallengeResponseHandler     *api.ChallengeResponseHandler
+	ChallengeresponseVoteHandler *api.ChallengeResponseVoteHandler
+	Middleware                   middleware.MiddleWare
 }
 
 func NewApplication(isTesting bool) (*Application, error) {
@@ -56,22 +57,25 @@ func NewApplication(isTesting bool) (*Application, error) {
 	userStore := store.NewUserStore(db)
 	tokenStore := store.NewTokenStore(db)
 	challengeResponseStore := store.NewChallengeResponseStore(db)
+	challengeResponseVoteStore := store.NewVoteStore(db)
 
 	//NOTE: Handler creation
 	challengeHandler := api.NewChallengeHandler(&challengeStore, logger)
 	userHandler := api.NewUserHandler(&userStore, &tokenStore, logger)
 	challengeResponseHandler := api.NewChallengeResponseHandler(&challengeResponseStore, logger)
+	challengeResponseVoteHandler := api.NewChallengeResponseVoteHandler(&challengeResponseVoteStore, logger)
 
 	//NOTE: Middleware creation
 	middleware := middleware.NewMiddleWare(logger)
 
 	application := &Application{
-		Logger:                   logger,
-		DB:                       db,
-		ChallengeHandler:         challengeHandler,
-		ChallengeResponseHandler: challengeResponseHandler,
-		UserHandler:              userHandler,
-		Middleware:               middleware,
+		Logger:                       logger,
+		DB:                           db,
+		ChallengeHandler:             challengeHandler,
+		ChallengeResponseHandler:     challengeResponseHandler,
+		ChallengeresponseVoteHandler: challengeResponseVoteHandler,
+		UserHandler:                  userHandler,
+		Middleware:                   middleware,
 	}
 
 	return application, nil
