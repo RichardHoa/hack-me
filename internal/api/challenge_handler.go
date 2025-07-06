@@ -182,13 +182,16 @@ func (handler *ChallengeHandler) DeleteChallege(w http.ResponseWriter, r *http.R
 
 	err = handler.ChallengeStore.DeleteChallenge(req.Name, userID)
 	if err != nil {
+		handler.Logger.Printf("ERROR: DeleteChallenge > store Delete challenge: %v", err)
 		switch utils.ClassifyError(err) {
+
+		case constants.InvalidData:
+			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_INVALID_REQUEST_DATA, ""))
+
 		case constants.LackingPermission:
-			handler.Logger.Printf("ERROR: DeleteChallenge > store Delete challenge: %v", err)
-			utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_INVALID_REQUEST_DATA, ""))
+			utils.WriteJSON(w, http.StatusForbidden, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_INVALID_REQUEST_DATA, ""))
 			return
 		default:
-			handler.Logger.Printf("ERROR: DeleteChallenge > store Delete challenge: %v", err)
 			utils.WriteJSON(w, http.StatusInternalServerError, utils.NewMessage(constants.StatusInternalErrorMessage, "", ""))
 			return
 		}
@@ -244,7 +247,7 @@ func (handler *ChallengeHandler) ModifyChallenge(w http.ResponseWriter, r *http.
 			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("new challenge name already exist", constants.MSG_INVALID_REQUEST_DATA, "name"))
 			return
 		case constants.LackingPermission:
-			utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_INVALID_REQUEST_DATA, ""))
+			utils.WriteJSON(w, http.StatusForbidden, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_INVALID_REQUEST_DATA, ""))
 			return
 		default:
 			utils.WriteJSON(w, http.StatusInternalServerError, utils.NewMessage(constants.StatusInternalErrorMessage, "", ""))

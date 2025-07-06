@@ -13,6 +13,7 @@ import (
 	"github.com/RichardHoa/hack-me/internal/routes"
 )
 
+// NOTE: Switch to forbidden for appropriate resource, not unauthorized
 func TestChallengesRoutes(t *testing.T) {
 	// Initialize application and server
 	application, err := app.NewApplication(true)
@@ -1221,7 +1222,7 @@ func TestChallengesRoutes(t *testing.T) {
 							"name": "random challenge name that definitely do not exist in this test",
 						},
 					},
-					expectStatus: http.StatusUnauthorized,
+					expectStatus: http.StatusBadRequest,
 				},
 				{
 					name: "no body parameter",
@@ -1239,7 +1240,7 @@ func TestChallengesRoutes(t *testing.T) {
 						path:   "/v1/challenges",
 						body:   map[string]string{"name": " "},
 					},
-					expectStatus: http.StatusUnauthorized,
+					expectStatus: http.StatusBadRequest,
 				},
 			},
 		},
@@ -1283,7 +1284,7 @@ func TestChallengesRoutes(t *testing.T) {
 							"name":    "New name",
 						},
 					},
-					expectStatus: http.StatusUnauthorized,
+					expectStatus: http.StatusForbidden,
 				},
 				{
 					name: "challenge that user does not own",
@@ -1295,7 +1296,7 @@ func TestChallengesRoutes(t *testing.T) {
 							"name": "Vulnaribilities number 2",
 						},
 					},
-					expectStatus: http.StatusUnauthorized,
+					expectStatus: http.StatusForbidden,
 				},
 			},
 		},

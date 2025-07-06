@@ -503,7 +503,7 @@ func TestChallengeResponseRoute(t *testing.T) {
 							"content":             "this hack works better",
 						},
 					},
-					expectStatus: http.StatusUnauthorized,
+					expectStatus: http.StatusForbidden,
 				},
 				{
 					name: "Cannot delete other challenge response",
@@ -514,7 +514,7 @@ func TestChallengeResponseRoute(t *testing.T) {
 							"challengeResponseID": "2",
 						},
 					},
-					expectStatus: http.StatusUnauthorized,
+					expectStatus: http.StatusForbidden,
 				},
 			},
 		},

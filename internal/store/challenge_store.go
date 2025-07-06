@@ -219,6 +219,22 @@ func (challengeStore *DBChallengeStore) CreateChallenges(challenge *Challenge) e
 }
 
 func (challengeStore *DBChallengeStore) DeleteChallenge(challengeName string, userID string) error {
+	var challengeExists bool
+
+	err := challengeStore.DB.QueryRow(`
+        SELECT EXISTS (SELECT 1 FROM challenge WHERE name = $1)
+    `, challengeName).Scan(&challengeExists)
+	if err != nil {
+		return fmt.Errorf("failed to check challenge existence: %v", err)
+	}
+
+	if !challengeExists {
+		return utils.NewCustomAppError(
+			constants.InvalidData,
+			"challengeName does not exist",
+		)
+	}
+
 	query := `
         DELETE FROM challenge 
         WHERE name = $1 AND user_id = $2
@@ -235,7 +251,7 @@ func (challengeStore *DBChallengeStore) DeleteChallenge(challengeName string, us
 	}
 
 	if rowsAffected == 0 {
-		return utils.NewCustomAppError(constants.LackingPermission, "challenge not found or the user don't have permission to delete it")
+		return utils.NewCustomAppError(constants.LackingPermission, "User don't have permission to delete it")
 	}
 
 	return nil

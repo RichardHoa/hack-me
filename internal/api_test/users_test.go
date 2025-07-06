@@ -47,6 +47,19 @@ func TestUserRoutes(t *testing.T) {
 					},
 					expectStatus: http.StatusCreated,
 				},
+
+				{
+					name: "Valid log in",
+					request: TestRequest{
+						method: "POST",
+						path:   "/v1/users/login",
+						body: map[string]string{
+							"password": "StrongSecurePasswordThatWon'tBemarkAsInvalid",
+							"email":    "testEmail@gmail.com",
+						},
+					},
+					expectStatus: http.StatusOK,
+				},
 				{
 					name: "Duplicated user name",
 					request: TestRequest{

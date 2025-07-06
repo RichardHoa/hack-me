@@ -101,7 +101,7 @@ func (handler *ChallengeResponseHandler) ModifyChallengeResponse(w http.Response
 			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("Something wrong from your side", constants.MSG_INVALID_REQUEST_DATA, "unknown"))
 			return
 		case constants.LackingPermission:
-			utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage("Something wrong from your side", constants.MSG_INVALID_REQUEST_DATA, "unknown"))
+			utils.WriteJSON(w, http.StatusForbidden, utils.NewMessage("Something wrong from your side", constants.MSG_INVALID_REQUEST_DATA, "unknown"))
 			return
 		default:
 			handler.Logger.Printf("ERROR: ModifyChallengeResponse > store PostResponse: %v", err)
@@ -147,7 +147,7 @@ func (handler *ChallengeResponseHandler) DeleteChallengeResponse(w http.Response
 			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("Something wrong from your side", constants.MSG_INVALID_REQUEST_DATA, "unknown"))
 			return
 		case constants.LackingPermission:
-			utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage("Something wrong from your side", constants.MSG_INVALID_REQUEST_DATA, "challengeID"))
+			utils.WriteJSON(w, http.StatusForbidden, utils.NewMessage("Something wrong from your side", constants.MSG_INVALID_REQUEST_DATA, "challengeID"))
 			return
 		default:
 			handler.Logger.Printf("ERROR: DeleteChallengeResponse > store DeleteResponse: %v", err)
