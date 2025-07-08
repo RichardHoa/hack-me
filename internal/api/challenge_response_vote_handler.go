@@ -56,6 +56,10 @@ func (handler *ChallengeResponseVoteHandler) PostVote(w http.ResponseWriter, r *
 	err = handler.Store.PostVote(req)
 	if err != nil {
 		switch utils.ClassifyError(err) {
+		case constants.PQForeignKeyViolation:
+			utils.WriteJSON(w, http.StatusNotFound, utils.NewMessage("challengeResponseID not found", constants.MSG_INVALID_REQUEST_DATA, "challengeResponseID"))
+		case constants.PQInvalidTextRepresentation:
+			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("invalid data type", constants.MSG_MALFORMED_REQUEST_DATA, "request body"))
 		default:
 			handler.Logger.Printf("ERROR: PostChallengeResponseVote > PostVote error: %v", err)
 			utils.WriteJSON(w, http.StatusInternalServerError, utils.NewMessage(constants.StatusInternalErrorMessage, "", ""))
@@ -64,4 +68,50 @@ func (handler *ChallengeResponseVoteHandler) PostVote(w http.ResponseWriter, r *
 	}
 
 	utils.WriteJSON(w, http.StatusCreated, utils.NewMessage("new vote has been created", "", ""))
+}
+
+func (handler *ChallengeResponseVoteHandler) DeleteVote(w http.ResponseWriter, r *http.Request) {
+
+	userID, _, err := utils.ValidateTokensFromCookies(r)
+	if err != nil {
+		handler.Logger.Printf("ERROR: DeleteChallengeResponseVote > JWT token checking: %v", err)
+		utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, "cookies"))
+		return
+	}
+
+	var req store.DeleteVoteRequest
+
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&req)
+	if err != nil {
+		handler.Logger.Printf("ERROR: DeleteChallengeResponseVote > json encoding: %v", err)
+		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(constants.StatusInvalidJSONMessage, constants.MSG_MALFORMED_REQUEST_DATA, "request"))
+		return
+	}
+
+	req.UserID = userID
+
+	err = utils.ValidateJSONFieldsNotEmpty(w, req)
+	if err != nil {
+		return
+	}
+
+	err = handler.Store.DeleteVote(req)
+	if err != nil {
+		handler.Logger.Printf("ERROR: DeleteChallengeResponseVote > DeleteVote error: %v", err)
+		switch utils.ClassifyError(err) {
+		case constants.PQInvalidTextRepresentation:
+			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("invalid data type", constants.MSG_MALFORMED_REQUEST_DATA, "challengeResponseID"))
+			return
+		case constants.InvalidData:
+			utils.WriteJSON(w, http.StatusNotFound, utils.NewMessage("Vote for this challenge response does not exist", constants.MSG_INVALID_REQUEST_DATA, "challengeResponseID"))
+			return
+		default:
+			utils.WriteJSON(w, http.StatusInternalServerError, utils.NewMessage(constants.StatusInternalErrorMessage, "", ""))
+			return
+		}
+	}
+
+	utils.WriteJSON(w, http.StatusOK, utils.NewMessage("vote has been deleted", "", ""))
 }

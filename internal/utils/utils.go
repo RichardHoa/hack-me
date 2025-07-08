@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"reflect"
+	"strings"
 
 	"github.com/RichardHoa/hack-me/internal/constants"
 )
@@ -65,13 +66,16 @@ func ValidateJSONFieldsNotEmpty(w http.ResponseWriter, input interface{}) error 
 		}
 
 		val := v.Field(i)
-		if val.Kind() == reflect.String && val.String() == "" {
-			WriteJSON(w, http.StatusBadRequest, NewMessage(
-				fmt.Sprintf("field '%s' is required and cannot be empty", jsonTag),
-				constants.MSG_LACKING_MANDATORY_FIELDS,
-				jsonTag,
-			))
-			return errors.New("Lacking required field")
+		if val.Kind() == reflect.String {
+			trimmed := strings.TrimSpace(val.String())
+			if trimmed == "" {
+				WriteJSON(w, http.StatusBadRequest, NewMessage(
+					fmt.Sprintf("field '%s' is required and cannot be empty or only whitespace", jsonTag),
+					constants.MSG_LACKING_MANDATORY_FIELDS,
+					jsonTag,
+				))
+				return errors.New("lacking required field")
+			}
 		}
 	}
 
@@ -79,7 +83,8 @@ func ValidateJSONFieldsNotEmpty(w http.ResponseWriter, input interface{}) error 
 }
 
 func NullIfEmpty(s string) interface{} {
-	if s == "" {
+	trimmed := strings.TrimSpace(s)
+	if trimmed == "" {
 		return nil
 	}
 	return s

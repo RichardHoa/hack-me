@@ -38,6 +38,15 @@ type PutChallengeRequest struct {
 	UserID   string
 }
 
+type Comment struct {
+	ID        string    `json:"id"`
+	Content   string    `json:"content"`
+	Author    string    `json:"author"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
+	Comments  []Comment `json:"comments,omitempty"` // Replies (1 level deep)
+}
+
 type Challenge struct {
 	ID        string    `json:"ID"`
 	UserID    string    `json:"-"`
@@ -47,6 +56,7 @@ type Challenge struct {
 	Content   string    `json:"content"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
+	Comments  []Comment `json:"comments"`
 }
 type Challenges []Challenge
 
@@ -178,6 +188,13 @@ func (challengeStore *DBChallengeStore) GetChallenges(freeQuery ChallengeFreeQue
 		if err != nil {
 			return nil, MetaDataPage{}, err
 		}
+
+		// Fetch comments for this challenge
+		c.Comments, err = challengeStore.getCommentsForChallenge(c.ID)
+		if err != nil {
+			return nil, MetaDataPage{}, err
+		}
+
 		challenges = append(challenges, c)
 	}
 
@@ -320,4 +337,70 @@ func (challengeStore *DBChallengeStore) ModifyChallenge(updatedChallenge PutChal
 	}
 
 	return nil
+}
+
+func (store *DBChallengeStore) getCommentsForChallenge(challengeID string) ([]Comment, error) {
+	query := `
+		SELECT 
+			c.id, c.content, u.username, c.created_at
+		FROM comment c
+		JOIN "user" u ON c.user_id = u.id
+		WHERE c.challenge_id = $1 AND c.parent_id IS NULL
+		ORDER BY c.created_at ASC
+	`
+
+	rows, err := store.DB.Query(query, challengeID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var comments []Comment
+	for rows.Next() {
+		var comment Comment
+		err := rows.Scan(&comment.ID, &comment.Content, &comment.Author, &comment.CreatedAt)
+		if err != nil {
+			return nil, err
+		}
+
+		// Fetch one-level replies to this comment
+		replies, err := store.getReplies(comment.ID)
+		if err != nil {
+			return nil, err
+		}
+		comment.Comments = replies
+
+		comments = append(comments, comment)
+	}
+
+	return comments, nil
+}
+
+func (store *DBChallengeStore) getReplies(parentID string) ([]Comment, error) {
+	query := `
+		SELECT 
+			c.id, c.content, u.username, c.created_at
+		FROM comment c
+		JOIN "user" u ON c.user_id = u.id
+		WHERE c.parent_id = $1
+		ORDER BY c.created_at ASC
+	`
+
+	rows, err := store.DB.Query(query, parentID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var replies []Comment
+	for rows.Next() {
+		var reply Comment
+		err := rows.Scan(&reply.ID, &reply.Content, &reply.Author, &reply.CreatedAt)
+		if err != nil {
+			return nil, err
+		}
+		replies = append(replies, reply)
+	}
+
+	return replies, nil
 }

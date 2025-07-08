@@ -35,6 +35,8 @@ func SetUpRoutes(app *app.Application) *chi.Mux {
 				csrfRouter.Post("/", app.ChallengeHandler.PostChallenge)
 				csrfRouter.Put("/", app.ChallengeHandler.ModifyChallenge)
 				csrfRouter.Delete("/", app.ChallengeHandler.DeleteChallege)
+				// comment route
+				csrfRouter.Post("/comments", app.CommentHandler.PostComment)
 			})
 
 			r.Route("/responses", func(innerRouter chi.Router) {
@@ -49,6 +51,7 @@ func SetUpRoutes(app *app.Application) *chi.Mux {
 
 				innerRouter.Route("/votes", func(router chi.Router) {
 					router.Post("/", app.ChallengeresponseVoteHandler.PostVote)
+					router.Delete("/", app.ChallengeresponseVoteHandler.DeleteVote)
 
 				})
 

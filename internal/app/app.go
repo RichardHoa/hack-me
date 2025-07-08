@@ -19,6 +19,7 @@ type Application struct {
 	UserHandler                  *api.UserHandler
 	ChallengeResponseHandler     *api.ChallengeResponseHandler
 	ChallengeresponseVoteHandler *api.ChallengeResponseVoteHandler
+	CommentHandler               *api.CommentHandler
 	Middleware                   middleware.MiddleWare
 }
 
@@ -58,12 +59,14 @@ func NewApplication(isTesting bool) (*Application, error) {
 	tokenStore := store.NewTokenStore(db)
 	challengeResponseStore := store.NewChallengeResponseStore(db)
 	challengeResponseVoteStore := store.NewVoteStore(db)
+	commentStore := store.NewCommentStore(db)
 
 	//NOTE: Handler creation
 	challengeHandler := api.NewChallengeHandler(&challengeStore, logger)
 	userHandler := api.NewUserHandler(&userStore, &tokenStore, logger)
 	challengeResponseHandler := api.NewChallengeResponseHandler(&challengeResponseStore, logger)
 	challengeResponseVoteHandler := api.NewChallengeResponseVoteHandler(&challengeResponseVoteStore, logger)
+	commentHandler := api.NewCommentHandler(&commentStore, logger)
 
 	//NOTE: Middleware creation
 	middleware := middleware.NewMiddleWare(logger)
@@ -74,6 +77,7 @@ func NewApplication(isTesting bool) (*Application, error) {
 		ChallengeHandler:             challengeHandler,
 		ChallengeResponseHandler:     challengeResponseHandler,
 		ChallengeresponseVoteHandler: challengeResponseVoteHandler,
+		CommentHandler:               commentHandler,
 		UserHandler:                  userHandler,
 		Middleware:                   middleware,
 	}

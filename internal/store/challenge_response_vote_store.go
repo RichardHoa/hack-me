@@ -3,6 +3,9 @@ package store
 import (
 	"database/sql"
 	"fmt"
+
+	"github.com/RichardHoa/hack-me/internal/constants"
+	"github.com/RichardHoa/hack-me/internal/utils"
 )
 
 type DBVoteStore struct {
@@ -13,6 +16,11 @@ func NewVoteStore(db *sql.DB) DBVoteStore {
 	return DBVoteStore{DB: db}
 }
 
+type DeleteVoteRequest struct {
+	ChallengeResponseID string `json:"challengeResponseID"`
+	UserID              string
+}
+
 type PostVoteRequest struct {
 	ChallengeResponseID string `json:"challengeResponseID"`
 	VoteType            string `json:"voteType"`
@@ -21,8 +29,68 @@ type PostVoteRequest struct {
 
 type VoteStore interface {
 	PostVote(req PostVoteRequest) error
+	DeleteVote(req DeleteVoteRequest) error
 }
 
+func (store *DBVoteStore) DeleteVote(req DeleteVoteRequest) error {
+	tx, err := store.DB.Begin()
+	if err != nil {
+		return err
+	}
+	defer func() {
+		err = tx.Rollback()
+		if err != nil && err != sql.ErrTxDone {
+			fmt.Printf("Err while roll back %v", err.Error())
+		}
+	}()
+
+	// Step 1: Check if the vote exists and get its type
+	var existingVoteType int
+	query := `
+        SELECT vote_type FROM challenge_response_votes
+        WHERE user_id = $1 AND challenge_response_id = $2
+    `
+	err = tx.QueryRow(query, req.UserID, req.ChallengeResponseID).Scan(&existingVoteType)
+	if err == sql.ErrNoRows {
+		// Vote doesn't exist, nothing to do
+		return utils.NewCustomAppError(constants.InvalidData, "User does not have any vote for this response challenge")
+	}
+	if err != nil {
+		return err
+	}
+
+	// Step 2: Delete the vote
+	_, err = tx.Exec(`
+        DELETE FROM challenge_response_votes
+        WHERE user_id = $1 AND challenge_response_id = $2
+    `, req.UserID, req.ChallengeResponseID)
+	if err != nil {
+		return err
+	}
+
+	// Step 3: Update vote counts based on the deleted vote's type
+	if existingVoteType == 1 {
+		// Was an upvote, decrement up_vote count
+		_, err = tx.Exec(`
+            UPDATE challenge_response
+            SET up_vote = up_vote - 1
+            WHERE id = $1
+        `, req.ChallengeResponseID)
+	} else if existingVoteType == -1 {
+		// Was a downvote, decrement down_vote count
+		_, err = tx.Exec(`
+            UPDATE challenge_response
+            SET down_vote = down_vote - 1
+            WHERE id = $1
+        `, req.ChallengeResponseID)
+	}
+
+	if err != nil {
+		return err
+	}
+
+	return tx.Commit()
+}
 func (store *DBVoteStore) PostVote(req PostVoteRequest) error {
 	tx, err := store.DB.Begin()
 	if err != nil {
