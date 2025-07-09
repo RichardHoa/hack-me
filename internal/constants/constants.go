@@ -47,6 +47,7 @@ const (
 	UnauthorizedMessage        = "Unauthorized"
 	AccessTokenTime            = 15 * time.Minute
 	RefreshTokenTime           = 7 * (24 * time.Hour)
+	CommentNestedLevel         = 5
 )
 
 const (

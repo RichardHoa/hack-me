@@ -98,10 +98,10 @@ func (handler *ChallengeResponseHandler) ModifyChallengeResponse(w http.Response
 	if err != nil {
 		switch utils.ClassifyError(err) {
 		case constants.InvalidData:
-			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("Something wrong from your side", constants.MSG_INVALID_REQUEST_DATA, "unknown"))
+			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(err.Error(), constants.MSG_INVALID_REQUEST_DATA, "unknown"))
 			return
 		case constants.LackingPermission:
-			utils.WriteJSON(w, http.StatusForbidden, utils.NewMessage("You are not the owner of this challenge response", constants.MSG_INVALID_REQUEST_DATA, ""))
+			utils.WriteJSON(w, http.StatusForbidden, utils.NewMessage(err.Error(), constants.MSG_INVALID_REQUEST_DATA, ""))
 			return
 		default:
 			handler.Logger.Printf("ERROR: ModifyChallengeResponse > store PostResponse: %v", err)
@@ -144,10 +144,10 @@ func (handler *ChallengeResponseHandler) DeleteChallengeResponse(w http.Response
 	if err != nil {
 		switch utils.ClassifyError(err) {
 		case constants.InvalidData:
-			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("Something wrong from your side", constants.MSG_INVALID_REQUEST_DATA, "unknown"))
+			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(err.Error(), constants.MSG_INVALID_REQUEST_DATA, "unknown"))
 			return
 		case constants.LackingPermission:
-			utils.WriteJSON(w, http.StatusForbidden, utils.NewMessage("Something wrong from your side", constants.MSG_INVALID_REQUEST_DATA, "challengeID"))
+			utils.WriteJSON(w, http.StatusForbidden, utils.NewMessage(err.Error(), constants.MSG_INVALID_REQUEST_DATA, "challengeID"))
 			return
 		default:
 			handler.Logger.Printf("ERROR: DeleteChallengeResponse > store DeleteResponse: %v", err)
@@ -182,8 +182,6 @@ func (handler *ChallengeResponseHandler) GetChallengeResponse(w http.ResponseWri
 			return
 		}
 	}
-
-	handler.Logger.Printf("responses: %v", responses)
 
 	utils.WriteJSON(w, http.StatusOK, utils.Message{
 		"data": responses,

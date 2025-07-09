@@ -105,7 +105,7 @@ func (handler *ChallengeResponseVoteHandler) DeleteVote(w http.ResponseWriter, r
 			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("invalid data type", constants.MSG_MALFORMED_REQUEST_DATA, "challengeResponseID"))
 			return
 		case constants.InvalidData:
-			utils.WriteJSON(w, http.StatusNotFound, utils.NewMessage("Vote for this challenge response does not exist", constants.MSG_INVALID_REQUEST_DATA, "challengeResponseID"))
+			utils.WriteJSON(w, http.StatusNotFound, utils.NewMessage(err.Error(), constants.MSG_INVALID_REQUEST_DATA, "challengeResponseID"))
 			return
 		default:
 			utils.WriteJSON(w, http.StatusInternalServerError, utils.NewMessage(constants.StatusInternalErrorMessage, "", ""))

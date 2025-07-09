@@ -98,6 +98,8 @@ func (challengeStore *DBChallengeStore) GetChallenges(freeQuery ChallengeFreeQue
 
 	countQuery := `SELECT COUNT(*) FROM challenge c`
 
+	isExactQuery := false
+
 	conditions := []string{}
 	args := []any{}
 	argIndex := 1
@@ -114,6 +116,7 @@ func (challengeStore *DBChallengeStore) GetChallenges(freeQuery ChallengeFreeQue
 
 	// Filter by name (case sensitive, filter by exact)
 	if freeQuery.ExactName != "" {
+		isExactQuery = true
 		conditions = append(conditions, fmt.Sprintf("name = $%d", argIndex))
 		args = append(args, freeQuery.ExactName)
 		argIndex++
@@ -189,10 +192,12 @@ func (challengeStore *DBChallengeStore) GetChallenges(freeQuery ChallengeFreeQue
 			return nil, MetaDataPage{}, err
 		}
 
-		// Fetch comments for this challenge
-		c.Comments, err = challengeStore.getCommentsForChallenge(c.ID)
-		if err != nil {
-			return nil, MetaDataPage{}, err
+		if isExactQuery == true {
+			// Fetch comments for this challenge
+			c.Comments, err = challengeStore.getCommentsForChallenge(c.ID)
+			if err != nil {
+				return nil, MetaDataPage{}, err
+			}
 		}
 
 		challenges = append(challenges, c)
@@ -342,7 +347,7 @@ func (challengeStore *DBChallengeStore) ModifyChallenge(updatedChallenge PutChal
 func (store *DBChallengeStore) getCommentsForChallenge(challengeID string) ([]Comment, error) {
 	query := `
 		SELECT 
-			c.id, c.content, u.username, c.created_at
+			c.id, c.content, u.username, c.created_at, c.updated_at
 		FROM comment c
 		JOIN "user" u ON c.user_id = u.id
 		WHERE c.challenge_id = $1 AND c.parent_id IS NULL
@@ -358,13 +363,13 @@ func (store *DBChallengeStore) getCommentsForChallenge(challengeID string) ([]Co
 	var comments []Comment
 	for rows.Next() {
 		var comment Comment
-		err := rows.Scan(&comment.ID, &comment.Content, &comment.Author, &comment.CreatedAt)
+		err := rows.Scan(&comment.ID, &comment.Content, &comment.Author, &comment.CreatedAt, &comment.UpdatedAt)
 		if err != nil {
 			return nil, err
 		}
 
 		// Fetch one-level replies to this comment
-		replies, err := store.getReplies(comment.ID)
+		replies, err := store.getRepliesRecursive(comment.ID, 1)
 		if err != nil {
 			return nil, err
 		}
@@ -376,10 +381,14 @@ func (store *DBChallengeStore) getCommentsForChallenge(challengeID string) ([]Co
 	return comments, nil
 }
 
-func (store *DBChallengeStore) getReplies(parentID string) ([]Comment, error) {
+func (store *DBChallengeStore) getRepliesRecursive(parentID string, depth int) ([]Comment, error) {
+	if depth >= constants.CommentNestedLevel {
+		return nil, nil
+	}
+
 	query := `
 		SELECT 
-			c.id, c.content, u.username, c.created_at
+			c.id, c.content, u.username, c.created_at, c.updated_at
 		FROM comment c
 		JOIN "user" u ON c.user_id = u.id
 		WHERE c.parent_id = $1
@@ -395,10 +404,18 @@ func (store *DBChallengeStore) getReplies(parentID string) ([]Comment, error) {
 	var replies []Comment
 	for rows.Next() {
 		var reply Comment
-		err := rows.Scan(&reply.ID, &reply.Content, &reply.Author, &reply.CreatedAt)
+		err := rows.Scan(&reply.ID, &reply.Content, &reply.Author, &reply.CreatedAt, &reply.UpdatedAt)
 		if err != nil {
 			return nil, err
 		}
+
+		// Recursively fetch replies with increased depth
+		children, err := store.getRepliesRecursive(reply.ID, depth+1)
+		if err != nil {
+			return nil, err
+		}
+		reply.Comments = children
+
 		replies = append(replies, reply)
 	}
 

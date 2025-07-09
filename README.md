@@ -14,3 +14,9 @@ psql -U postgres -h localhost -p 5433
 DROP SCHEMA public CASCADE; CREATE SCHEMA public;
 ```
 BOTH of the table, this will resolve any consistency between the table
+
+
+
+# TODO
+- Implement depth control when posting comment | comment_store.go
+

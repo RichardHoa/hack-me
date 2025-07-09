@@ -33,8 +33,6 @@ func (handler *ChallengeHandler) GetChallenges(w http.ResponseWriter, r *http.Re
 	pageSize := query.Get("pageSize")
 	page := query.Get("page")
 
-	handler.Logger.Printf("page: %v, pagesize %v", page, pageSize)
-
 	if page != "" {
 		pageNum, err := strconv.Atoi(page)
 		if err != nil {
@@ -86,7 +84,6 @@ func (handler *ChallengeHandler) GetChallenges(w http.ResponseWriter, r *http.Re
 			return
 		}
 	}
-	handler.Logger.Println(utils.BeautifyJSON(challenges))
 
 	utils.WriteJSON(w, http.StatusOK, utils.Message{
 		"metadata": metaPage,
@@ -237,7 +234,7 @@ func (handler *ChallengeHandler) ModifyChallenge(w http.ResponseWriter, r *http.
 		handler.Logger.Printf("ERROR: ModifyChallenge > store modify challenge: %v", err)
 		switch utils.ClassifyError(err) {
 		case constants.InvalidData:
-			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("Challenge name already exist", constants.MSG_INVALID_REQUEST_DATA, "name"))
+			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(err.Error(), constants.MSG_INVALID_REQUEST_DATA, "name"))
 			return
 		case constants.PQInvalidTextRepresentation:
 			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("invalid category value", constants.MSG_INVALID_REQUEST_DATA, "category"))
