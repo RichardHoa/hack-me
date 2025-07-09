@@ -54,12 +54,12 @@ func NewApplication(isTesting bool) (*Application, error) {
 	}
 
 	//NOTE: store creation
-	challengeStore := store.NewChallengeStore(db)
 	userStore := store.NewUserStore(db)
 	tokenStore := store.NewTokenStore(db)
-	challengeResponseStore := store.NewChallengeResponseStore(db)
 	challengeResponseVoteStore := store.NewVoteStore(db)
 	commentStore := store.NewCommentStore(db)
+	challengeResponseStore := store.NewChallengeResponseStore(db, &commentStore)
+	challengeStore := store.NewChallengeStore(db, &commentStore)
 
 	//NOTE: Handler creation
 	challengeHandler := api.NewChallengeHandler(&challengeStore, logger)

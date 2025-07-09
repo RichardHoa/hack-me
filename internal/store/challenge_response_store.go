@@ -12,11 +12,15 @@ import (
 )
 
 type DBChallengeResponseStore struct {
-	DB *sql.DB
+	DB           *sql.DB
+	CommentStore *DBCommentStore
 }
 
-func NewChallengeResponseStore(db *sql.DB) DBChallengeResponseStore {
-	return DBChallengeResponseStore{DB: db}
+func NewChallengeResponseStore(db *sql.DB, commentStore *DBCommentStore) DBChallengeResponseStore {
+	return DBChallengeResponseStore{
+		DB:           db,
+		CommentStore: commentStore,
+	}
 }
 
 type DeleteChallengeResponseRequest struct {
@@ -46,6 +50,7 @@ type DetailChallengeResponse struct {
 	DownVote            string    `json:"downVote"`
 	CreatedAt           time.Time `json:"createdAt"`
 	UpdatedAt           time.Time `json:"updatedAt"`
+	Comments            []Comment `json:"comments"`
 }
 
 type PostChallengeResponseRequest struct {
@@ -65,12 +70,26 @@ type ChallengeResponseStore interface {
 func (store *DBChallengeResponseStore) GetResponses(request GetChallengeResponseRequest) (ChallengeResponseOut, error) {
 
 	query := `
-	SELECT cr.id, cr.name, cr.content, cr.up_vote, cr.down_vote, cr.created_at, cr.updated_at, u.username
-	FROM challenge_response cr
-	JOIN "user" u ON cr.user_id = u.id
-	WHERE cr.challenge_id = $1
-	ORDER BY cr.created_at ASC
-	`
+		SELECT 
+			cr.id,
+			cr.name,
+			cr.content,
+			cr.up_vote,
+			cr.down_vote,
+			cr.created_at,
+			cr.updated_at,
+			u.username
+		FROM 
+			challenge_response AS cr
+		JOIN 
+			"user" AS u
+		ON 
+			cr.user_id = u.id
+		WHERE 
+			cr.challenge_id = $1
+		ORDER BY 
+			cr.created_at ASC
+		`
 
 	rows, err := store.DB.Query(query, request.ChallengeID)
 	if err != nil {
@@ -83,23 +102,20 @@ func (store *DBChallengeResponseStore) GetResponses(request GetChallengeResponse
 
 	for rows.Next() {
 		var r DetailChallengeResponse
-		var id int
-		var upVote, downVote int
 
-		err := rows.Scan(&id, &r.Name, &r.Content, &upVote, &downVote, &r.CreatedAt, &r.UpdatedAt, &r.AuthorName)
+		err := rows.Scan(&r.ChallengeResponseID, &r.Name, &r.Content, &r.UpVote, &r.DownVote, &r.CreatedAt, &r.UpdatedAt, &r.AuthorName)
 		if err != nil {
 			return nil, utils.NewCustomAppError(constants.InternalError, fmt.Sprintf("fail to scan challenge response into struct: %v", err.Error()))
-
 		}
 
-		r.ChallengeResponseID = fmt.Sprintf("%d", id)
-		r.UpVote = fmt.Sprintf("%d", upVote)
-		r.DownVote = fmt.Sprintf("%d", downVote)
+		r.Comments, err = store.CommentStore.GetRootComments("challenge_response_id", r.ChallengeResponseID)
+		if err != nil {
+			return nil, utils.NewCustomAppError(constants.InternalError, fmt.Sprintf("fail to scan comment into struct: %v", err.Error()))
+		}
 
 		responses = append(responses, r)
 	}
 
-	// even if no rows, this will return an empty slice (not nil)
 	return responses, nil
 }
 

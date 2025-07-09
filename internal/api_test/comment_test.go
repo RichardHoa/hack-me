@@ -105,7 +105,7 @@ func TestCommentRoute(t *testing.T) {
 			},
 		},
 		{
-			name: "First user",
+			name: "challenge comment",
 			steps: []TestStep{
 				{
 					name: "Login test user",
@@ -125,7 +125,7 @@ func TestCommentRoute(t *testing.T) {
 						method: "POST",
 						path:   "/v1/comments",
 						body: map[string]string{
-							"ChallengeID": "1",
+							"challengeID": "1",
 							"content":     "comment from the first user, level 1",
 						},
 					},
@@ -276,6 +276,7 @@ func TestCommentRoute(t *testing.T) {
 						method: "PUT",
 						path:   "/v1/comments",
 						body: map[string]string{
+							//WRONG DOING HERE
 							"commentID": "1",
 							"content":   "New comment that has been edited | level 1",
 						},
@@ -387,7 +388,281 @@ func TestCommentRoute(t *testing.T) {
 			},
 		},
 		{
-			name: "Second user",
+			name: "challenge response comment",
+			steps: []TestStep{
+				{
+					name: "Login first user",
+					request: TestRequest{
+						method: "POST",
+						path:   "/v1/users/login",
+						body: map[string]string{
+							"email":    "testEmail@gmail.com",
+							"password": "ThisIsAVerySEcurePasswordThatWon'tBeStop",
+						},
+					},
+					expectStatus: http.StatusOK,
+				},
+				{
+					name: "comment to challenge response",
+					request: TestRequest{
+						method: "POST",
+						path:   "/v1/comments",
+						body: map[string]string{
+							"challengeResponseID": "1",
+							"content":             "comment from the first user, level 1",
+						},
+					},
+					expectStatus: http.StatusCreated,
+				},
+				{
+					name: "comment to challenge response level 2",
+					request: TestRequest{
+						method: "POST",
+						path:   "/v1/comments",
+						body: map[string]string{
+							"parentID":            "6",
+							"challengeResponseID": "1",
+							"content":             "comment from the first user, level 2",
+						},
+					},
+					expectStatus: http.StatusCreated,
+				},
+				{
+					name: "comment to challenge response level 3",
+					request: TestRequest{
+						method: "POST",
+						path:   "/v1/comments",
+						body: map[string]string{
+							"parentID":            "7",
+							"challengeResponseID": "1",
+							"content":             "comment from the first user, level 3",
+						},
+					},
+					expectStatus: http.StatusCreated,
+				},
+				{
+					name: "comment to challenge response level 4",
+					request: TestRequest{
+						method: "POST",
+						path:   "/v1/comments",
+						body: map[string]string{
+							"parentID":            "8",
+							"challengeResponseID": "1",
+							"content":             "comment from the first user, level 4",
+						},
+					},
+					expectStatus: http.StatusCreated,
+				},
+				{
+					name: "comment to challenge response level 5",
+					request: TestRequest{
+						method: "POST",
+						path:   "/v1/comments",
+						body: map[string]string{
+							"parentID":            "9",
+							"challengeResponseID": "1",
+							"content":             "comment from the first user, level 5",
+						},
+					},
+					expectStatus: http.StatusCreated,
+				},
+
+				{
+					name: "GET",
+					request: TestRequest{
+						method: "GET",
+						path:   "/v1/challenges/responses",
+						body: map[string]string{
+							"challengeID": "1",
+						},
+					},
+					expectStatus: http.StatusOK,
+				},
+
+				{
+					name: "Verify nested comments up to level 5",
+					request: TestRequest{
+						method: "GET",
+						path:   "/v1/challenges/responses",
+						body: map[string]string{
+							"challengeID": "1",
+						},
+					},
+					expectStatus: http.StatusOK,
+					validate: func(t *testing.T, body []byte) {
+						var parsed map[string]any
+						if err := json.Unmarshal(body, &parsed); err != nil {
+							t.Fatalf("Failed to parse response: %v", err)
+						}
+
+						data, ok := parsed["data"].([]any)
+						if !ok {
+							t.Fatalf(`Expected "data" to be a list, got: %#v`, parsed["data"])
+						}
+
+						for _, item := range data {
+							challenge, ok := item.(map[string]any)
+							if !ok {
+								continue
+							}
+
+							comments, ok := challenge["comments"].([]any)
+							if !ok || len(comments) == 0 {
+								t.Fatal("Expected comments to exist and not be empty")
+							}
+
+							// Verify level 1 comment
+							verifyNestedComment(t, comments, 0, 1)
+
+							// Recursively verify nested comments up to level 5
+							currentComments := comments
+							for level := 2; level <= 5; level++ {
+								if len(currentComments) == 0 {
+									t.Fatalf("Missing level %d comment", level)
+								}
+
+								firstComment := currentComments[0].(map[string]any)
+								if replies, exists := firstComment["comments"]; exists {
+									if replyList, ok := replies.([]any); ok && len(replyList) > 0 {
+										verifyNestedComment(t, replyList, 0, level)
+										currentComments = replyList
+										continue
+									}
+								}
+								t.Fatalf("Level %d comment missing or invalid structure", level)
+							}
+						}
+					},
+				},
+				{
+					name: "Edit first level comment",
+					request: TestRequest{
+						method: "PUT",
+						path:   "/v1/comments",
+						body: map[string]string{
+							"commentID": "6",
+							"content":   "New comment that has been edited | level 1",
+						},
+					},
+					expectStatus: http.StatusOK,
+				},
+
+				{
+					name: "Verify first level comment was edited",
+					request: TestRequest{
+						method: "GET",
+						path:   "/v1/challenges/responses",
+						body: map[string]string{
+							"challengeID": "1",
+						},
+					},
+					expectStatus: http.StatusOK,
+					validate:     verifyEditedComment(1),
+				},
+
+				{
+					name: "Edit second level comment",
+					request: TestRequest{
+						method: "PUT",
+						path:   "/v1/comments",
+						body: map[string]string{
+							"commentID": "7",
+							"content":   "New comment that has been edited | level 2",
+						},
+					},
+					expectStatus: http.StatusOK,
+				},
+				{
+					name: "Verify second level comment was edited",
+					request: TestRequest{
+						method: "GET",
+						path:   "/v1/challenges/responses",
+						body: map[string]string{
+							"challengeID": "1",
+						},
+					},
+					expectStatus: http.StatusOK,
+					validate:     verifyEditedComment(2),
+				},
+
+				{
+					name: "Edit third level comment",
+					request: TestRequest{
+						method: "PUT",
+						path:   "/v1/comments",
+						body: map[string]string{
+							"commentID": "8",
+							"content":   "New comment that has been edited | level 3",
+						},
+					},
+					expectStatus: http.StatusOK,
+				},
+				{
+					name: "Verify third level comment was edited",
+					request: TestRequest{
+						method: "GET",
+						path:   "/v1/challenges/responses",
+						body: map[string]string{
+							"challengeID": "1",
+						},
+					},
+					expectStatus: http.StatusOK,
+					validate:     verifyEditedComment(3),
+				},
+
+				{
+					name: "Edit fourth level comment",
+					request: TestRequest{
+						method: "PUT",
+						path:   "/v1/comments",
+						body: map[string]string{
+							"commentID": "9",
+							"content":   "New comment that has been edited | level 4",
+						},
+					},
+					expectStatus: http.StatusOK,
+				},
+				{
+					name: "Verify fourth level comment was edited",
+					request: TestRequest{
+						method: "GET",
+						path:   "/v1/challenges/responses",
+						body: map[string]string{
+							"challengeID": "1",
+						},
+					},
+					expectStatus: http.StatusOK,
+					validate:     verifyEditedComment(4),
+				},
+
+				{
+					name: "Edit fifth level comment",
+					request: TestRequest{
+						method: "PUT",
+						path:   "/v1/comments",
+						body: map[string]string{
+							"commentID": "10",
+							"content":   "New comment that has been edited | level 5",
+						},
+					},
+					expectStatus: http.StatusOK,
+				},
+				{
+					name: "Verify fifth level comment was edited",
+					request: TestRequest{
+						method: "GET",
+						path:   "/v1/challenges/responses",
+						body: map[string]string{
+							"challengeID": "1",
+						},
+					},
+					expectStatus: http.StatusOK,
+					validate:     verifyEditedComment(5),
+				},
+			},
+		},
+		{
+			name: "Forbidden request",
 			steps: []TestStep{
 				{
 					name: "Login second user",
@@ -427,7 +702,7 @@ func TestCommentRoute(t *testing.T) {
 			},
 		},
 		{
-			name: "First user again",
+			name: "delete comments",
 			steps: []TestStep{
 				{
 					name: "Login first user",
@@ -442,7 +717,7 @@ func TestCommentRoute(t *testing.T) {
 					expectStatus: http.StatusOK,
 				},
 				{
-					name: "delete first level comment",
+					name: "delete first level comment with challenge",
 					request: TestRequest{
 						method: "DELETE",
 						path:   "/v1/comments",
@@ -453,7 +728,7 @@ func TestCommentRoute(t *testing.T) {
 					expectStatus: http.StatusOK,
 				},
 				{
-					name: "Verify valid comment",
+					name: "Verify there is no comment left",
 					request: TestRequest{
 						method: "GET",
 						path:   fmt.Sprintf("/v1/challenges?exactName=%s", url.QueryEscape("Undefeated challenge")),
@@ -485,6 +760,69 @@ func TestCommentRoute(t *testing.T) {
 						}
 					},
 				},
+				{
+					name: "delete first level comment with challenge response",
+					request: TestRequest{
+						method: "DELETE",
+						path:   "/v1/comments",
+						body: map[string]string{
+							"commentID": "6",
+						},
+					},
+					expectStatus: http.StatusOK,
+				},
+				{
+					name: "Verify there is no comment left",
+					request: TestRequest{
+						method: "GET",
+						path:   "/v1/challenges/responses",
+						body: map[string]string{
+							"challengeID": "1",
+						},
+					},
+					expectStatus: http.StatusOK,
+					validate: func(t *testing.T, body []byte) {
+						var parsed map[string]any
+						if err := json.Unmarshal(body, &parsed); err != nil {
+							t.Fatalf("Failed to parse response: %v", err)
+						}
+
+						data, ok := parsed["data"].([]any)
+						if !ok {
+							t.Fatalf(`Expected "data" to be a list, got: %#v`, parsed["data"])
+						}
+
+						for _, item := range data {
+							challenge, ok := item.(map[string]any)
+							if !ok {
+								continue
+							}
+
+							if challenge["comments"] != nil {
+								t.Fatal("Expect comment to be nil")
+
+							}
+
+						}
+					},
+				},
+			},
+		},
+		{
+			name: "invalid request",
+			steps: []TestStep{
+				{
+					name: "Login first user",
+					request: TestRequest{
+						method: "POST",
+						path:   "/v1/users/login",
+						body: map[string]string{
+							"email":    "testEmail@gmail.com",
+							"password": "ThisIsAVerySEcurePasswordThatWon'tBeStop",
+						},
+					},
+					expectStatus: http.StatusOK,
+				},
 
 				{
 					name: "Empty content",
@@ -492,31 +830,31 @@ func TestCommentRoute(t *testing.T) {
 						method: "POST",
 						path:   "/v1/comments",
 						body: map[string]string{
-							"ChallengeID": "1",
+							"challengeID": "1",
 							"content":     "", // Empty content
 						},
 					},
 					expectStatus: http.StatusBadRequest,
 				},
 				{
-					name: "Missing ChallengeID",
+					name: "Missing challengeID",
 					request: TestRequest{
 						method: "POST",
 						path:   "/v1/comments",
 						body: map[string]string{
-							// Missing ChallengeID
+							// Missing challengeID
 							"content": "valid content",
 						},
 					},
 					expectStatus: http.StatusBadRequest,
 				},
 				{
-					name: "Invalid ChallengeID format",
+					name: "Invalid challengeID format",
 					request: TestRequest{
 						method: "POST",
 						path:   "/v1/comments",
 						body: map[string]string{
-							"ChallengeID": "not-a-number", // Invalid ID format
+							"challengeID": "not-a-number", // Invalid ID format
 							"content":     "valid content",
 						},
 					},
@@ -529,7 +867,7 @@ func TestCommentRoute(t *testing.T) {
 						method: "POST",
 						path:   "/v1/comments",
 						body: map[string]string{
-							"ChallengeID": "1",
+							"challengeID": "1",
 							"parentID":    "invalid", // Bad parent ID
 							"content":     "valid content",
 						},
@@ -537,12 +875,12 @@ func TestCommentRoute(t *testing.T) {
 					expectStatus: http.StatusBadRequest,
 				},
 				{
-					name: "Non-existent ChallengeID",
+					name: "Non-existent challengeID",
 					request: TestRequest{
 						method: "POST",
 						path:   "/v1/comments",
 						body: map[string]string{
-							"ChallengeID": "999999", // Non-existent challenge
+							"challengeID": "999999", // Non-existent challenge
 							"content":     "valid content",
 						},
 					},
@@ -554,7 +892,7 @@ func TestCommentRoute(t *testing.T) {
 						method: "POST",
 						path:   "/v1/comments",
 						body: map[string]string{
-							"ChallengeID": "1",
+							"challengeID": "1",
 							"content":     "valid content",
 							"injected":    "malicious data", // Unexpected field
 						},
@@ -615,7 +953,7 @@ func TestCommentRoute(t *testing.T) {
 						method: "PUT",
 						path:   "/v1/comments",
 						body: map[string]string{
-							"ChallengeID": "1",
+							"challengeID": "1",
 							"content":     "valid content",
 							"injected":    "malicious data", // Unexpected field
 						},

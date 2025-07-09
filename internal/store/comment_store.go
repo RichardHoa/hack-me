@@ -2,6 +2,8 @@ package store
 
 import (
 	"database/sql"
+	"fmt"
+	"time"
 
 	"github.com/RichardHoa/hack-me/internal/constants"
 	"github.com/RichardHoa/hack-me/internal/utils"
@@ -19,12 +21,22 @@ type CommentStore interface {
 	PostComment(req PostCommentRequest) error
 	ModifyComment(req ModifyCommentRequest) error
 	DeleteComment(req DeleteCommentRequest) error
+	GetRootComments(foreignKey string, id string) ([]Comment, error)
+}
+
+type Comment struct {
+	ID        string    `json:"id"`
+	Content   string    `json:"content"`
+	Author    string    `json:"author"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
+	Comments  []Comment `json:"comments,omitempty"`
 }
 
 type PostCommentRequest struct {
-	ParentID            string `json:"ParentID"`
-	ChallengeID         string `json:"ChallengeID"`
-	ChallengeResponseID string `json:"ChallengeResponseID"`
+	ParentID            string `json:"parentID"`
+	ChallengeID         string `json:"challengeID"`
+	ChallengeResponseID string `json:"challengeResponseID"`
 	Content             string `json:"content"`
 	UserID              string
 }
@@ -181,4 +193,84 @@ func (store *DBCommentStore) DeleteComment(req DeleteCommentRequest) error {
 	}
 
 	return nil
+}
+
+func (store *DBCommentStore) GetRootComments(foreignKey string, id string) ([]Comment, error) {
+	if foreignKey != "challenge_id" && foreignKey != "challenge_response_id" {
+		return nil, fmt.Errorf("unsupported foreign key: %s", foreignKey)
+	}
+
+	query := fmt.Sprintf(`
+		SELECT 
+			c.id, c.content, u.username, c.created_at, c.updated_at
+		FROM comment c
+		JOIN "user" u ON c.user_id = u.id
+		WHERE c.%s = $1 AND c.parent_id IS NULL
+		ORDER BY c.created_at ASC
+	`, foreignKey)
+
+	rows, err := store.DB.Query(query, id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var comments []Comment
+	for rows.Next() {
+		var comment Comment
+		err := rows.Scan(&comment.ID, &comment.Content, &comment.Author, &comment.CreatedAt, &comment.UpdatedAt)
+		if err != nil {
+			return nil, err
+		}
+
+		replies, err := store.getRepliesRecursive(comment.ID, 1)
+		if err != nil {
+			return nil, err
+		}
+		comment.Comments = replies
+
+		comments = append(comments, comment)
+	}
+
+	return comments, nil
+}
+
+func (store *DBCommentStore) getRepliesRecursive(parentID string, depth int) ([]Comment, error) {
+	if depth >= constants.CommentNestedLevel {
+		return nil, nil
+	}
+
+	query := `
+		SELECT 
+			c.id, c.content, u.username, c.created_at, c.updated_at
+		FROM comment c
+		JOIN "user" u ON c.user_id = u.id
+		WHERE c.parent_id = $1
+		ORDER BY c.created_at ASC
+	`
+
+	rows, err := store.DB.Query(query, parentID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var replies []Comment
+	for rows.Next() {
+		var reply Comment
+		err := rows.Scan(&reply.ID, &reply.Content, &reply.Author, &reply.CreatedAt, &reply.UpdatedAt)
+		if err != nil {
+			return nil, err
+		}
+
+		children, err := store.getRepliesRecursive(reply.ID, depth+1)
+		if err != nil {
+			return nil, err
+		}
+		reply.Comments = children
+
+		replies = append(replies, reply)
+	}
+
+	return replies, nil
 }
