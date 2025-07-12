@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/http/cookiejar"
 	"net/http/httptest"
+	"net/url"
 	"testing"
 
 	"github.com/RichardHoa/hack-me/internal/app"
@@ -187,14 +188,13 @@ func TestChallengeResponseRoute(t *testing.T) {
 					},
 					expectStatus: http.StatusBadRequest,
 				},
+
 				{
 					name: "Verify the challenges response is there",
 					request: TestRequest{
 						method: "GET",
-						path:   "/v1/challenges/responses",
-						body: map[string]string{
-							"challengeID": "1",
-						},
+						path:   fmt.Sprintf("/v1/challenges/responses?challengeID=%s", url.QueryEscape("1")),
+						body:   map[string]string{},
 					},
 					validate: func(t *testing.T, body []byte) {
 						var parsed map[string]any
@@ -246,10 +246,8 @@ func TestChallengeResponseRoute(t *testing.T) {
 					name: "Verify the challenge response has been modified",
 					request: TestRequest{
 						method: "GET",
-						path:   "/v1/challenges/responses",
-						body: map[string]string{
-							"challengeID": "1",
-						},
+						path:   fmt.Sprintf("/v1/challenges/responses?challengeID=%s", url.QueryEscape("1")),
+						body:   map[string]string{},
 					},
 					validate: func(t *testing.T, body []byte) {
 						var parsed map[string]any
@@ -424,10 +422,8 @@ func TestChallengeResponseRoute(t *testing.T) {
 					name: "Verify the challenge has been deleted",
 					request: TestRequest{
 						method: "GET",
-						path:   "/v1/challenges/responses",
-						body: map[string]string{
-							"challengeID": "1",
-						},
+						path:   fmt.Sprintf("/v1/challenges/responses?challengeID=%s", url.QueryEscape("1")),
+						body:   map[string]string{},
 					},
 					validate: func(t *testing.T, body []byte) {
 						var parsed map[string]any

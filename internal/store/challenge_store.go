@@ -141,7 +141,7 @@ func (Store *DBChallengeStore) GetChallenges(freeQuery ChallengeFreeQuery) (chal
 		baseQuery += " ORDER BY popular_score DESC"
 	}
 
-	pageSize := 10
+	pageSize := constants.DefaultPageSize
 	if ps, err := strconv.Atoi(freeQuery.PageSize); err == nil && ps > 0 {
 		pageSize = ps
 	}

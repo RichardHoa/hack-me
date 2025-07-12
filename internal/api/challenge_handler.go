@@ -24,6 +24,7 @@ func NewChallengeHandler(challengeStore store.ChallengeStore, logger *log.Logger
 }
 
 func (handler *ChallengeHandler) GetChallenges(w http.ResponseWriter, r *http.Request) {
+
 	query := r.URL.Query()
 
 	popularity := query.Get("popularity")

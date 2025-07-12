@@ -113,18 +113,21 @@ func (userStore *DBUserStore) CreateUser(user *User) (uuid.UUID, error) {
 
 func (userStore *DBUserStore) LoginAndIssueTokens(user *User) (accessToken, refreshToken, csrfToken string, err error) {
 
-	var userID string
+	var (
+		userID   string
+		userName string
+	)
 
 	switch {
 	case user.GoogleID != "":
-		err = userStore.DB.QueryRow(`SELECT id FROM "user" WHERE google_id = $1`, user.GoogleID).Scan(&userID)
+		err = userStore.DB.QueryRow(`SELECT id, username FROM "user" WHERE google_id = $1`, user.GoogleID).Scan(&userID, &userName)
 
 	case user.GithubID != "":
-		err = userStore.DB.QueryRow(`SELECT id FROM "user" WHERE github_id = $1`, user.GithubID).Scan(&userID)
+		err = userStore.DB.QueryRow(`SELECT id, username FROM "user" WHERE github_id = $1`, user.GithubID).Scan(&userID, &userName)
 
 	case user.Email != "" && user.Password.PlainText != "":
 		var hashed string
-		err = userStore.DB.QueryRow(`SELECT id, password FROM "user" WHERE email = $1`, user.Email).Scan(&userID, &hashed)
+		err = userStore.DB.QueryRow(`SELECT id, username, password FROM "user" WHERE email = $1`, user.Email).Scan(&userID, &userName, &hashed)
 		if err == nil {
 			match, cmpErr := argon2id.ComparePasswordAndHash(user.Password.PlainText, hashed)
 			if cmpErr != nil {
@@ -149,7 +152,7 @@ func (userStore *DBUserStore) LoginAndIssueTokens(user *User) (accessToken, refr
 
 	user.ID = userID
 
-	accessToken, refreshToken, err = utils.CreateTokens(userID)
+	accessToken, refreshToken, err = utils.CreateTokens(userID, userName)
 
 	result, err := utils.ExtractClaimsFromJWT(refreshToken, []string{"refreshID"})
 	if err != nil {

@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/http/cookiejar"
 	"net/http/httptest"
+	"net/url"
 	"testing"
 
 	"github.com/RichardHoa/hack-me/internal/app"
@@ -89,10 +90,8 @@ func TestChallengeResponseVoteRoute(t *testing.T) {
 					name: "Get challenge response",
 					request: TestRequest{
 						method: "GET",
-						path:   "/v1/challenges/responses",
-						body: map[string]string{
-							"challengeID": "1",
-						},
+						path:   fmt.Sprintf("/v1/challenges/responses?challengeID=%s", url.QueryEscape("1")),
+						body:   map[string]string{},
 					},
 					expectStatus: http.StatusOK,
 				},
@@ -230,10 +229,8 @@ func TestChallengeResponseVoteRoute(t *testing.T) {
 					name: "Verify valid up vote",
 					request: TestRequest{
 						method: "GET",
-						path:   "/v1/challenges/responses",
-						body: map[string]string{
-							"challengeID": "1",
-						},
+						path:   fmt.Sprintf("/v1/challenges/responses?challengeID=%s", url.QueryEscape("1")),
+						body:   map[string]string{},
 					},
 					expectStatus: http.StatusOK,
 					validate: func(t *testing.T, body []byte) {
@@ -282,10 +279,8 @@ func TestChallengeResponseVoteRoute(t *testing.T) {
 					name: "Verify down vote",
 					request: TestRequest{
 						method: "GET",
-						path:   "/v1/challenges/responses",
-						body: map[string]string{
-							"challengeID": "1",
-						},
+						path:   fmt.Sprintf("/v1/challenges/responses?challengeID=%s", url.QueryEscape("1")),
+						body:   map[string]string{},
 					},
 					expectStatus: http.StatusOK,
 					validate: func(t *testing.T, body []byte) {
@@ -385,10 +380,8 @@ func TestChallengeResponseVoteRoute(t *testing.T) {
 					name: "Verify delete vote",
 					request: TestRequest{
 						method: "GET",
-						path:   "/v1/challenges/responses",
-						body: map[string]string{
-							"challengeID": "1",
-						},
+						path:   fmt.Sprintf("/v1/challenges/responses?challengeID=%s", url.QueryEscape("1")),
+						body:   map[string]string{},
 					},
 					expectStatus: http.StatusOK,
 					validate: func(t *testing.T, body []byte) {

@@ -64,10 +64,10 @@ type ChallengeResponseStore interface {
 	PostResponse(response PostChallengeResponseRequest) error
 	ModifyResponse(response PutChallengeResponseRequest) error
 	DeleteResponse(deleteRequest DeleteChallengeResponseRequest) error
-	GetResponses(request GetChallengeResponseRequest) (ChallengeResponseOut, error)
+	GetResponses(challengeID string) (ChallengeResponseOut, error)
 }
 
-func (store *DBChallengeResponseStore) GetResponses(request GetChallengeResponseRequest) (ChallengeResponseOut, error) {
+func (store *DBChallengeResponseStore) GetResponses(challengeID string) (ChallengeResponseOut, error) {
 
 	query := `
 		SELECT 
@@ -91,7 +91,7 @@ func (store *DBChallengeResponseStore) GetResponses(request GetChallengeResponse
 			cr.created_at ASC
 		`
 
-	rows, err := store.DB.Query(query, request.ChallengeID)
+	rows, err := store.DB.Query(query, challengeID)
 	if err != nil {
 		return nil, utils.NewCustomAppError(constants.InternalError, fmt.Sprintf("fail to query challenge_response: %v", err.Error()))
 

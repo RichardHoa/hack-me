@@ -45,9 +45,10 @@ const (
 	StatusInternalErrorMessage = "Internal server error"
 	StatusInvalidJSONMessage   = "Invalid JSON format"
 	UnauthorizedMessage        = "Unauthorized"
-	AccessTokenTime            = 15 * time.Minute
+	AccessTokenTime            = 24 * time.Hour // This is supposed to be 15 mins
 	RefreshTokenTime           = 7 * (24 * time.Hour)
 	CommentNestedLevel         = 5
+	DefaultPageSize            = 10
 )
 
 const (

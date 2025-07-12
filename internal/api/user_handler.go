@@ -48,7 +48,7 @@ func (handler *UserHandler) RegisterNewUser(w http.ResponseWriter, r *http.Reque
 	if User.Password.PlainText != "" {
 		checkResult := utils.CheckPasswordValid(User.Password.PlainText)
 		if checkResult.Error == nil && checkResult.ErrorMessage != "" {
-			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("Invalid password", constants.MSG_INVALID_REQUEST_DATA, checkResult.ErrorMessage))
+			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(checkResult.ErrorMessage, constants.MSG_INVALID_REQUEST_DATA, checkResult.ErrorMessage))
 			return
 		}
 

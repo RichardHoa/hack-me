@@ -471,10 +471,8 @@ func TestCommentRoute(t *testing.T) {
 					name: "GET",
 					request: TestRequest{
 						method: "GET",
-						path:   "/v1/challenges/responses",
-						body: map[string]string{
-							"challengeID": "1",
-						},
+						path:   fmt.Sprintf("/v1/challenges/responses?challengeID=%s", url.QueryEscape("1")),
+						body:   map[string]string{},
 					},
 					expectStatus: http.StatusOK,
 				},
@@ -483,10 +481,8 @@ func TestCommentRoute(t *testing.T) {
 					name: "Verify nested comments up to level 5",
 					request: TestRequest{
 						method: "GET",
-						path:   "/v1/challenges/responses",
-						body: map[string]string{
-							"challengeID": "1",
-						},
+						path:   fmt.Sprintf("/v1/challenges/responses?challengeID=%s", url.QueryEscape("1")),
+						body:   map[string]string{},
 					},
 					expectStatus: http.StatusOK,
 					validate: func(t *testing.T, body []byte) {
@@ -551,10 +547,8 @@ func TestCommentRoute(t *testing.T) {
 					name: "Verify first level comment was edited",
 					request: TestRequest{
 						method: "GET",
-						path:   "/v1/challenges/responses",
-						body: map[string]string{
-							"challengeID": "1",
-						},
+						path:   fmt.Sprintf("/v1/challenges/responses?challengeID=%s", url.QueryEscape("1")),
+						body:   map[string]string{},
 					},
 					expectStatus: http.StatusOK,
 					validate:     verifyEditedComment(1),
@@ -576,10 +570,8 @@ func TestCommentRoute(t *testing.T) {
 					name: "Verify second level comment was edited",
 					request: TestRequest{
 						method: "GET",
-						path:   "/v1/challenges/responses",
-						body: map[string]string{
-							"challengeID": "1",
-						},
+						path:   fmt.Sprintf("/v1/challenges/responses?challengeID=%s", url.QueryEscape("1")),
+						body:   map[string]string{},
 					},
 					expectStatus: http.StatusOK,
 					validate:     verifyEditedComment(2),
@@ -601,10 +593,8 @@ func TestCommentRoute(t *testing.T) {
 					name: "Verify third level comment was edited",
 					request: TestRequest{
 						method: "GET",
-						path:   "/v1/challenges/responses",
-						body: map[string]string{
-							"challengeID": "1",
-						},
+						path:   fmt.Sprintf("/v1/challenges/responses?challengeID=%s", url.QueryEscape("1")),
+						body:   map[string]string{},
 					},
 					expectStatus: http.StatusOK,
 					validate:     verifyEditedComment(3),
@@ -626,10 +616,8 @@ func TestCommentRoute(t *testing.T) {
 					name: "Verify fourth level comment was edited",
 					request: TestRequest{
 						method: "GET",
-						path:   "/v1/challenges/responses",
-						body: map[string]string{
-							"challengeID": "1",
-						},
+						path:   fmt.Sprintf("/v1/challenges/responses?challengeID=%s", url.QueryEscape("1")),
+						body:   map[string]string{},
 					},
 					expectStatus: http.StatusOK,
 					validate:     verifyEditedComment(4),
@@ -651,10 +639,8 @@ func TestCommentRoute(t *testing.T) {
 					name: "Verify fifth level comment was edited",
 					request: TestRequest{
 						method: "GET",
-						path:   "/v1/challenges/responses",
-						body: map[string]string{
-							"challengeID": "1",
-						},
+						path:   fmt.Sprintf("/v1/challenges/responses?challengeID=%s", url.QueryEscape("1")),
+						body:   map[string]string{},
 					},
 					expectStatus: http.StatusOK,
 					validate:     verifyEditedComment(5),
@@ -775,10 +761,8 @@ func TestCommentRoute(t *testing.T) {
 					name: "Verify there is no comment left",
 					request: TestRequest{
 						method: "GET",
-						path:   "/v1/challenges/responses",
-						body: map[string]string{
-							"challengeID": "1",
-						},
+						path:   fmt.Sprintf("/v1/challenges/responses?challengeID=%s", url.QueryEscape("1")),
+						body:   map[string]string{},
 					},
 					expectStatus: http.StatusOK,
 					validate: func(t *testing.T, body []byte) {

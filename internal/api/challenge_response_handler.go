@@ -162,18 +162,11 @@ func (handler *ChallengeResponseHandler) DeleteChallengeResponse(w http.Response
 
 func (handler *ChallengeResponseHandler) GetChallengeResponse(w http.ResponseWriter, r *http.Request) {
 
-	var req store.GetChallengeResponseRequest
+	query := r.URL.Query()
 
-	decoder := json.NewDecoder(r.Body)
-	decoder.DisallowUnknownFields()
-	err := decoder.Decode(&req)
-	if err != nil {
-		handler.Logger.Printf("ERROR: GetChallengeResponse > json encoding: %v", err)
-		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(constants.StatusInvalidJSONMessage, constants.MSG_MALFORMED_REQUEST_DATA, "request"))
-		return
-	}
+	challengeID := query.Get("challengeID")
 
-	responses, err := handler.ChallengeResponseStore.GetResponses(req)
+	responses, err := handler.ChallengeResponseStore.GetResponses(challengeID)
 	if err != nil {
 		switch utils.ClassifyError(err) {
 		default:

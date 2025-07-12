@@ -13,8 +13,15 @@ import (
 
 	"github.com/RichardHoa/hack-me/internal/constants"
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/google/uuid"
 )
+
+func generateSecureHexString(length int) (string, error) {
+	bytes := make([]byte, length)
+	if _, err := rand.Read(bytes); err != nil {
+		return "", err
+	}
+	return hex.EncodeToString(bytes), nil
+}
 
 func SendTokens(w http.ResponseWriter, accessToken, refreshToken, csrfToken string) {
 
@@ -118,12 +125,10 @@ func CheckCSRFToken(csrfToken string, sessionID string) (bool, error) {
 }
 
 func CreateCSRFToken(sessionID string) (string, error) {
-	randomBytes := make([]byte, 64)
-	_, err := rand.Read(randomBytes)
+	randomValueHex, err := generateSecureHexString(64)
 	if err != nil {
-		return "", fmt.Errorf("failed to generate random bytes: %w", err)
+		return "", err
 	}
-	randomValueHex := hex.EncodeToString(randomBytes)
 
 	message := fmt.Sprintf(
 		"%d!%s!%d!%s",
@@ -143,7 +148,12 @@ func CreateCSRFToken(sessionID string) (string, error) {
 	return csrfToken, nil
 }
 
-func CreateTokens(userID string) (accessToken string, refreshToken string, err error) {
+func CreateTokens(userID, userName string) (accessToken string, refreshToken string, err error) {
+
+	secureID, err := generateSecureHexString(16)
+	if err != nil {
+		return "", "", err
+	}
 
 	// 1. Create Access Token
 	accessClaims := jwt.MapClaims{
@@ -158,7 +168,8 @@ func CreateTokens(userID string) (accessToken string, refreshToken string, err e
 
 	// 2. Create Refresh Token
 	refreshClaims := jwt.MapClaims{
-		"refreshID": uuid.New().String(),
+		"refreshID": secureID,
+		"userName":  userName,
 		"userID":    userID,
 		"exp":       time.Now().Add(constants.RefreshTokenTime).Unix(),
 		"iat":       time.Now().Unix(),
