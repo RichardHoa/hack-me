@@ -18,7 +18,7 @@ func NewCommentStore(db *sql.DB) DBCommentStore {
 }
 
 type CommentStore interface {
-	PostComment(req PostCommentRequest) error
+	PostComment(req PostCommentRequest) (commentID string, err error)
 	ModifyComment(req ModifyCommentRequest) error
 	DeleteComment(req DeleteCommentRequest) error
 	GetRootComments(foreignKey string, id string) ([]Comment, error)
@@ -52,36 +52,29 @@ type DeleteCommentRequest struct {
 	UserID    string
 }
 
-func (store *DBCommentStore) PostComment(req PostCommentRequest) error {
+func (store *DBCommentStore) PostComment(req PostCommentRequest) (commentID string, err error) {
 	// TODO: Implement depth control when posting comment
 
 	query := `
 		INSERT INTO comment (parent_id, challenge_id, challenge_response_id, user_id, content)
 		VALUES ($1, $2, $3, $4, $5)
+		RETURNING id
 	`
 
-	result, err := store.DB.Exec(
+	err = store.DB.QueryRow(
 		query,
 		utils.NullIfEmpty(req.ParentID),
 		utils.NullIfEmpty(req.ChallengeID),
 		utils.NullIfEmpty(req.ChallengeResponseID),
 		req.UserID,
 		req.Content,
-	)
+	).Scan(&commentID)
+
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	rowsAffected, err := result.RowsAffected()
-	if err != nil {
-		return err
-	}
-
-	if rowsAffected == 0 {
-		panic("No err but the rows affected is 0")
-	}
-
-	return nil
+	return commentID, nil
 }
 
 func (store *DBCommentStore) ModifyComment(req ModifyCommentRequest) error {

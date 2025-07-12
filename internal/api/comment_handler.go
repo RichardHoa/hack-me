@@ -47,7 +47,7 @@ func (handler *CommentHandler) PostComment(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	err = handler.Store.PostComment(req)
+	commentID, err := handler.Store.PostComment(req)
 	if err != nil {
 		switch utils.ClassifyError(err) {
 		case constants.PQForeignKeyViolation:
@@ -64,8 +64,11 @@ func (handler *CommentHandler) PostComment(w http.ResponseWriter, r *http.Reques
 			return
 		}
 	}
+	data := map[string]any{
+		"commentID": commentID,
+	}
 
-	utils.WriteJSON(w, http.StatusCreated, utils.NewMessage("comment has been created", "", ""))
+	utils.WriteJSON(w, http.StatusCreated, utils.Message{"data": data, "message": "Post comment successfully"})
 
 }
 

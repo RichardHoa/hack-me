@@ -48,7 +48,7 @@ func (handler *ChallengeResponseHandler) PostChallengeResponse(w http.ResponseWr
 		return
 	}
 
-	err = handler.ChallengeResponseStore.PostResponse(req)
+	challengeResponseID, err := handler.ChallengeResponseStore.PostResponse(req)
 	if err != nil {
 		switch utils.ClassifyError(err) {
 		case constants.PQUniqueViolation:
@@ -62,7 +62,14 @@ func (handler *ChallengeResponseHandler) PostChallengeResponse(w http.ResponseWr
 
 	}
 
-	utils.WriteJSON(w, http.StatusCreated, utils.NewMessage("New challenge response created successfully", "", ""))
+	data := map[string]any{
+		"challengeResponseID": challengeResponseID,
+	}
+
+	utils.WriteJSON(w, http.StatusCreated, utils.Message{
+		"message": "add challenge response successfully",
+		"data":    data,
+	})
 }
 
 func (handler *ChallengeResponseHandler) ModifyChallengeResponse(w http.ResponseWriter, r *http.Request) {

@@ -26,12 +26,13 @@ func SetUpRoutes(app *app.Application) *chi.Mux {
 	})
 
 	router.Route("/v1", func(outerRouter chi.Router) {
+		outerRouter.Use(app.Middleware.CorsMiddleware)
 		outerRouter.Route("/challenges", func(r chi.Router) {
 			// GET /challenges?popularity=asc|desc&category=cat1&category=cat2&name=searchTerm
 			r.Get("/", app.ChallengeHandler.GetChallenges)
 
 			r.Group(func(csrfRouter chi.Router) {
-				// csrfRouter.Use(app.Middleware.RequireCSRFToken)
+				csrfRouter.Use(app.Middleware.RequireCSRFToken)
 				csrfRouter.Post("/", app.ChallengeHandler.PostChallenge)
 				csrfRouter.Put("/", app.ChallengeHandler.ModifyChallenge)
 				csrfRouter.Delete("/", app.ChallengeHandler.DeleteChallege)
@@ -41,13 +42,14 @@ func SetUpRoutes(app *app.Application) *chi.Mux {
 				innerRouter.Get("/", app.ChallengeResponseHandler.GetChallengeResponse)
 
 				innerRouter.Group(func(csrfRouter chi.Router) {
-					// csrfRouter.Use(app.Middleware.RequireCSRFToken)
+					csrfRouter.Use(app.Middleware.RequireCSRFToken)
 					csrfRouter.Post("/", app.ChallengeResponseHandler.PostChallengeResponse)
 					csrfRouter.Put("/", app.ChallengeResponseHandler.ModifyChallengeResponse)
 					csrfRouter.Delete("/", app.ChallengeResponseHandler.DeleteChallengeResponse)
 				})
 
 				innerRouter.Route("/votes", func(router chi.Router) {
+					router.Use(app.Middleware.RequireCSRFToken)
 					router.Post("/", app.ChallengeresponseVoteHandler.PostVote)
 					router.Delete("/", app.ChallengeresponseVoteHandler.DeleteVote)
 
@@ -63,6 +65,7 @@ func SetUpRoutes(app *app.Application) *chi.Mux {
 		})
 
 		outerRouter.Route("/comments", func(r chi.Router) {
+			r.Use(app.Middleware.RequireCSRFToken)
 			r.Put("/", app.CommentHandler.ModifyComment)
 			r.Post("/", app.CommentHandler.PostComment)
 			r.Delete("/", app.CommentHandler.DeleteComment)

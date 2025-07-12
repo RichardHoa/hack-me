@@ -2,7 +2,6 @@ package store
 
 import (
 	"database/sql"
-	"errors"
 	"fmt"
 	"strings"
 	"time"
@@ -61,7 +60,7 @@ type PostChallengeResponseRequest struct {
 }
 
 type ChallengeResponseStore interface {
-	PostResponse(response PostChallengeResponseRequest) error
+	PostResponse(response PostChallengeResponseRequest) (challengeResponseID string, err error)
 	ModifyResponse(response PutChallengeResponseRequest) error
 	DeleteResponse(deleteRequest DeleteChallengeResponseRequest) error
 	GetResponses(challengeID string) (ChallengeResponseOut, error)
@@ -119,25 +118,18 @@ func (store *DBChallengeResponseStore) GetResponses(challengeID string) (Challen
 	return responses, nil
 }
 
-func (store *DBChallengeResponseStore) PostResponse(request PostChallengeResponseRequest) error {
+func (store *DBChallengeResponseStore) PostResponse(request PostChallengeResponseRequest) (challengeResponseID string, err error) {
 	query := `
 		INSERT INTO challenge_response (challenge_id, user_id, name, content)
 		VALUES ($1, $2, $3, $4)
+		RETURNING id
 	`
-	result, err := store.DB.Exec(query, request.ChallengeID, request.UserID, request.Name, request.Content)
+	err = store.DB.QueryRow(query, request.ChallengeID, request.UserID, request.Name, request.Content).Scan(&challengeResponseID)
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	rowsAffected, err := result.RowsAffected()
-	if err != nil {
-		return err
-	}
-	if rowsAffected == 0 {
-		return errors.New("no row inserted")
-	}
-
-	return nil
+	return challengeResponseID, err
 }
 func (store *DBChallengeResponseStore) DeleteResponse(deleteRequest DeleteChallengeResponseRequest) error {
 	// Check if the challenge response exists
