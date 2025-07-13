@@ -1,7 +1,7 @@
 -- +goose Up
 -- +goose StatementBegin
 CREATE TABLE IF NOT EXISTS refresh_token (
-    id UUID PRIMARY KEY,
+    id TEXT PRIMARY KEY,
     user_id UUID NOT NULL UNIQUE REFERENCES "user"(id) ON DELETE CASCADE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now()

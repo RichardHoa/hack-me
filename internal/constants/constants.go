@@ -42,10 +42,17 @@ var (
 )
 
 const (
+	TokenRefreshID = "refreshID"
+	TokenUserName  = "userName"
+	TokenUserID    = "userID"
+)
+
+const (
 	StatusInternalErrorMessage = "Internal server error"
 	StatusInvalidJSONMessage   = "Invalid JSON format"
 	UnauthorizedMessage        = "Unauthorized"
-	AccessTokenTime            = 24 * time.Hour // This is supposed to be 15 mins
+	ForbiddenMessage           = "Forbidden"
+	AccessTokenTime            = 15 * time.Minute
 	RefreshTokenTime           = 7 * (24 * time.Hour)
 	CommentNestedLevel         = 5
 	DefaultPageSize            = 10

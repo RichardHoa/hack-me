@@ -152,7 +152,7 @@ func (userStore *DBUserStore) LoginAndIssueTokens(user *User) (accessToken, refr
 
 	user.ID = userID
 
-	accessToken, refreshToken, err = utils.CreateTokens(userID, userName)
+	accessToken, refreshToken, err = utils.CreateTokens(userID, userName, 0)
 
 	result, err := utils.ExtractClaimsFromJWT(refreshToken, []string{"refreshID"})
 	if err != nil {

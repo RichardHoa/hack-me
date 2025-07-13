@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
@@ -23,13 +24,47 @@ func generateSecureHexString(length int) (string, error) {
 	return hex.EncodeToString(bytes), nil
 }
 
-func SendTokens(w http.ResponseWriter, accessToken, refreshToken, csrfToken string) {
+func SendEmptyTokens(w http.ResponseWriter) {
+	http.SetCookie(w, &http.Cookie{
+		Name:     "accessToken",
+		Path:     "/",
+		Value:    "",
+		MaxAge:   -1,
+		Expires:  time.Unix(0, 0),
+		HttpOnly: false,
+		Secure:   false,
+		SameSite: http.SameSiteLaxMode,
+	})
+
+	http.SetCookie(w, &http.Cookie{
+		Name:     "csrfToken",
+		Path:     "/",
+		Value:    "",
+		MaxAge:   -1,
+		Expires:  time.Unix(0, 0),
+		HttpOnly: false,
+		Secure:   false,
+		SameSite: http.SameSiteLaxMode,
+	})
+
+	http.SetCookie(w, &http.Cookie{
+		Name:     "refreshToken",
+		Path:     "/",
+		Value:    "",
+		MaxAge:   -1,
+		Expires:  time.Unix(0, 0),
+		HttpOnly: true,
+		Secure:   false,
+		SameSite: http.SameSiteLaxMode,
+	})
+}
+
+func SendTokens(w http.ResponseWriter, accessToken, refreshToken, csrfToken string) error {
 
 	http.SetCookie(w, &http.Cookie{
 		Name:     "accessToken",
 		Path:     "/",
 		Value:    accessToken,
-		Expires:  time.Now().Add(constants.AccessTokenTime),
 		MaxAge:   int(constants.AccessTokenTime.Seconds()),
 		HttpOnly: false,
 		Secure:   false,
@@ -40,23 +75,47 @@ func SendTokens(w http.ResponseWriter, accessToken, refreshToken, csrfToken stri
 		Name:     "csrfToken",
 		Path:     "/",
 		Value:    csrfToken,
-		Expires:  time.Now().Add(constants.AccessTokenTime),
 		MaxAge:   int(constants.AccessTokenTime.Seconds()),
 		HttpOnly: false,
 		Secure:   false,
 		SameSite: http.SameSiteLaxMode,
 	})
 
+	result, err := ExtractClaimsFromJWT(refreshToken, []string{"iat", "exp"})
+	if err != nil {
+		return err
+	}
+
+	iatStr := result[0]
+	expStr := result[1]
+
+	iatUnix, err := strconv.ParseInt(iatStr, 10, 64)
+	if err != nil {
+		return err
+	}
+
+	expUnix, err := strconv.ParseInt(expStr, 10, 64)
+	if err != nil {
+		return err
+	}
+
+	iatTime := time.Unix(iatUnix, 0)
+	expTime := time.Unix(expUnix, 0)
+
+	refreshTokenDuration := expTime.Sub(iatTime)
+	// fmt.Printf("time left: %v\n", refreshTokenDuration.Seconds())
+
 	http.SetCookie(w, &http.Cookie{
 		Name:     "refreshToken",
 		Path:     "/",
 		Value:    refreshToken,
-		Expires:  time.Now().Add(constants.RefreshTokenTime),
-		MaxAge:   int(constants.RefreshTokenTime.Seconds()),
+		MaxAge:   int(refreshTokenDuration.Seconds()),
 		HttpOnly: true,
 		Secure:   false,
 		SameSite: http.SameSiteLaxMode,
 	})
+
+	return nil
 
 }
 
@@ -77,10 +136,22 @@ func ExtractClaimsFromJWT(tokenStr string, keys []string) ([]string, error) {
 		if !exists {
 			return nil, fmt.Errorf("missing claim: %s", key)
 		}
-		strVal, ok := val.(string)
-		if !ok {
-			return nil, fmt.Errorf("claim %s is not a string", key)
+
+		var strVal string
+
+		switch v := val.(type) {
+		case string:
+			strVal = v
+		case float64:
+			strVal = strconv.FormatInt(int64(v), 10)
+		case int64:
+			strVal = strconv.FormatInt(v, 10)
+		case int:
+			strVal = strconv.Itoa(v)
+		default:
+			strVal = fmt.Sprintf("%v", val)
 		}
+
 		result[i] = strVal
 	}
 
@@ -148,7 +219,11 @@ func CreateCSRFToken(sessionID string) (string, error) {
 	return csrfToken, nil
 }
 
-func CreateTokens(userID, userName string) (accessToken string, refreshToken string, err error) {
+func CreateTokens(userID, userName string, refreshTokenTime int64) (accessToken string, refreshToken string, err error) {
+
+	if refreshTokenTime == 0 {
+		refreshTokenTime = time.Now().Add(constants.RefreshTokenTime).Unix()
+	}
 
 	secureID, err := generateSecureHexString(16)
 	if err != nil {
@@ -168,11 +243,11 @@ func CreateTokens(userID, userName string) (accessToken string, refreshToken str
 
 	// 2. Create Refresh Token
 	refreshClaims := jwt.MapClaims{
-		"refreshID": secureID,
-		"userName":  userName,
-		"userID":    userID,
-		"exp":       time.Now().Add(constants.RefreshTokenTime).Unix(),
-		"iat":       time.Now().Unix(),
+		constants.TokenRefreshID: secureID,
+		constants.TokenUserName:  userName,
+		constants.TokenUserID:    userID,
+		"exp":                    refreshTokenTime,
+		"iat":                    time.Now().Unix(),
 	}
 	refreshTokenObj := jwt.NewWithClaims(jwt.SigningMethodHS512, refreshClaims)
 	refreshToken, err = refreshTokenObj.SignedString([]byte(constants.RefreshTokenSecret))
@@ -184,11 +259,11 @@ func CreateTokens(userID, userName string) (accessToken string, refreshToken str
 
 }
 
-func ValidateTokensFromCookies(r *http.Request) (userID string, refreshTokenID string, err error) {
+func ValidateTokensFromCookies(r *http.Request, claimsList []string) (result []string, err error) {
 	// Access token: validate structure
 	accessCookie, err := r.Cookie("accessToken")
 	if err != nil || accessCookie.Value == "" {
-		return "", "", err
+		return []string{}, err
 	}
 
 	accessToken, err := jwt.Parse(accessCookie.Value, func(token *jwt.Token) (interface{}, error) {
@@ -198,13 +273,13 @@ func ValidateTokensFromCookies(r *http.Request) (userID string, refreshTokenID s
 		jwt.WithIssuedAt(),
 	)
 	if err != nil || !accessToken.Valid {
-		return "", "", err
+		return []string{}, err
 	}
 
 	// Refresh token: validate and extract claims
 	refreshCookie, err := r.Cookie("refreshToken")
 	if err != nil || refreshCookie.Value == "" {
-		return "", "", err
+		return []string{}, err
 	}
 
 	refreshToken, err := jwt.Parse(refreshCookie.Value, func(token *jwt.Token) (interface{}, error) {
@@ -214,19 +289,18 @@ func ValidateTokensFromCookies(r *http.Request) (userID string, refreshTokenID s
 		jwt.WithIssuedAt(),
 	)
 	if err != nil || !refreshToken.Valid {
-		return "", "", err
+		return []string{}, err
 	}
 
-	claims, ok := refreshToken.Claims.(jwt.MapClaims)
-	if !ok {
-		return "", "", err
+	result, err = ExtractClaimsFromJWT(refreshCookie.Value, claimsList)
+	if err != nil {
+		return []string{}, err
 	}
 
-	userID, ok1 := claims["userID"].(string)
-	refreshTokenID, ok2 := claims["refreshID"].(string)
-	if !ok1 || !ok2 {
-		return "", "", err
+	if len(result) == 0 {
+		return []string{}, errors.New("Empty result list")
 	}
 
-	return userID, refreshTokenID, nil
+	return result, nil
+
 }

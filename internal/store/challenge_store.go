@@ -43,7 +43,7 @@ type PutChallengeRequest struct {
 }
 
 type Challenge struct {
-	ID        string    `json:"ID"`
+	ID        string    `json:"id"`
 	UserID    string    `json:"-"`
 	UserName  string    `json:"userName"`
 	Name      string    `json:"name"`

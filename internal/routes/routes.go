@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/RichardHoa/hack-me/internal/app"
+	"github.com/RichardHoa/hack-me/internal/constants"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 )
@@ -26,7 +27,11 @@ func SetUpRoutes(app *app.Application) *chi.Mux {
 	})
 
 	router.Route("/v1", func(outerRouter chi.Router) {
-		outerRouter.Use(app.Middleware.CorsMiddleware)
+
+		if constants.IsDevMode {
+			outerRouter.Use(app.Middleware.CorsMiddleware)
+		}
+
 		outerRouter.Route("/challenges", func(r chi.Router) {
 			// GET /challenges?popularity=asc|desc&category=cat1&category=cat2&name=searchTerm
 			r.Get("/", app.ChallengeHandler.GetChallenges)
@@ -59,9 +64,14 @@ func SetUpRoutes(app *app.Application) *chi.Mux {
 
 		})
 
+		outerRouter.Route("/auth", func(r chi.Router) {
+			r.Post("/tokens", app.UserHandler.RefreshTokenRotation)
+		})
+
 		outerRouter.Route("/users", func(r chi.Router) {
 			r.Post("/", app.UserHandler.RegisterNewUser)
 			r.Post("/login", app.UserHandler.LoginUser)
+			r.Post("/logout", app.UserHandler.LogoutUser)
 		})
 
 		outerRouter.Route("/comments", func(r chi.Router) {

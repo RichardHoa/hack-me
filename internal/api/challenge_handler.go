@@ -93,13 +93,15 @@ func (handler *ChallengeHandler) GetChallenges(w http.ResponseWriter, r *http.Re
 }
 
 func (handler *ChallengeHandler) PostChallenge(w http.ResponseWriter, r *http.Request) {
-	userID, _, err := utils.ValidateTokensFromCookies(r)
+	result, err := utils.ValidateTokensFromCookies(r, []string{constants.TokenUserID})
 	if err != nil {
 		handler.Logger.Printf("ERROR: PostChallenge > JWT token checking: %v", err)
 		utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, "cookies"))
 
 		return
 	}
+
+	userID := result[0]
 
 	var req store.PostChallengeRequest
 
@@ -154,12 +156,14 @@ func (handler *ChallengeHandler) PostChallenge(w http.ResponseWriter, r *http.Re
 }
 
 func (handler *ChallengeHandler) DeleteChallege(w http.ResponseWriter, r *http.Request) {
-	userID, _, err := utils.ValidateTokensFromCookies(r)
+	result, err := utils.ValidateTokensFromCookies(r, []string{constants.TokenUserID})
+
 	if err != nil {
 		handler.Logger.Printf("ERROR: DeleteChallenge > JWT token checking: %v", err)
 		utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, "cookies"))
 		return
 	}
+	userID := result[0]
 
 	var req store.DeleteChallengeRequest
 
@@ -200,12 +204,13 @@ func (handler *ChallengeHandler) DeleteChallege(w http.ResponseWriter, r *http.R
 
 func (handler *ChallengeHandler) ModifyChallenge(w http.ResponseWriter, r *http.Request) {
 
-	userID, _, err := utils.ValidateTokensFromCookies(r)
+	result, err := utils.ValidateTokensFromCookies(r, []string{constants.TokenUserID})
 	if err != nil {
 		handler.Logger.Printf("ERROR: ModifyChallenge > JWT token checking: %v", err)
 		utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, "cookies"))
 		return
 	}
+	userID := result[0]
 
 	var req store.PutChallengeRequest
 

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/RichardHoa/hack-me/internal/constants"
 	"github.com/RichardHoa/hack-me/internal/store"
@@ -23,12 +24,13 @@ func NewChallengeResponseHandler(store store.ChallengeResponseStore, logger *log
 }
 
 func (handler *ChallengeResponseHandler) PostChallengeResponse(w http.ResponseWriter, r *http.Request) {
-	userID, _, err := utils.ValidateTokensFromCookies(r)
+	result, err := utils.ValidateTokensFromCookies(r, []string{constants.TokenUserID})
 	if err != nil {
 		handler.Logger.Printf("ERROR: PostChallengeResponse > JWT token checking: %v", err)
 		utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, "cookies"))
 		return
 	}
+	userID := result[0]
 
 	var req store.PostChallengeResponseRequest
 
@@ -73,12 +75,13 @@ func (handler *ChallengeResponseHandler) PostChallengeResponse(w http.ResponseWr
 }
 
 func (handler *ChallengeResponseHandler) ModifyChallengeResponse(w http.ResponseWriter, r *http.Request) {
-	userID, _, err := utils.ValidateTokensFromCookies(r)
+	result, err := utils.ValidateTokensFromCookies(r, []string{constants.TokenUserID})
 	if err != nil {
 		handler.Logger.Printf("ERROR: ModifyChallengeResponse > JWT token checking: %v", err)
 		utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, "cookies"))
 		return
 	}
+	userID := result[0]
 
 	var req store.PutChallengeResponseRequest
 
@@ -95,10 +98,12 @@ func (handler *ChallengeResponseHandler) ModifyChallengeResponse(w http.Response
 
 	if req.ChallengeResponseID == "" {
 		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("challengeResponseID must exist", constants.MSG_LACKING_MANDATORY_FIELDS, "challengeResponseID"))
+		return
 	}
 
 	if req.Name == "" || req.Content == "" {
 		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("name or content field must exist", constants.MSG_LACKING_MANDATORY_FIELDS, "name, content"))
+		return
 	}
 
 	err = handler.ChallengeResponseStore.ModifyResponse(req)
@@ -122,12 +127,14 @@ func (handler *ChallengeResponseHandler) ModifyChallengeResponse(w http.Response
 }
 
 func (handler *ChallengeResponseHandler) DeleteChallengeResponse(w http.ResponseWriter, r *http.Request) {
-	userID, _, err := utils.ValidateTokensFromCookies(r)
+	result, err := utils.ValidateTokensFromCookies(r, []string{constants.TokenUserID})
 	if err != nil {
 		handler.Logger.Printf("ERROR: DeleteChallengeResponse > JWT token checking: %v", err)
 		utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, "cookies"))
 		return
 	}
+
+	userID := result[0]
 
 	var req store.DeleteChallengeResponseRequest
 
@@ -172,8 +179,21 @@ func (handler *ChallengeResponseHandler) GetChallengeResponse(w http.ResponseWri
 	query := r.URL.Query()
 
 	challengeID := query.Get("challengeID")
+	challengeResponseID := query.Get("challengeResponseID")
 
-	responses, err := handler.ChallengeResponseStore.GetResponses(challengeID)
+	trimmedChallengeID := strings.TrimSpace(challengeID)
+	trimmedChallengeResponseID := strings.TrimSpace(challengeResponseID)
+
+	if trimmedChallengeID != "" && trimmedChallengeResponseID != "" {
+		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("challengeID and challengeResponseID cannot be present at the same time", constants.MSG_MALFORMED_REQUEST_DATA, "query parameter"))
+		return
+	}
+	req := store.GetChallengeResponseRequest{
+		ChallengeID:         trimmedChallengeID,
+		ChallengeResponseID: trimmedChallengeResponseID,
+	}
+
+	responses, err := handler.ChallengeResponseStore.GetResponses(req)
 	if err != nil {
 		switch utils.ClassifyError(err) {
 		default:

@@ -35,21 +35,22 @@ type PutChallengeResponseRequest struct {
 }
 
 type GetChallengeResponseRequest struct {
-	ChallengeID string `json:"challengeID"`
+	ChallengeID         string `json:"challengeID"`
+	ChallengeResponseID string `json:"challengeResponseID"`
 }
 
 type ChallengeResponseOut []DetailChallengeResponse
 
 type DetailChallengeResponse struct {
-	ChallengeResponseID string    `json:"challengeResponseID"`
-	AuthorName          string    `json:"authorName"`
-	Name                string    `json:"name"`
-	Content             string    `json:"content"`
-	UpVote              string    `json:"upVote"`
-	DownVote            string    `json:"downVote"`
-	CreatedAt           time.Time `json:"createdAt"`
-	UpdatedAt           time.Time `json:"updatedAt"`
-	Comments            []Comment `json:"comments"`
+	ID         string    `json:"id"`
+	AuthorName string    `json:"authorName"`
+	Name       string    `json:"name"`
+	Content    string    `json:"content"`
+	UpVote     string    `json:"upVote"`
+	DownVote   string    `json:"downVote"`
+	CreatedAt  time.Time `json:"createdAt"`
+	UpdatedAt  time.Time `json:"updatedAt"`
+	Comments   []Comment `json:"comments"`
 }
 
 type PostChallengeResponseRequest struct {
@@ -63,12 +64,27 @@ type ChallengeResponseStore interface {
 	PostResponse(response PostChallengeResponseRequest) (challengeResponseID string, err error)
 	ModifyResponse(response PutChallengeResponseRequest) error
 	DeleteResponse(deleteRequest DeleteChallengeResponseRequest) error
-	GetResponses(challengeID string) (ChallengeResponseOut, error)
+	GetResponses(req GetChallengeResponseRequest) (ChallengeResponseOut, error)
 }
 
-func (store *DBChallengeResponseStore) GetResponses(challengeID string) (ChallengeResponseOut, error) {
+func (store *DBChallengeResponseStore) GetResponses(req GetChallengeResponseRequest) (ChallengeResponseOut, error) {
+	var (
+		whereClause string
+		arg         any
+	)
 
-	query := `
+	switch {
+	case req.ChallengeResponseID != "":
+		whereClause = "cr.id = $1"
+		arg = req.ChallengeResponseID
+	case req.ChallengeID != "":
+		whereClause = "cr.challenge_id = $1"
+		arg = req.ChallengeID
+	default:
+		panic("The handler is supposed to reject if there is no challengeID or challengeResponseID")
+	}
+
+	query := fmt.Sprintf(`
 		SELECT 
 			cr.id,
 			cr.name,
@@ -84,16 +100,13 @@ func (store *DBChallengeResponseStore) GetResponses(challengeID string) (Challen
 			"user" AS u
 		ON 
 			cr.user_id = u.id
-		WHERE 
-			cr.challenge_id = $1
-		ORDER BY 
-			cr.created_at ASC
-		`
+		WHERE %s
+		ORDER BY cr.created_at ASC
+	`, whereClause)
 
-	rows, err := store.DB.Query(query, challengeID)
+	rows, err := store.DB.Query(query, arg)
 	if err != nil {
-		return nil, utils.NewCustomAppError(constants.InternalError, fmt.Sprintf("fail to query challenge_response: %v", err.Error()))
-
+		return nil, utils.NewCustomAppError(constants.InternalError, fmt.Sprintf("fail to query challenge_response: %v", err))
 	}
 	defer rows.Close()
 
@@ -101,15 +114,13 @@ func (store *DBChallengeResponseStore) GetResponses(challengeID string) (Challen
 
 	for rows.Next() {
 		var r DetailChallengeResponse
-
-		err := rows.Scan(&r.ChallengeResponseID, &r.Name, &r.Content, &r.UpVote, &r.DownVote, &r.CreatedAt, &r.UpdatedAt, &r.AuthorName)
-		if err != nil {
-			return nil, utils.NewCustomAppError(constants.InternalError, fmt.Sprintf("fail to scan challenge response into struct: %v", err.Error()))
+		if err := rows.Scan(&r.ID, &r.Name, &r.Content, &r.UpVote, &r.DownVote, &r.CreatedAt, &r.UpdatedAt, &r.AuthorName); err != nil {
+			return nil, utils.NewCustomAppError(constants.InternalError, fmt.Sprintf("fail to scan challenge response: %v", err))
 		}
 
-		r.Comments, err = store.CommentStore.GetRootComments("challenge_response_id", r.ChallengeResponseID)
+		r.Comments, err = store.CommentStore.GetRootComments("challenge_response_id", r.ID)
 		if err != nil {
-			return nil, utils.NewCustomAppError(constants.InternalError, fmt.Sprintf("fail to scan comment into struct: %v", err.Error()))
+			return nil, utils.NewCustomAppError(constants.InternalError, fmt.Sprintf("fail to get comments: %v", err))
 		}
 
 		responses = append(responses, r)

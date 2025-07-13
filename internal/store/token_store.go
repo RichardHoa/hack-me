@@ -2,6 +2,7 @@ package store
 
 import (
 	"database/sql"
+	"time"
 
 	"github.com/RichardHoa/hack-me/internal/utils"
 )
@@ -16,8 +17,15 @@ func NewTokenStore(db *sql.DB) DBTokenStore {
 	}
 }
 
+type RefreshToken struct {
+	ID        string
+	CreatedAt time.Time
+}
+
 type TokenStore interface {
 	AddRefreshToken(refreshToken string, userID string) error
+	DeleteRefreshToken(userID string) error
+	GetRefreshToken(userID string) (RefreshToken, error)
 }
 
 func (tokenStore *DBTokenStore) AddRefreshToken(refreshToken string, userID string) error {
@@ -36,6 +44,39 @@ func (tokenStore *DBTokenStore) AddRefreshToken(refreshToken string, userID stri
 	`
 
 	_, err = tokenStore.DB.Exec(query, refreshTokenID, userID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (tokenStore *DBTokenStore) GetRefreshToken(userID string) (RefreshToken, error) {
+	ID := ""
+	var CreatedAt time.Time
+
+	query := `
+		SELECT id, created_at
+		FROM refresh_token
+		WHERE user_id = $1;
+	`
+
+	err := tokenStore.DB.QueryRow(query, userID).Scan(&ID, &CreatedAt)
+
+	if err != nil {
+		return RefreshToken{}, nil
+	}
+
+	return RefreshToken{ID: ID, CreatedAt: CreatedAt}, nil
+}
+
+func (tokenStore *DBTokenStore) DeleteRefreshToken(userID string) error {
+	query := `
+		DELETE FROM refresh_token
+		WHERE user_id = $1;
+	`
+
+	_, err := tokenStore.DB.Exec(query, userID)
 	if err != nil {
 		return err
 	}
