@@ -1,27 +1,48 @@
 services:
   db:
-    container_name: "workoutDB"
+    container_name: "MainDB"
     image: postgres:17
     volumes:
       - "./database/postgres-data:/var/lib/postgresql/data:rw"
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_DB: "postgres"
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   test_db:
-    container_name: "workoutDB_test"
+    container_name: "TestingDB"
     image: postgres:17
     volumes:
       - "./database/postgres-test-data:/var/lib/postgresql/data:rw"
     ports:
       - "5433:5432"
     environment:
-      POSTGRES_DB: "postgres"
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
+  app:
+    container_name: "hack-me-backend"
+    build:
+      context: .
+    ports:
+      - "${APP_PORT:-8080}:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env

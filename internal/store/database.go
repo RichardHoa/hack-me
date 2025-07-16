@@ -4,28 +4,37 @@ import (
 	"database/sql"
 	"fmt"
 	"io/fs"
+	"os"
 
+	"github.com/RichardHoa/hack-me/internal/constants"
 	_ "github.com/jackc/pgx/v4/stdlib"
 	"github.com/pressly/goose/v3"
 )
 
 func Open() (*sql.DB, error) {
+	host := os.Getenv("DB_HOST")
+	port := os.Getenv("DB_PORT")
+	user := os.Getenv("DB_USER")
+	password := os.Getenv("DB_PASSWORD")
+	dbname := os.Getenv("DB_NAME")
 
-	db, err := sql.Open("pgx", "host=localhost user=postgres password=postgres dbname=postgres port=5432 sslmode=disable")
+	if constants.IsDevMode {
+		host = "localhost"
+	}
 
+	connStr := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
+		host, user, password, dbname, port)
+
+	db, err := sql.Open("pgx", connStr)
 	if err != nil {
 		return nil, fmt.Errorf("Error opening database connection: %w", err)
 	}
-
 	err = db.Ping()
 	if err != nil {
 		return nil, fmt.Errorf("Error opening database connection: %w", err)
 	}
-
-	fmt.Println(
-		"Connected to database")
+	fmt.Println("Connected to database")
 	return db, err
-
 }
 
 func OpenTesting() (*sql.DB, error) {

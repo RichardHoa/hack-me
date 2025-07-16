@@ -2,27 +2,37 @@ package constants
 
 import (
 	"errors"
+	"fmt"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/joho/godotenv"
 )
 
 func LoadEnv() error {
-	err := godotenv.Load(".env")
-	if err != nil {
-		err = godotenv.Load("../../.env")
+	if _, err := os.Stat(".env"); err == nil {
+		err := godotenv.Load(".env")
 		if err != nil {
-			return err
+			fmt.Printf("Error loading .env file: %v\n", err)
 		}
+	} else if _, err := os.Stat("../../.env"); err == nil {
+		err := godotenv.Load("../../.env")
+		if err != nil {
+			fmt.Printf("Error loading ../../.env file: %v\n", err)
+		}
+	} else {
+		fmt.Printf("No .env file found - assuming Docker environment with environment variables\n")
 	}
 
 	RefreshTokenSecret = os.Getenv("REFRESH_TOKEN_SECRET")
 	AccessTokenSecret = os.Getenv("ACCESS_TOKEN_SECRET")
 	CSRFTokenSecret = os.Getenv("CSRF_TOKEN_SECRET")
+	AppPort, _ = strconv.Atoi(os.Getenv("APP_PORT"))
+
 	DevMode := os.Getenv("DEV_MODE")
 
-	if DevMode == "local" {
+	if DevMode == "LOCAL" {
 		IsDevMode = true
 	} else {
 		IsDevMode = false
@@ -38,6 +48,7 @@ var (
 	RefreshTokenSecret string
 	AccessTokenSecret  string
 	CSRFTokenSecret    string
+	AppPort            int
 	IsDevMode          bool
 )
 
