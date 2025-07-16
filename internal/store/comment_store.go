@@ -13,8 +13,8 @@ type DBCommentStore struct {
 	DB *sql.DB
 }
 
-func NewCommentStore(db *sql.DB) DBCommentStore {
-	return DBCommentStore{DB: db}
+func NewCommentStore(db *sql.DB) *DBCommentStore {
+	return &DBCommentStore{DB: db}
 }
 
 type CommentStore interface {

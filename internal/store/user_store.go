@@ -16,8 +16,8 @@ type DBUserStore struct {
 	DB *sql.DB
 }
 
-func NewUserStore(db *sql.DB) DBUserStore {
-	return DBUserStore{
+func NewUserStore(db *sql.DB) *DBUserStore {
+	return &DBUserStore{
 		DB: db,
 	}
 }

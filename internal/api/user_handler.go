@@ -183,7 +183,7 @@ func (handler *UserHandler) LogoutUser(w http.ResponseWriter, r *http.Request) {
 
 func (handler *UserHandler) RefreshTokenRotation(w http.ResponseWriter, r *http.Request) {
 
-	result, err := utils.ValidateTokensFromCookies(r, []string{constants.TokenUserID, constants.TokenRefreshID, constants.TokenUserName})
+	result, err := utils.ValidateTokensFromCookiesWithoutAccessToken(r, []string{constants.TokenUserID, constants.TokenRefreshID, constants.TokenUserName})
 
 	if err != nil {
 		handler.Logger.Printf("ERROR: Refresh-token-rotation > JWT token checking: %v", err)
@@ -203,6 +203,13 @@ func (handler *UserHandler) RefreshTokenRotation(w http.ResponseWriter, r *http.
 	}
 
 	if DBRefreshToken.ID != refreshTokenID {
+		err = handler.TokenStore.DeleteRefreshToken(userID)
+		if err != nil {
+			handler.Logger.Printf("ERROR: Refresh-token-rotation > delete refresh token : %v", err)
+			utils.WriteJSON(w, http.StatusInternalServerError, utils.NewMessage(constants.StatusInternalErrorMessage, "", ""))
+			return
+		}
+
 		utils.SendEmptyTokens(w)
 		handler.Logger.Printf("ERROR: Refresh-token-rotation >  tokenID from browser %s, tokenID from database %s", refreshTokenID, DBRefreshToken.ID)
 		utils.WriteJSON(w, http.StatusForbidden, utils.NewMessage(constants.ForbiddenMessage, "", ""))
@@ -210,7 +217,6 @@ func (handler *UserHandler) RefreshTokenRotation(w http.ResponseWriter, r *http.
 	}
 
 	refreshTokenTimeUntilExpiry := DBRefreshToken.CreatedAt.Add(constants.RefreshTokenTime).Unix()
-	handler.Logger.Printf("Time until expiry: %v", refreshTokenTimeUntilExpiry)
 
 	accessToken, refreshToken, err := utils.CreateTokens(userID, userName, refreshTokenTimeUntilExpiry)
 

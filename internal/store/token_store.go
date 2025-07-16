@@ -11,8 +11,8 @@ type DBTokenStore struct {
 	DB *sql.DB
 }
 
-func NewTokenStore(db *sql.DB) DBTokenStore {
-	return DBTokenStore{
+func NewTokenStore(db *sql.DB) *DBTokenStore {
+	return &DBTokenStore{
 		DB: db,
 	}
 }

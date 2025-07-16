@@ -13,8 +13,12 @@ import (
 )
 
 type Application struct {
-	Logger                       *log.Logger
-	DB                           *sql.DB
+	Logger *log.Logger
+	DB     *sql.DB
+	/*
+		use pointer for handler to make sure the handler never get copies,
+		thus all the handler data is always up-to-date and there is no local lag
+	*/
 	ChallengeHandler             *api.ChallengeHandler
 	UserHandler                  *api.UserHandler
 	ChallengeResponseHandler     *api.ChallengeResponseHandler
@@ -53,20 +57,24 @@ func NewApplication(isTesting bool) (*Application, error) {
 		panic(err)
 	}
 
+	/*
+		all the stores are returned as pointers
+		because we satisfy all interface by functions with pointer receiver
+	*/
 	//NOTE: store creation
 	userStore := store.NewUserStore(db)
 	tokenStore := store.NewTokenStore(db)
 	challengeResponseVoteStore := store.NewVoteStore(db)
 	commentStore := store.NewCommentStore(db)
-	challengeResponseStore := store.NewChallengeResponseStore(db, &commentStore)
-	challengeStore := store.NewChallengeStore(db, &commentStore)
+	challengeResponseStore := store.NewChallengeResponseStore(db, commentStore)
+	challengeStore := store.NewChallengeStore(db, commentStore)
 
 	//NOTE: Handler creation
-	challengeHandler := api.NewChallengeHandler(&challengeStore, logger)
-	userHandler := api.NewUserHandler(&userStore, &tokenStore, logger)
-	challengeResponseHandler := api.NewChallengeResponseHandler(&challengeResponseStore, logger)
-	challengeResponseVoteHandler := api.NewChallengeResponseVoteHandler(&challengeResponseVoteStore, logger)
-	commentHandler := api.NewCommentHandler(&commentStore, logger)
+	challengeHandler := api.NewChallengeHandler(challengeStore, logger)
+	userHandler := api.NewUserHandler(userStore, tokenStore, logger)
+	challengeResponseHandler := api.NewChallengeResponseHandler(challengeResponseStore, logger)
+	challengeResponseVoteHandler := api.NewChallengeResponseVoteHandler(challengeResponseVoteStore, logger)
+	commentHandler := api.NewCommentHandler(commentStore, logger)
 
 	//NOTE: Middleware creation
 	middleware := middleware.NewMiddleWare(logger)

@@ -259,6 +259,37 @@ func CreateTokens(userID, userName string, refreshTokenTime int64) (accessToken 
 
 }
 
+func ValidateTokensFromCookiesWithoutAccessToken(r *http.Request, claimsList []string) (result []string, err error) {
+
+	// Refresh token: validate and extract claims
+	refreshCookie, err := r.Cookie("refreshToken")
+	if err != nil || refreshCookie.Value == "" {
+		return []string{}, err
+	}
+
+	refreshToken, err := jwt.Parse(refreshCookie.Value, func(token *jwt.Token) (interface{}, error) {
+		return []byte(constants.RefreshTokenSecret), nil
+	},
+		jwt.WithValidMethods([]string{jwt.SigningMethodHS512.Alg()}),
+		jwt.WithIssuedAt(),
+	)
+	if err != nil || !refreshToken.Valid {
+		return []string{}, err
+	}
+
+	result, err = ExtractClaimsFromJWT(refreshCookie.Value, claimsList)
+	if err != nil {
+		return []string{}, err
+	}
+
+	if len(result) == 0 {
+		return []string{}, errors.New("Empty result list")
+	}
+
+	return result, nil
+
+}
+
 func ValidateTokensFromCookies(r *http.Request, claimsList []string) (result []string, err error) {
 	// Access token: validate structure
 	accessCookie, err := r.Cookie("accessToken")

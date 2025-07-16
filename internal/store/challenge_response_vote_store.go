@@ -12,8 +12,8 @@ type DBVoteStore struct {
 	DB *sql.DB
 }
 
-func NewVoteStore(db *sql.DB) DBVoteStore {
-	return DBVoteStore{DB: db}
+func NewVoteStore(db *sql.DB) *DBVoteStore {
+	return &DBVoteStore{DB: db}
 }
 
 type DeleteVoteRequest struct {

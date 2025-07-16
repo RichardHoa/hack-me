@@ -16,8 +16,8 @@ type DBChallengeStore struct {
 	CommentStore *DBCommentStore
 }
 
-func NewChallengeStore(db *sql.DB, commentStore *DBCommentStore) DBChallengeStore {
-	return DBChallengeStore{
+func NewChallengeStore(db *sql.DB, commentStore *DBCommentStore) *DBChallengeStore {
+	return &DBChallengeStore{
 		DB:           db,
 		CommentStore: commentStore,
 	}
