@@ -34,15 +34,14 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-
-  app:
-    container_name: "hack-me-backend"
-    build:
-      context: .
-    ports:
-      - "${APP_PORT:-8080}:8080"
-    depends_on:
-      db:
-        condition: service_healthy
-    env_file:
-      - .env
+  # app:
+  #   container_name: "hack-me-backend"
+  #   build:
+  #     context: .
+  #   ports:
+  #     - "${APP_PORT:-8080}:8080"
+  #   depends_on:
+  #     db:
+  #       condition: service_healthy
+  #   env_file:
+  #     - .env

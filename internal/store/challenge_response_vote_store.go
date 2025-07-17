@@ -40,7 +40,7 @@ func (store *DBVoteStore) DeleteVote(req DeleteVoteRequest) error {
 	defer func() {
 		err = tx.Rollback()
 		if err != nil && err != sql.ErrTxDone {
-			fmt.Printf("Err while roll back %v", err.Error())
+			fmt.Printf("Delete vote > Err while roll back %v\n", err.Error())
 		}
 	}()
 
@@ -99,7 +99,7 @@ func (store *DBVoteStore) PostVote(req PostVoteRequest) error {
 	defer func() {
 		err = tx.Rollback()
 		if err != nil {
-			fmt.Printf("Err while roll back %v", err.Error())
+			fmt.Printf("Post vote > Err while roll back %v\n", err.Error())
 		}
 	}()
 
@@ -128,7 +128,7 @@ func (store *DBVoteStore) PostVote(req PostVoteRequest) error {
 
 	// Step 3: If the vote already exists and is unchanged, do nothing
 	if hasExistingVote && existingVote == newVoteType {
-		return nil
+		return utils.NewCustomAppError(constants.InvalidData, fmt.Sprintf("You already make a %v", req.VoteType))
 	}
 
 	// Step 4: Upsert the new vote value

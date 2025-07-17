@@ -58,6 +58,8 @@ func (handler *ChallengeResponseVoteHandler) PostVote(w http.ResponseWriter, r *
 	err = handler.Store.PostVote(req)
 	if err != nil {
 		switch utils.ClassifyError(err) {
+		case constants.InvalidData:
+			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(err.Error(), "", ""))
 		case constants.PQForeignKeyViolation:
 			utils.WriteJSON(w, http.StatusNotFound, utils.NewMessage("challengeResponseID not found", constants.MSG_INVALID_REQUEST_DATA, "challengeResponseID"))
 		case constants.PQInvalidTextRepresentation:
@@ -65,8 +67,8 @@ func (handler *ChallengeResponseVoteHandler) PostVote(w http.ResponseWriter, r *
 		default:
 			handler.Logger.Printf("ERROR: PostChallengeResponseVote > PostVote error: %v", err)
 			utils.WriteJSON(w, http.StatusInternalServerError, utils.NewMessage(constants.StatusInternalErrorMessage, "", ""))
-			return
 		}
+		return
 	}
 
 	utils.WriteJSON(w, http.StatusCreated, utils.NewMessage("new vote has been created", "", ""))
