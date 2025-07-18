@@ -1,3 +1,8 @@
+# TODO
+[] Update Dockerfile according to docker docs 
+[] Update logger to use stderr and set up another logger for info
+[] Update users/me route
+
 # Hack-Me Backend
 
 **Starting Date:** 26/06/2025  

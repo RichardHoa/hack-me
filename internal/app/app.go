@@ -29,7 +29,6 @@ type Application struct {
 
 func NewApplication(isTesting bool) (*Application, error) {
 	logger := log.New(os.Stdout, "", log.Ldate|log.Ltime)
-
 	var (
 		db  *sql.DB
 		err error
