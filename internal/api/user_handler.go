@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/RichardHoa/hack-me/internal/constants"
 	"github.com/RichardHoa/hack-me/internal/store"
@@ -22,6 +23,31 @@ func NewUserHandler(userStore store.UserStore, tokenStore store.TokenStore, logg
 		TokenStore: tokenStore,
 		Logger:     logger,
 	}
+}
+
+func (handler *UserHandler) GetUserActivity(w http.ResponseWriter, r *http.Request) {
+	result, err := utils.ValidateTokensFromCookies(r, []string{constants.TokenUserID})
+	if err != nil {
+		handler.Logger.Printf("ERROR: GetUserActivity > JWT token checking: %v", err)
+		utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, "cookies"))
+		return
+	}
+	userID := result[0]
+
+	activityData, err := handler.UserStore.GetUserActivity(userID)
+	if err != nil {
+		switch utils.ClassifyError(err) {
+		case constants.ResourceNotFound:
+			utils.WriteJSON(w, http.StatusNotFound, utils.NewMessage(err.Error(), constants.MSG_INVALID_REQUEST_DATA, "user"))
+			return
+		default:
+			handler.Logger.Printf("ERROR: GetUserActivity > GetUserActivity: %v", err)
+			utils.WriteJSON(w, http.StatusInternalServerError, utils.NewMessage(constants.StatusInternalErrorMessage, "", ""))
+			return
+		}
+	}
+
+	utils.WriteJSON(w, http.StatusOK, utils.Message{"data": activityData})
 }
 
 func (handler *UserHandler) RegisterNewUser(w http.ResponseWriter, r *http.Request) {
@@ -77,6 +103,136 @@ func (handler *UserHandler) RegisterNewUser(w http.ResponseWriter, r *http.Reque
 
 }
 
+func (handler *UserHandler) ChangeUsername(w http.ResponseWriter, r *http.Request) {
+	result, err := utils.ValidateTokensFromCookies(r, []string{constants.TokenUserID})
+	if err != nil {
+		handler.Logger.Printf("ERROR: ChangeUsername > JWT token checking: %v", err)
+		utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, "cookies"))
+		return
+	}
+	userID := result[0]
+
+	var req store.ChangeUsernameRequest
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&req)
+	if err != nil {
+		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(constants.StatusInvalidJSONMessage, constants.MSG_MALFORMED_REQUEST_DATA, "request"))
+		return
+	}
+
+	trimmedUsername := strings.TrimSpace(req.NewUsername)
+	if trimmedUsername == "" {
+		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("newUsername is required", constants.MSG_LACKING_MANDATORY_FIELDS, "newUsername"))
+		return
+	}
+
+	req.UserID = userID
+	req.NewUsername = trimmedUsername
+
+	err = handler.UserStore.ChangeUsername(req)
+	if err != nil {
+		switch utils.ClassifyError(err) {
+		case constants.PQUniqueViolation:
+			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("username already exists", constants.MSG_INVALID_REQUEST_DATA, "newUsername"))
+			return
+		case constants.ResourceNotFound:
+			utils.WriteJSON(w, http.StatusNotFound, utils.NewMessage(err.Error(), constants.MSG_INVALID_REQUEST_DATA, "user"))
+			return
+		default:
+			handler.Logger.Printf("ERROR: ChangeUsername > userStore.ChangeUsername: %v", err)
+			utils.WriteJSON(w, http.StatusInternalServerError, utils.NewMessage(constants.StatusInternalErrorMessage, "", ""))
+			return
+		}
+	}
+
+	utils.WriteJSON(w, http.StatusOK, utils.NewMessage("Username changed successfully", "", ""))
+}
+
+func (handler *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
+	result, err := utils.ValidateTokensFromCookies(r, []string{constants.TokenUserID})
+	if err != nil {
+		handler.Logger.Printf("ERROR: DeleteUser > JWT token checking: %v", err)
+		utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, "cookies"))
+		return
+	}
+	userID := result[0]
+
+	err = handler.UserStore.DeleteUser(userID)
+	if err != nil {
+		switch utils.ClassifyError(err) {
+		case constants.ResourceNotFound:
+			utils.WriteJSON(w, http.StatusNotFound, utils.NewMessage(err.Error(), constants.MSG_INVALID_REQUEST_DATA, "user"))
+			return
+		default:
+			handler.Logger.Printf("ERROR: DeleteUser > userStore.DeleteUser: %v", err)
+			utils.WriteJSON(w, http.StatusInternalServerError, utils.NewMessage(constants.StatusInternalErrorMessage, "", ""))
+			return
+		}
+	}
+
+	utils.SendEmptyTokens(w)
+	utils.WriteJSON(w, http.StatusOK, utils.NewMessage("User deleted successfully", "", ""))
+}
+
+func (handler *UserHandler) ChangePassword(w http.ResponseWriter, r *http.Request) {
+	result, err := utils.ValidateTokensFromCookies(r, []string{constants.TokenUserID})
+	if err != nil {
+		handler.Logger.Printf("ERROR: ChangePassword > JWT token checking: %v", err)
+		utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, "cookies"))
+		return
+	}
+	userID := result[0]
+
+	var req store.ChangePasswordRequest
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&req)
+	if err != nil {
+		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(constants.StatusInvalidJSONMessage, constants.MSG_MALFORMED_REQUEST_DATA, "request"))
+		return
+	}
+	if req.OldPassword == req.NewPassword {
+		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("old password cannot be the same as new password", constants.MSG_INVALID_REQUEST_DATA, "oldPassword, newPassword"))
+		return
+	}
+
+	if req.NewPassword == "" {
+		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("newPassword is required", constants.MSG_LACKING_MANDATORY_FIELDS, "newPassword"))
+		return
+	}
+
+	checkResult := utils.CheckPasswordValid(req.NewPassword)
+	if checkResult.Error == nil && checkResult.ErrorMessage != "" {
+		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(checkResult.ErrorMessage, constants.MSG_INVALID_REQUEST_DATA, "newPassword"))
+		return
+	}
+	if checkResult.Error != nil {
+		handler.Logger.Printf("ERROR: ChangePassword > CheckPasswordValid: %v", checkResult.Error)
+		utils.WriteJSON(w, http.StatusInternalServerError, utils.NewMessage(constants.StatusInternalErrorMessage, "", ""))
+		return
+	}
+
+	req.UserID = userID
+	err = handler.UserStore.ChangePassword(req)
+	if err != nil {
+		switch utils.ClassifyError(err) {
+		case constants.InvalidData:
+			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(err.Error(), constants.MSG_INVALID_REQUEST_DATA, "password"))
+			return
+		case constants.ResourceNotFound:
+			utils.WriteJSON(w, http.StatusNotFound, utils.NewMessage(err.Error(), constants.MSG_INVALID_REQUEST_DATA, "user"))
+			return
+		default:
+			handler.Logger.Printf("ERROR: ChangePassword > userStore.ChangePassword: %v", err)
+			utils.WriteJSON(w, http.StatusInternalServerError, utils.NewMessage(constants.StatusInternalErrorMessage, "", ""))
+			return
+		}
+	}
+
+	utils.WriteJSON(w, http.StatusOK, utils.NewMessage("Password changed successfully", "", ""))
+}
+
 func (handler *UserHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
 
 	var user store.User
@@ -104,7 +260,7 @@ func (handler *UserHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
 		handler.Logger.Printf("ERROR: LoginUser > LoginAndIssueTokens: %v", err)
 		switch utils.ClassifyError(err) {
 		case constants.InvalidData:
-			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("Either password is incorrect or user email does not exist", constants.MSG_INVALID_REQUEST_DATA, "email and password"))
+			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(err.Error(), constants.MSG_INVALID_REQUEST_DATA, "email and password"))
 			return
 		default:
 			utils.WriteJSON(w, http.StatusInternalServerError, utils.NewMessage(constants.StatusInternalErrorMessage, "", ""))

@@ -71,13 +71,13 @@ type MetaDataPage struct {
 }
 
 type ChallengeStore interface {
-	GetChallenges(freeQuery ChallengeFreeQuery) (challenges Challenges, metaPage MetaDataPage, err error)
+	GetChallenges(freeQuery ChallengeFreeQuery) (*Challenges, *MetaDataPage, error)
 	CreateChallenges(challenge *Challenge) error
 	DeleteChallenge(challengeName string, userID string) error
 	ModifyChallenge(updatedChallenge PutChallengeRequest) error
 }
 
-func (Store *DBChallengeStore) GetChallenges(freeQuery ChallengeFreeQuery) (challenges Challenges, metaPage MetaDataPage, err error) {
+func (Store *DBChallengeStore) GetChallenges(freeQuery ChallengeFreeQuery) (*Challenges, *MetaDataPage, error) {
 	baseQuery := `
 		SELECT 
 			c.id,
@@ -99,9 +99,6 @@ func (Store *DBChallengeStore) GetChallenges(freeQuery ChallengeFreeQuery) (chal
 	args := []any{}
 	argIndex := 1
 
-	if freeQuery.Name != "" && freeQuery.ExactName != "" {
-		return Challenges{}, MetaDataPage{}, nil
-	}
 	// Filter by name (case-insensitive)
 	if freeQuery.Name != "" {
 		conditions = append(conditions, fmt.Sprintf("LOWER(name) LIKE LOWER($%d)", argIndex))
@@ -153,45 +150,47 @@ func (Store *DBChallengeStore) GetChallenges(freeQuery ChallengeFreeQuery) (chal
 
 	offset := (page - 1) * pageSize
 
-	// Add pagination to the main query
 	baseQuery += fmt.Sprintf(" LIMIT %d OFFSET %d", pageSize, offset)
 
 	var total int
-	err = Store.DB.QueryRow(countQuery, args...).Scan(&total)
+	err := Store.DB.QueryRow(countQuery, args...).Scan(&total)
 	if err != nil {
-		return nil, MetaDataPage{}, err
+		return &Challenges{}, &MetaDataPage{}, err
 	}
+
 	maxPage := (total + pageSize - 1) / pageSize
 
 	if page > maxPage {
-		return Challenges{}, MetaDataPage{}, nil
+		return &Challenges{}, &MetaDataPage{}, nil
 	}
 
-	metaPage = MetaDataPage{
+	metaPage := MetaDataPage{
 		MaxPage:     strconv.Itoa(maxPage),
 		PageSize:    strconv.Itoa(pageSize),
 		CurrentPage: strconv.Itoa(page),
 	}
 
+	challenges := Challenges{}
+
 	rows, err := Store.DB.Query(baseQuery, args...)
 	if err != nil {
-		return nil, MetaDataPage{}, err
-	}
+		return &Challenges{}, &MetaDataPage{}, err
 
+	}
 	defer rows.Close()
 
 	for rows.Next() {
 		var c Challenge
 		err := rows.Scan(&c.ID, &c.Name, &c.Category, &c.Content, &c.CreatedAt, &c.UpdatedAt, &c.UserName)
 		if err != nil {
-			return nil, MetaDataPage{}, err
+			return nil, nil, err
 		}
 
 		if isExactQuery == true {
 			// Fetch comments for this challenge
 			c.Comments, err = Store.CommentStore.GetRootComments("challenge_id", c.ID)
 			if err != nil {
-				return nil, MetaDataPage{}, err
+				return &Challenges{}, &MetaDataPage{}, err
 			}
 		}
 
@@ -199,10 +198,10 @@ func (Store *DBChallengeStore) GetChallenges(freeQuery ChallengeFreeQuery) (chal
 	}
 
 	if err := rows.Err(); err != nil {
-		return nil, MetaDataPage{}, err
+		return &Challenges{}, &MetaDataPage{}, err
 	}
 
-	return challenges, metaPage, nil
+	return &challenges, &metaPage, nil
 }
 
 func (challengeStore *DBChallengeStore) CreateChallenges(challenge *Challenge) error {

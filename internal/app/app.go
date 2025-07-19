@@ -13,8 +13,9 @@ import (
 )
 
 type Application struct {
-	Logger *log.Logger
-	DB     *sql.DB
+	Logger     *log.Logger
+	InfoLogger *log.Logger
+	DB         *sql.DB
 	/*
 		use pointer for handler to make sure the handler never get copies,
 		thus all the handler data is always up-to-date and there is no local lag
@@ -28,7 +29,9 @@ type Application struct {
 }
 
 func NewApplication(isTesting bool) (*Application, error) {
-	logger := log.New(os.Stdout, "", log.Ldate|log.Ltime)
+	logger := log.New(os.Stderr, "", log.Ldate|log.Ltime)
+	infoLogger := log.New(os.Stdout, "", log.Ldate|log.Ltime)
+
 	var (
 		db  *sql.DB
 		err error
@@ -80,6 +83,7 @@ func NewApplication(isTesting bool) (*Application, error) {
 
 	application := &Application{
 		Logger:                       logger,
+		InfoLogger:                   infoLogger,
 		DB:                           db,
 		ChallengeHandler:             challengeHandler,
 		ChallengeResponseHandler:     challengeResponseHandler,

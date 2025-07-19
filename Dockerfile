@@ -1,31 +1,27 @@
-# Use the official Go image as build stage
-FROM golang:1.24-alpine AS builder
+# syntax=docker/dockerfile:1
 
-# Set working directory
+# Build the application from source
+FROM golang:1.24 AS build-stage
+
 WORKDIR /app
 
-# Copy go mod files
 COPY go.mod go.sum ./
-
-# Download dependencies
 RUN go mod download
 
-# Copy source code
+# copy the entire module to working dir
 COPY . .
 
-# Build the application
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
+RUN CGO_ENABLED=0 GOOS=linux go build -o /main
 
-# Use a minimal alpine image for the final stage
-FROM alpine:latest
+# Deploy the application binary into a lean image
+FROM gcr.io/distroless/base-debian11 AS build-release-stage
 
-# Install ca-certificates for HTTPS requests
-RUN apk --no-cache add ca-certificates
+WORKDIR /
 
-WORKDIR /root/
+COPY --from=build-stage /main /main
 
-# Copy the binary from builder stage
-COPY --from=builder /app/main .
+EXPOSE 8080
 
-# Run the application
-CMD ["./main"]
+USER nonroot:nonroot
+
+ENTRYPOINT ["/main"]

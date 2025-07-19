@@ -64,10 +64,10 @@ type ChallengeResponseStore interface {
 	PostResponse(response PostChallengeResponseRequest) (challengeResponseID string, err error)
 	ModifyResponse(response PutChallengeResponseRequest) error
 	DeleteResponse(deleteRequest DeleteChallengeResponseRequest) error
-	GetResponses(req GetChallengeResponseRequest) (ChallengeResponseOut, error)
+	GetResponses(req GetChallengeResponseRequest) (*ChallengeResponseOut, error)
 }
 
-func (store *DBChallengeResponseStore) GetResponses(req GetChallengeResponseRequest) (ChallengeResponseOut, error) {
+func (store *DBChallengeResponseStore) GetResponses(req GetChallengeResponseRequest) (*ChallengeResponseOut, error) {
 	var (
 		whereClause string
 		arg         any
@@ -126,7 +126,7 @@ func (store *DBChallengeResponseStore) GetResponses(req GetChallengeResponseRequ
 		responses = append(responses, r)
 	}
 
-	return responses, nil
+	return &responses, nil
 }
 
 func (store *DBChallengeResponseStore) PostResponse(request PostChallengeResponseRequest) (challengeResponseID string, err error) {

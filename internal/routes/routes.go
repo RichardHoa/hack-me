@@ -72,6 +72,13 @@ func SetUpRoutes(app *app.Application) *chi.Mux {
 			r.Post("/", app.UserHandler.RegisterNewUser)
 			r.Post("/login", app.UserHandler.LoginUser)
 			r.Post("/logout", app.UserHandler.LogoutUser)
+
+			r.Get("/me", app.UserHandler.GetUserActivity)
+			r.Delete("/me", app.UserHandler.DeleteUser)
+
+			r.Put("/password", app.UserHandler.ChangePassword)
+			r.Put("/username", app.UserHandler.ChangeUsername)
+
 		})
 
 		outerRouter.Route("/comments", func(r chi.Router) {

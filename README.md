@@ -1,7 +1,8 @@
 # TODO
-[] Update Dockerfile according to docker docs 
-[] Update logger to use stderr and set up another logger for info
-[] Update users/me route
+[x] Update Dockerfile according to docker docs 
+[x] Update logger to use stderr and set up another logger for info
+[x] Update users/me route
+[] COMPREHENSIVE TESTING
 
 # Hack-Me Backend
 

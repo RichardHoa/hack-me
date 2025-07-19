@@ -11,7 +11,7 @@ import (
 	"github.com/RichardHoa/hack-me/internal/constants"
 )
 
-type Message map[string]interface{}
+type Message map[string]any
 
 func BeautifyJSON(v interface{}) string {
 	bytes, err := json.MarshalIndent(v, "", "  ")

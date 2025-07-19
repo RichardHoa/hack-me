@@ -997,10 +997,10 @@ func TestChallengesRoutes(t *testing.T) {
 							t.Fatalf("Failed to parse response: %v", err)
 						}
 
-						data := parsed["data"]
+						data := parsed["data"].([]any)
 
-						if data != nil {
-							t.Fatalf("Expected nil data but we get %v", data)
+						if len(data) != 0 {
+							t.Fatalf("Expect empty array but get: %v", data)
 						}
 
 					},
@@ -1026,7 +1026,6 @@ func TestChallengesRoutes(t *testing.T) {
 
 						if len(data) != 2 {
 							t.Fatalf("Expect 2 data response but get %v", len(data))
-
 						}
 
 						metadata, ok := parsed["metadata"].(map[string]interface{})

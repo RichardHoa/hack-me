@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/RichardHoa/hack-me/internal/constants"
 	"github.com/RichardHoa/hack-me/internal/store"
@@ -33,6 +34,14 @@ func (handler *ChallengeHandler) GetChallenges(w http.ResponseWriter, r *http.Re
 	exactName := query.Get("exactName")
 	pageSize := query.Get("pageSize")
 	page := query.Get("page")
+
+	trimmedName := strings.TrimSpace(name)
+	trimmedExactName := strings.TrimSpace(exactName)
+
+	if trimmedName != "" && trimmedExactName != "" {
+		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("name and exactName cannot both be present", constants.MSG_INVALID_REQUEST_DATA, "query"))
+		return
+	}
 
 	if page != "" {
 		pageNum, err := strconv.Atoi(page)
