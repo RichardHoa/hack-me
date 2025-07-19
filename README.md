@@ -1,15 +1,8 @@
-# TODO
-[x] Update Dockerfile according to docker docs 
-[x] Update logger to use stderr and set up another logger for info
-[x] Update users/me route
-[] COMPREHENSIVE TESTING
-
 # Hack-Me Backend
 
 **Starting Date:** 26/06/2025  
+**Finish Date:** 19/07/2025
 **Frontend Repository:** [Frontend Repo](https://github.com/RichardHoa/hack-me-frontend) 
-
----
 
 ## 🐳 Run the whole app with Docker
 
@@ -30,18 +23,6 @@ To stop and remove containers and volumes after you're done:
 ```bash
 docker-compose down -v
 ```
-
----
-
-## 🧪 Running Tests
-
-Run the full test suite:
-
-```bash
-go test ./...
-```
-
----
 
 ## 🧑‍💻 Running the server locally
 
@@ -71,7 +52,14 @@ go run main.go
 air
 ```
 
----
+## 🧪 Running Tests
+
+Run the full test suite:
+
+```bash
+go test ./...
+```
+
 
 ## 📝 Important Notes
 
@@ -93,5 +81,3 @@ CREATE SCHEMA public;
 ```
 
 > This ensures both environments are in sync and eliminates residual schema conflicts.
-
-
