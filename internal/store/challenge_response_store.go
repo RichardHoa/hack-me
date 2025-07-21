@@ -42,15 +42,16 @@ type GetChallengeResponseRequest struct {
 type ChallengeResponseOut []DetailChallengeResponse
 
 type DetailChallengeResponse struct {
-	ID         string    `json:"id"`
-	AuthorName string    `json:"authorName"`
-	Name       string    `json:"name"`
-	Content    string    `json:"content"`
-	UpVote     string    `json:"upVote"`
-	DownVote   string    `json:"downVote"`
-	CreatedAt  time.Time `json:"createdAt"`
-	UpdatedAt  time.Time `json:"updatedAt"`
-	Comments   []Comment `json:"comments"`
+	ID            string    `json:"id"`
+	ChallengeName string    `json:"challengeName"`
+	AuthorName    string    `json:"authorName"`
+	Name          string    `json:"name"`
+	Content       string    `json:"content"`
+	UpVote        string    `json:"upVote"`
+	DownVote      string    `json:"downVote"`
+	CreatedAt     time.Time `json:"createdAt"`
+	UpdatedAt     time.Time `json:"updatedAt"`
+	Comments      []Comment `json:"comments"`
 }
 
 type PostChallengeResponseRequest struct {
@@ -85,24 +86,25 @@ func (store *DBChallengeResponseStore) GetResponses(req GetChallengeResponseRequ
 	}
 
 	query := fmt.Sprintf(`
-		SELECT 
-			cr.id,
-			cr.name,
-			cr.content,
-			cr.up_vote,
-			cr.down_vote,
-			cr.created_at,
-			cr.updated_at,
-			u.username
-		FROM 
-			challenge_response AS cr
-		JOIN 
-			"user" AS u
-		ON 
-			cr.user_id = u.id
-		WHERE %s
-		ORDER BY cr.created_at ASC
-	`, whereClause)
+    SELECT
+        cr.id,
+        cr.name,
+        cr.content,
+        cr.up_vote,
+        cr.down_vote,
+        cr.created_at,
+        cr.updated_at,
+        u.username,
+        c.name AS challenge_name
+    FROM
+        challenge_response AS cr
+    JOIN
+        "user" AS u ON cr.user_id = u.id
+    JOIN
+        challenge AS c ON cr.challenge_id = c.id
+    WHERE %s
+    ORDER BY cr.created_at ASC
+`, whereClause)
 
 	rows, err := store.DB.Query(query, arg)
 	if err != nil {
@@ -114,7 +116,7 @@ func (store *DBChallengeResponseStore) GetResponses(req GetChallengeResponseRequ
 
 	for rows.Next() {
 		var r DetailChallengeResponse
-		if err := rows.Scan(&r.ID, &r.Name, &r.Content, &r.UpVote, &r.DownVote, &r.CreatedAt, &r.UpdatedAt, &r.AuthorName); err != nil {
+		if err := rows.Scan(&r.ID, &r.Name, &r.Content, &r.UpVote, &r.DownVote, &r.CreatedAt, &r.UpdatedAt, &r.AuthorName, &r.ChallengeName); err != nil {
 			return nil, utils.NewCustomAppError(constants.InternalError, fmt.Sprintf("fail to scan challenge response: %v", err))
 		}
 

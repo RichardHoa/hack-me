@@ -339,7 +339,7 @@ func (handler *UserHandler) LogoutUser(w http.ResponseWriter, r *http.Request) {
 
 func (handler *UserHandler) RefreshTokenRotation(w http.ResponseWriter, r *http.Request) {
 
-	result, err := utils.ValidateTokensFromCookiesWithoutAccessToken(r, []string{constants.TokenUserID, constants.TokenRefreshID, constants.TokenUserName})
+	result, err := utils.ValidateTokensFromCookiesWithoutAccessToken(r, []string{constants.TokenUserID, constants.TokenRefreshID})
 
 	if err != nil {
 		handler.Logger.Printf("ERROR: Refresh-token-rotation > JWT token checking: %v", err)
@@ -349,7 +349,12 @@ func (handler *UserHandler) RefreshTokenRotation(w http.ResponseWriter, r *http.
 
 	userID := result[0]
 	refreshTokenID := result[1]
-	userName := result[2]
+	userName, err := handler.UserStore.GetUserName(userID)
+	if err != nil {
+		handler.Logger.Printf("ERROR: Refresh-token-rotation > get user name : %v", err)
+		utils.WriteJSON(w, http.StatusInternalServerError, utils.NewMessage(constants.StatusInternalErrorMessage, "", ""))
+		return
+	}
 
 	DBRefreshToken, err := handler.TokenStore.GetRefreshToken(userID)
 	if err != nil {

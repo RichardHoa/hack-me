@@ -30,6 +30,7 @@ type UserStore interface {
 	ChangePassword(req ChangePasswordRequest) error
 	ChangeUsername(req ChangeUsernameRequest) error
 	DeleteUser(userID string) error
+	GetUserName(userID string) (userName string, err error)
 }
 
 type Password struct {
@@ -319,6 +320,16 @@ func (userStore *DBUserStore) CreateUser(user *User) (uuid.UUID, error) {
 
 }
 
+func (userStore *DBUserStore) GetUserName(userID string) (userName string, err error) {
+	query := `
+	SELECT username FROM "user" WHERE id = $1;
+	`
+	err = userStore.DB.QueryRow(query, userID).Scan(&userName)
+
+	return userName, err
+
+}
+
 func (userStore *DBUserStore) LoginAndIssueTokens(user *User) (accessToken, refreshToken, csrfToken string, err error) {
 
 	var (
@@ -336,9 +347,6 @@ func (userStore *DBUserStore) LoginAndIssueTokens(user *User) (accessToken, refr
 	case user.Email != "" && user.Password.PlainText != "":
 		var hashed string
 		err = userStore.DB.QueryRow(`SELECT id, username, password FROM "user" WHERE email = $1`, user.Email).Scan(&userID, &userName, &hashed)
-		if hashed == "" {
-			return "", "", "", utils.NewCustomAppError(constants.InvalidData, "User has log in through google or github, no password is set")
-		}
 		if err == nil {
 			match, cmpErr := argon2id.ComparePasswordAndHash(user.Password.PlainText, hashed)
 			if cmpErr != nil {

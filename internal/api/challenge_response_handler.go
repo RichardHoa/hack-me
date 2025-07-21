@@ -206,6 +206,5 @@ func (handler *ChallengeResponseHandler) GetChallengeResponse(w http.ResponseWri
 	utils.WriteJSON(w, http.StatusOK, utils.Message{
 		"data": responses,
 	})
-	return
 
 }

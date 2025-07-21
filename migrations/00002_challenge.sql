@@ -30,13 +30,6 @@ CREATE TABLE IF NOT EXISTS challenge (
 
 -- make sure name is case-insensitive unique
 CREATE UNIQUE INDEX unique_name_lower ON challenge (lower(name));
-
--- Insert test data
-INSERT INTO challenge (name, content, category, popular_score, user_id)
-VALUES
-    ('XSS Lab', 'Find and exploit a reflected XSS vulnerability.', 'web hacking', 15, 'd45aef9f-3a34-45f1-a55c-7c1d668aa8d0'),
-    ('UART Dumping', 'Extract firmware via UART from a real IoT device.', 'embedded hacking', 23, '2291cd29-982c-45a4-91e1-a243020b7ce2'),
-    ('ELF Binary Crackme', 'Reverse this binary to retrieve the flag.', 'reverse engineering', 42, '18f89717-b49e-4fa2-832c-a506e4de4cd9');
 -- +goose StatementEnd
 
 -- +goose Down
