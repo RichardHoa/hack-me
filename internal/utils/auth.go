@@ -8,6 +8,7 @@ import (
 	"io"
 	"net/http"
 	"strings"
+	"time"
 	"unicode/utf8"
 )
 
@@ -34,9 +35,13 @@ func CheckPasswordValid(password string) PasswordCheckResult {
 	prefix := sha1Hex[:5]
 	suffix := sha1Hex[5:]
 
-	// 3. Fetch from Pwned Passwords
 	url := fmt.Sprintf("https://api.pwnedpasswords.com/range/%s", prefix)
-	resp, err := http.Get(url)
+
+	client := &http.Client{
+		Timeout: 5 * time.Second,
+	}
+
+	resp, err := client.Get(url)
 	if err != nil {
 		return PasswordCheckResult{err, ""}
 	}

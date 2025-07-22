@@ -62,7 +62,7 @@ func (handler *UserHandler) RegisterNewUser(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	if User.Username == "" || User.Email == "" {
+	if strings.TrimSpace(User.Username) == "" || strings.TrimSpace(User.Email) == "" {
 		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("Two fields must exist", constants.MSG_LACKING_MANDATORY_FIELDS, "userName and email"))
 		return
 	}
@@ -80,7 +80,7 @@ func (handler *UserHandler) RegisterNewUser(w http.ResponseWriter, r *http.Reque
 		}
 
 		if checkResult.Error != nil && checkResult.ErrorMessage == "" {
-			utils.WriteJSON(w, http.StatusInternalServerError, utils.NewMessage(constants.StatusInternalErrorMessage, "", ""))
+			utils.WriteJSON(w, http.StatusInternalServerError, utils.NewMessage(checkResult.ErrorMessage, "", ""))
 			return
 		}
 	}
@@ -88,12 +88,14 @@ func (handler *UserHandler) RegisterNewUser(w http.ResponseWriter, r *http.Reque
 	_, err = handler.UserStore.CreateUser(&User)
 	if err != nil {
 		switch utils.ClassifyError(err) {
+		case constants.PQInvalidByteSequence:
+			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("input contains null character", constants.MSG_INVALID_REQUEST_DATA, "body"))
 		case constants.PQUniqueViolation:
 			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("User already exist", constants.MSG_INVALID_REQUEST_DATA, "userName or email"))
 			return
 		default:
 			handler.Logger.Printf("ERROR: RegisterNewUser > CreateUser: %v", err)
-			utils.WriteJSON(w, http.StatusInternalServerError, utils.NewMessage(constants.StatusInternalErrorMessage, "", ""))
+			utils.WriteJSON(w, http.StatusInternalServerError, utils.NewMessage(err.Error(), "", ""))
 			return
 
 		}
@@ -244,6 +246,10 @@ func (handler *UserHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
 		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(constants.StatusInvalidJSONMessage, constants.MSG_MALFORMED_REQUEST_DATA, "request"))
 		return
 	}
+	if strings.TrimSpace(user.Email) == "" {
+		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("email must exist", constants.MSG_LACKING_MANDATORY_FIELDS, "email"))
+		return
+	}
 
 	if user.GoogleID != "" && user.GithubID != "" {
 		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("googleID and githubID cannot coexist", constants.MSG_CONFLICTING_FIELDS, "googleID and githubID"))
@@ -259,14 +265,14 @@ func (handler *UserHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		handler.Logger.Printf("ERROR: LoginUser > LoginAndIssueTokens: %v", err)
 		switch utils.ClassifyError(err) {
+		case constants.PQInvalidByteSequence:
+			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("input contains null character", constants.MSG_INVALID_REQUEST_DATA, "email and password"))
 		case constants.InvalidData:
 			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(err.Error(), constants.MSG_INVALID_REQUEST_DATA, "email and password"))
-			return
 		default:
 			utils.WriteJSON(w, http.StatusInternalServerError, utils.NewMessage(constants.StatusInternalErrorMessage, "", ""))
-			return
-
 		}
+		return
 	}
 
 	err = handler.TokenStore.DeleteRefreshToken(user.ID)

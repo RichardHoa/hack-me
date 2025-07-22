@@ -1,11 +1,15 @@
 package api_test
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"net/http/cookiejar"
 	"net/http/httptest"
+	"os"
+	"runtime/debug"
 	"testing"
 
 	"github.com/RichardHoa/hack-me/internal/app"
@@ -437,6 +441,7 @@ func TestUserRoutes(t *testing.T) {
 						method: "POST",
 						path:   "/v1/users/login",
 						body: map[string]string{
+							"email":    "social@test.com",
 							"googleID": "social-google-id-123",
 						},
 					},
@@ -851,4 +856,180 @@ func TestUserRoutes(t *testing.T) {
 		})
 	}
 
+}
+
+func FuzzUserLogin(f *testing.F) {
+	logFile, err := os.OpenFile("fuzz_debug.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		f.Logf("Failed to open debug log file: %v", err)
+	}
+	defer logFile.Close()
+	logger := log.New(logFile, "[FUZZ] ", 0)
+
+	// --- One-Time Setup ---
+	application, err := app.NewApplication(true)
+	if err != nil {
+		logger.Printf("failed to create application: %v", err)
+	}
+	f.Cleanup(func() {
+		application.DB.Close()
+	})
+
+	router := routes.SetUpRoutes(application)
+
+	// Pre-create a known valid user for testing
+	validEmail := "fuzz_login@example.com"
+	validPassword := "a-very-Strong-and-Valid-Password-123"
+
+	createUserBody, _ := json.Marshal(map[string]string{
+		"userName":  "login_fuzz_user",
+		"password":  validPassword,
+		"email":     validEmail,
+		"imageLink": "", "googleID": "", "githubID": "",
+	})
+
+	// Use in-process POST to /v1/users
+	createReq := httptest.NewRequest("POST", "/v1/users", bytes.NewReader(createUserBody))
+	createReq.Header.Set("Content-Type", "application/json")
+	createResp := httptest.NewRecorder()
+	router.ServeHTTP(createResp, createReq)
+
+	if createResp.Code != http.StatusCreated && createResp.Code != http.StatusOK {
+		logger.Printf("Failed to create valid test user, got status: %s with message %v", createResp.Result().Status, createResp.Body)
+	}
+
+	f.Add(validEmail, validPassword)
+	f.Add("invalid@example.com", "wrong-password")
+	f.Add("fuzz@example.com", "")
+	f.Add("", "some-password")
+
+	f.Fuzz(func(t *testing.T, email, password string) {
+		defer func() {
+			if r := recover(); r != nil {
+				stack := debug.Stack()
+				logger.Printf("🔥 PANIC recovered for input: email=%q, password=%q\n%v\n%s", email, password, r, stack)
+				t.Errorf("panic occurred during fuzzing, recovered")
+			}
+		}()
+
+		loginBodyMap := map[string]string{"email": email, "password": password}
+		jsonBody, err := json.Marshal(loginBodyMap)
+		if err != nil {
+			logger.Printf("❌ Failed to marshal input: %v", err)
+			t.Errorf("JSON marshal error: %v", err)
+			return
+		}
+
+		req := httptest.NewRequest("POST", "/v1/users/login", bytes.NewReader(jsonBody))
+		req.Header.Set("Content-Type", "application/json")
+
+		rec := httptest.NewRecorder()
+		router.ServeHTTP(rec, req)
+		resp := rec.Result()
+		defer resp.Body.Close()
+
+		if resp.StatusCode == http.StatusInternalServerError {
+			var body struct {
+				Message string `json:"message"`
+			}
+			if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+				logger.Printf("[ERROR] Failed to decode body: %v", err)
+			} else {
+				logger.Printf(`
+					[FUZZ CASE]
+					status:   %s
+					message:  %q
+					email:    %q
+					password: %q
+						`, resp.Status, body.Message, email, password)
+			}
+		}
+
+		if email == validEmail && password == validPassword {
+			if resp.StatusCode != http.StatusOK {
+				logger.Printf("❌ Expected success for valid credentials, got %s", resp.Status)
+				t.Errorf("Expected success for valid credentials, got %s", resp.Status)
+			}
+		} else {
+			if resp.StatusCode == http.StatusOK {
+				logger.Printf("❌ Unexpected success for email=%q password=%q", email, password)
+				t.Errorf("Unexpected success for email=%q password=%q", email, password)
+			}
+		}
+	})
+}
+
+func FuzzUserSignUp(f *testing.F) {
+	logFile, err := os.OpenFile("fuzz_signup_debug.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		f.Fatalf("Failed to open debug log file: %v", err)
+	}
+	defer logFile.Close()
+	logger := log.New(logFile, "[FUZZ-SIGNUP] ", log.LstdFlags)
+
+	application, err := app.NewApplication(true)
+	if err != nil {
+		logger.Fatalf("failed to create application: %v", err)
+	}
+	f.Cleanup(func() {
+		application.DB.Close()
+	})
+
+	router := routes.SetUpRoutes(application)
+
+	f.Add("valid_user", "valid_user@example.com", "ValidPassword123")
+	f.Add("test_user", "not-an-email", "short")
+	f.Add("", "user@example.com", "password")
+	f.Add("user", "", "password")
+	f.Add("user", "user@example.com", "")
+	f.Add("another_user", "valid_user@example.com", "some_password")
+	f.Add("!@#$%^", "email@!@#$.com", "p@$$w()rd")
+
+	f.Fuzz(func(t *testing.T, userName, email, password string) {
+		defer func() {
+			if r := recover(); r != nil {
+				stack := debug.Stack()
+				logger.Printf("🔥 PANIC recovered for input: userName=%q, email=%q, password=%q\n%v\n%s", userName, email, password, r, stack)
+				t.Errorf("panic occurred with input: userName=%q, email=%q, password=%q", userName, email, password)
+			}
+		}()
+
+		signUpBody, err := json.Marshal(map[string]string{
+			"userName":  userName,
+			"email":     email,
+			"password":  password,
+			"imageLink": "",
+			"googleID":  "",
+			"githubID":  "",
+		})
+		if err != nil {
+			t.Fatalf("Failed to marshal fuzz input to JSON: %v", err)
+		}
+
+		req := httptest.NewRequest("POST", "/v1/users", bytes.NewReader(signUpBody))
+		req.Header.Set("Content-Type", "application/json")
+
+		rec := httptest.NewRecorder()
+		router.ServeHTTP(rec, req)
+		resp := rec.Result()
+		defer resp.Body.Close()
+
+		if resp.StatusCode >= http.StatusInternalServerError {
+			var body struct {
+				Message string `json:"message"`
+			}
+			json.NewDecoder(resp.Body).Decode(&body)
+
+			logger.Printf(`
+				[FUZZ FAILURE]
+				status:   %s
+				message:  %q
+				userName: %q
+				email:    %q
+				password: %q
+					`, resp.Status, body.Message, userName, email, password)
+
+		}
+
+	})
 }

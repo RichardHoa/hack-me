@@ -1,6 +1,6 @@
 module github.com/RichardHoa/hack-me
 
-go 1.24.1
+go 1.24.4
 
 require (
 	github.com/alexedwards/argon2id v1.0.0

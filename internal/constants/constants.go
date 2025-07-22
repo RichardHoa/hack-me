@@ -22,7 +22,7 @@ func LoadEnv() error {
 			fmt.Printf("Error loading ../../.env file: %v\n", err)
 		}
 	} else {
-		fmt.Printf("No .env file found - assuming Docker environment with environment variables\n")
+		fmt.Printf("No .env file found - assuming environment variables\n")
 	}
 
 	RefreshTokenSecret = os.Getenv("REFRESH_TOKEN_SECRET")
@@ -41,6 +41,7 @@ func LoadEnv() error {
 	if RefreshTokenSecret == "" || AccessTokenSecret == "" || CSRFTokenSecret == "" {
 		return errors.New("Missing token secrets in .env")
 	}
+
 	return nil
 }
 
@@ -77,20 +78,21 @@ const (
 )
 
 const (
-	PQUniqueViolation           = iota // 0
-	PQForeignKeyViolation              // 1
-	PQInvalidEnum                      // 2
-	PQInvalidTextRepresentation        // 3 (e.g. casting string to int/date fails)
-	PQNotNullViolation                 // 4
-	PQCheckViolation                   // 5
-	PQNumericValueOutOfRange           // 6
-	PQInvalidUUIDFormat                // 7
-	PQDatatypeMismatch                 // 8
-	PQSyntaxError                      // 9
-	ResourceNotFound                   // 10
-	InvalidData                        // 11
-	InternalError                      // 12
-	LackingPermission                  // 13
+	PQUniqueViolation = iota
+	PQForeignKeyViolation
+	PQInvalidEnum
+	PQInvalidTextRepresentation
+	PQNotNullViolation
+	PQCheckViolation
+	PQNumericValueOutOfRange
+	PQInvalidUUIDFormat
+	PQDatatypeMismatch
+	PQSyntaxError
+	PQInvalidByteSequence
+	ResourceNotFound
+	InvalidData
+	InternalError
+	LackingPermission
 )
 
 var PQErrorMessages = map[string]int{
@@ -104,4 +106,5 @@ var PQErrorMessages = map[string]int{
 	"22P04": PQInvalidUUIDFormat,         // bad UUID text representation
 	"42804": PQDatatypeMismatch,          // datatype_mismatch
 	"42601": PQSyntaxError,               // syntax_error
+	"22021": PQInvalidByteSequence,       //input contains null bytes
 }

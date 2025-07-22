@@ -1,5 +1,9 @@
 # Hack-Me Backend
 
+```bash
+go test -run=TestUserRoutes -fuzz=FuzzUserSignUp -parallel=4
+```
+
 **Starting Date:** 26/06/2025  
 **Finish Date:** 19/07/2025
 **Frontend Repository:** [Frontend Repo](https://github.com/RichardHoa/hack-me-frontend) 
