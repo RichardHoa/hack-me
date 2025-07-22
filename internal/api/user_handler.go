@@ -26,7 +26,7 @@ func NewUserHandler(userStore store.UserStore, tokenStore store.TokenStore, logg
 }
 
 func (handler *UserHandler) GetUserActivity(w http.ResponseWriter, r *http.Request) {
-	result, err := utils.ValidateTokensFromCookies(r, []string{constants.TokenUserID})
+	result, err := utils.GetValuesFromCookie(r, []string{constants.TokenUserID})
 	if err != nil {
 		handler.Logger.Printf("ERROR: GetUserActivity > JWT token checking: %v", err)
 		utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, "cookies"))
@@ -106,7 +106,7 @@ func (handler *UserHandler) RegisterNewUser(w http.ResponseWriter, r *http.Reque
 }
 
 func (handler *UserHandler) ChangeUsername(w http.ResponseWriter, r *http.Request) {
-	result, err := utils.ValidateTokensFromCookies(r, []string{constants.TokenUserID})
+	result, err := utils.GetValuesFromCookie(r, []string{constants.TokenUserID})
 	if err != nil {
 		handler.Logger.Printf("ERROR: ChangeUsername > JWT token checking: %v", err)
 		utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, "cookies"))
@@ -152,7 +152,7 @@ func (handler *UserHandler) ChangeUsername(w http.ResponseWriter, r *http.Reques
 }
 
 func (handler *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
-	result, err := utils.ValidateTokensFromCookies(r, []string{constants.TokenUserID})
+	result, err := utils.GetValuesFromCookie(r, []string{constants.TokenUserID})
 	if err != nil {
 		handler.Logger.Printf("ERROR: DeleteUser > JWT token checking: %v", err)
 		utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, "cookies"))
@@ -178,7 +178,7 @@ func (handler *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (handler *UserHandler) ChangePassword(w http.ResponseWriter, r *http.Request) {
-	result, err := utils.ValidateTokensFromCookies(r, []string{constants.TokenUserID})
+	result, err := utils.GetValuesFromCookie(r, []string{constants.TokenUserID})
 	if err != nil {
 		handler.Logger.Printf("ERROR: ChangePassword > JWT token checking: %v", err)
 		utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, "cookies"))
@@ -309,7 +309,7 @@ func (handler *UserHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
 
 func (handler *UserHandler) LogoutUser(w http.ResponseWriter, r *http.Request) {
 
-	result, err := utils.ValidateTokensFromCookies(r, []string{constants.TokenUserID, constants.TokenRefreshID})
+	result, err := utils.GetValuesFromCookie(r, []string{constants.TokenUserID, constants.TokenRefreshID})
 	if err != nil {
 		handler.Logger.Printf("ERROR: Logout user > JWT token checking: %v", err)
 		utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, "cookies"))
@@ -345,7 +345,7 @@ func (handler *UserHandler) LogoutUser(w http.ResponseWriter, r *http.Request) {
 
 func (handler *UserHandler) RefreshTokenRotation(w http.ResponseWriter, r *http.Request) {
 
-	result, err := utils.ValidateTokensFromCookiesWithoutAccessToken(r, []string{constants.TokenUserID, constants.TokenRefreshID})
+	result, err := utils.GetValuesFromCookieWithoutAccessToken(r, []string{constants.TokenUserID, constants.TokenRefreshID})
 
 	if err != nil {
 		handler.Logger.Printf("ERROR: Refresh-token-rotation > JWT token checking: %v", err)

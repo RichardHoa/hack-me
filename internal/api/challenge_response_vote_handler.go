@@ -21,7 +21,7 @@ func NewChallengeResponseVoteHandler(store store.VoteStore, logger *log.Logger) 
 
 func (handler *ChallengeResponseVoteHandler) PostVote(w http.ResponseWriter, r *http.Request) {
 
-	result, err := utils.ValidateTokensFromCookies(r, []string{constants.TokenUserID})
+	result, err := utils.GetValuesFromCookie(r, []string{constants.TokenUserID})
 	if err != nil {
 		handler.Logger.Printf("ERROR: PostChallengeResponseVote > JWT token checking: %v", err)
 		utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, "cookies"))
@@ -76,7 +76,7 @@ func (handler *ChallengeResponseVoteHandler) PostVote(w http.ResponseWriter, r *
 
 func (handler *ChallengeResponseVoteHandler) DeleteVote(w http.ResponseWriter, r *http.Request) {
 
-	result, err := utils.ValidateTokensFromCookies(r, []string{constants.TokenUserID})
+	result, err := utils.GetValuesFromCookie(r, []string{constants.TokenUserID})
 	if err != nil {
 		handler.Logger.Printf("ERROR: DeleteChallengeResponseVote > JWT token checking: %v", err)
 		utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, "cookies"))

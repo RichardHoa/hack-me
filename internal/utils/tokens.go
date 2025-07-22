@@ -259,7 +259,7 @@ func CreateTokens(userID, userName string, refreshTokenTime int64) (accessToken 
 
 }
 
-func ValidateTokensFromCookiesWithoutAccessToken(r *http.Request, claimsList []string) (result []string, err error) {
+func GetValuesFromCookieWithoutAccessToken(r *http.Request, claimsList []string) (result []string, err error) {
 
 	// Refresh token: validate and extract claims
 	refreshCookie, err := r.Cookie("refreshToken")
@@ -290,7 +290,7 @@ func ValidateTokensFromCookiesWithoutAccessToken(r *http.Request, claimsList []s
 
 }
 
-func ValidateTokensFromCookies(r *http.Request, claimsList []string) (result []string, err error) {
+func GetValuesFromCookie(r *http.Request, claimsList []string) (result []string, err error) {
 	// Access token: validate structure
 	accessCookie, err := r.Cookie("accessToken")
 	if err != nil || accessCookie.Value == "" {

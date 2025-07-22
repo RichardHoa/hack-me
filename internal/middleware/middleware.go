@@ -47,7 +47,7 @@ func (middleware *MiddleWare) RequireCSRFToken(next http.Handler) http.Handler {
 		}
 
 		// Step 2: Validate refresh token from cookies
-		result, err := utils.ValidateTokensFromCookies(r, []string{constants.TokenRefreshID})
+		result, err := utils.GetValuesFromCookie(r, []string{constants.TokenRefreshID})
 		if err != nil {
 			middleware.Logger.Printf("Middleware > RequireCSRFToken: failed to validate refreshToken: %v", err)
 			utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(

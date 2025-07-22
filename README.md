@@ -1,3 +1,4 @@
+[] refactor all test to use error instead of fatal (except in setup tests)
 # Hack-Me Backend
 
 ```bash
