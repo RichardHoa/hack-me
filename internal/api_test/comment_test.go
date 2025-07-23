@@ -195,12 +195,12 @@ func TestCommentRoute(t *testing.T) {
 					validate: func(t *testing.T, body []byte) {
 						var parsed map[string]any
 						if err := json.Unmarshal(body, &parsed); err != nil {
-							t.Fatalf("Failed to parse response: %v", err)
+							t.Errorf("Failed to parse response: %v", err)
 						}
 
 						data, ok := parsed["data"].([]any)
 						if !ok {
-							t.Fatalf(`Expected "data" to be a list, got: %#v`, parsed["data"])
+							t.Errorf(`Expected "data" to be a list, got: %#v`, parsed["data"])
 						}
 
 						for _, item := range data {
@@ -209,7 +209,7 @@ func TestCommentRoute(t *testing.T) {
 								continue
 							}
 							if challenge["comment"] != nil {
-								t.Fatalf("expected comment key to be null but get %v", challenge["comment"])
+								t.Errorf("expected comment key to be null but get %v", challenge["comment"])
 
 							}
 						}
@@ -227,12 +227,12 @@ func TestCommentRoute(t *testing.T) {
 					validate: func(t *testing.T, body []byte) {
 						var parsed map[string]any
 						if err := json.Unmarshal(body, &parsed); err != nil {
-							t.Fatalf("Failed to parse response: %v", err)
+							t.Errorf("Failed to parse response: %v", err)
 						}
 
 						data, ok := parsed["data"].([]any)
 						if !ok {
-							t.Fatalf(`Expected "data" to be a list, got: %#v`, parsed["data"])
+							t.Errorf(`Expected "data" to be a list, got: %#v`, parsed["data"])
 						}
 
 						for _, item := range data {
@@ -253,7 +253,7 @@ func TestCommentRoute(t *testing.T) {
 							currentComments := comments
 							for level := 2; level <= 5; level++ {
 								if len(currentComments) == 0 {
-									t.Fatalf("Missing level %d comment", level)
+									t.Errorf("Missing level %d comment", level)
 								}
 
 								firstComment := currentComments[0].(map[string]any)
@@ -264,7 +264,7 @@ func TestCommentRoute(t *testing.T) {
 										continue
 									}
 								}
-								t.Fatalf("Level %d comment missing or invalid structure", level)
+								t.Errorf("Level %d comment missing or invalid structure", level)
 							}
 						}
 					},
@@ -488,12 +488,12 @@ func TestCommentRoute(t *testing.T) {
 					validate: func(t *testing.T, body []byte) {
 						var parsed map[string]any
 						if err := json.Unmarshal(body, &parsed); err != nil {
-							t.Fatalf("Failed to parse response: %v", err)
+							t.Errorf("Failed to parse response: %v", err)
 						}
 
 						data, ok := parsed["data"].([]any)
 						if !ok {
-							t.Fatalf(`Expected "data" to be a list, got: %#v`, parsed["data"])
+							t.Errorf(`Expected "data" to be a list, got: %#v`, parsed["data"])
 						}
 
 						for _, item := range data {
@@ -514,7 +514,7 @@ func TestCommentRoute(t *testing.T) {
 							currentComments := comments
 							for level := 2; level <= 5; level++ {
 								if len(currentComments) == 0 {
-									t.Fatalf("Missing level %d comment", level)
+									t.Errorf("Missing level %d comment", level)
 								}
 
 								firstComment := currentComments[0].(map[string]any)
@@ -525,7 +525,7 @@ func TestCommentRoute(t *testing.T) {
 										continue
 									}
 								}
-								t.Fatalf("Level %d comment missing or invalid structure", level)
+								t.Errorf("Level %d comment missing or invalid structure", level)
 							}
 						}
 					},
@@ -724,12 +724,12 @@ func TestCommentRoute(t *testing.T) {
 					validate: func(t *testing.T, body []byte) {
 						var parsed map[string]any
 						if err := json.Unmarshal(body, &parsed); err != nil {
-							t.Fatalf("Failed to parse response: %v", err)
+							t.Errorf("Failed to parse response: %v", err)
 						}
 
 						data, ok := parsed["data"].([]any)
 						if !ok {
-							t.Fatalf(`Expected "data" to be a list, got: %#v`, parsed["data"])
+							t.Errorf(`Expected "data" to be a list, got: %#v`, parsed["data"])
 						}
 
 						for _, item := range data {
@@ -768,12 +768,12 @@ func TestCommentRoute(t *testing.T) {
 					validate: func(t *testing.T, body []byte) {
 						var parsed map[string]any
 						if err := json.Unmarshal(body, &parsed); err != nil {
-							t.Fatalf("Failed to parse response: %v", err)
+							t.Errorf("Failed to parse response: %v", err)
 						}
 
 						data, ok := parsed["data"].([]any)
 						if !ok {
-							t.Fatalf(`Expected "data" to be a list, got: %#v`, parsed["data"])
+							t.Errorf(`Expected "data" to be a list, got: %#v`, parsed["data"])
 						}
 
 						for _, item := range data {
@@ -1026,12 +1026,12 @@ func TestCommentRoute(t *testing.T) {
 
 func verifyNestedComment(t *testing.T, comments []any, index int, level int) {
 	if index >= len(comments) {
-		t.Fatalf("Comment index %d out of bounds for level %d", index, level)
+		t.Errorf("Comment index %d out of bounds for level %d", index, level)
 	}
 
 	comment, ok := comments[index].(map[string]any)
 	if !ok {
-		t.Fatalf("Invalid comment structure at level %d", level)
+		t.Errorf("Invalid comment structure at level %d", level)
 	}
 
 	createdAt, createdExists := comment["createdAt"].(string)
@@ -1062,12 +1062,12 @@ func verifyEditedComment(level int) func(*testing.T, []byte) {
 	return func(t *testing.T, body []byte) {
 		var parsed map[string]any
 		if err := json.Unmarshal(body, &parsed); err != nil {
-			t.Fatalf("Failed to parse response: %v", err)
+			t.Errorf("Failed to parse response: %v", err)
 		}
 
 		data, ok := parsed["data"].([]any)
 		if !ok {
-			t.Fatalf(`Expected "data" to be a list, got: %#v`, parsed["data"])
+			t.Errorf(`Expected "data" to be a list, got: %#v`, parsed["data"])
 		}
 
 		found := false
@@ -1142,12 +1142,12 @@ func verifyTimestamps(t *testing.T, comment map[string]any) {
 
 	createdTime, err := time.Parse(time.RFC3339, createdAt)
 	if err != nil {
-		t.Fatalf("Invalid createdAt format: %v", err)
+		t.Errorf("Invalid createdAt format: %v", err)
 	}
 
 	updatedTime, err := time.Parse(time.RFC3339, updatedAt)
 	if err != nil {
-		t.Fatalf("Invalid updatedAt format: %v", err)
+		t.Errorf("Invalid updatedAt format: %v", err)
 	}
 
 	if !updatedTime.After(createdTime) {

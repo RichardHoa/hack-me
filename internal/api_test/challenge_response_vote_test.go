@@ -236,12 +236,12 @@ func TestChallengeResponseVoteRoute(t *testing.T) {
 					validate: func(t *testing.T, body []byte) {
 						var parsed map[string]any
 						if err := json.Unmarshal(body, &parsed); err != nil {
-							t.Fatalf("Failed to parse response: %v", err)
+							t.Errorf("Failed to parse response: %v", err)
 						}
 
 						data, ok := parsed["data"].([]any)
 						if !ok {
-							t.Fatalf(`Expected "data" to be a list, got: %#v`, parsed["data"])
+							t.Errorf(`Expected "data" to be a list, got: %#v`, parsed["data"])
 						}
 
 						found := false
@@ -286,12 +286,12 @@ func TestChallengeResponseVoteRoute(t *testing.T) {
 					validate: func(t *testing.T, body []byte) {
 						var parsed map[string]any
 						if err := json.Unmarshal(body, &parsed); err != nil {
-							t.Fatalf("Failed to parse response: %v", err)
+							t.Errorf("Failed to parse response: %v", err)
 						}
 
 						data, ok := parsed["data"].([]any)
 						if !ok {
-							t.Fatalf(`Expected "data" to be a list, got: %#v`, parsed["data"])
+							t.Errorf(`Expected "data" to be a list, got: %#v`, parsed["data"])
 						}
 
 						found := false
@@ -387,12 +387,12 @@ func TestChallengeResponseVoteRoute(t *testing.T) {
 					validate: func(t *testing.T, body []byte) {
 						var parsed map[string]any
 						if err := json.Unmarshal(body, &parsed); err != nil {
-							t.Fatalf("Failed to parse response: %v", err)
+							t.Errorf("Failed to parse response: %v", err)
 						}
 
 						data, ok := parsed["data"].([]any)
 						if !ok {
-							t.Fatalf(`Expected "data" to be a list, got: %#v`, parsed["data"])
+							t.Errorf(`Expected "data" to be a list, got: %#v`, parsed["data"])
 						}
 
 						found := false

@@ -13,7 +13,6 @@ import (
 	"github.com/RichardHoa/hack-me/internal/routes"
 )
 
-// NOTE: Switch to forbidden for appropriate resource, not unauthorized
 func TestChallengesRoutes(t *testing.T) {
 	// Initialize application and server
 	application, err := app.NewApplication(true)
@@ -701,12 +700,12 @@ func TestChallengesRoutes(t *testing.T) {
 					validate: func(t *testing.T, body []byte) {
 						var parsed map[string]any
 						if err := json.Unmarshal(body, &parsed); err != nil {
-							t.Fatalf("Failed to parse response: %v", err)
+							t.Errorf("Failed to parse response: %v", err)
 						}
 
 						data, ok := parsed["data"].([]any)
 						if !ok {
-							t.Fatalf(`Expected "data" to be a list, got: %#v`, parsed["data"])
+							t.Errorf(`Expected "data" to be a list, got: %#v`, parsed["data"])
 						}
 						expectedName := "New-Deleted-Files-2"
 						expectedCategory := "crypto challenge"
@@ -756,11 +755,11 @@ func TestChallengesRoutes(t *testing.T) {
 					validate: func(t *testing.T, body []byte) {
 						var parsed map[string]any
 						if err := json.Unmarshal(body, &parsed); err != nil {
-							t.Fatalf("Failed to parse response: %v", err)
+							t.Errorf("Failed to parse response: %v", err)
 						}
 						data := parsed["data"].([]any)
 						if len(data) == 0 {
-							t.Fatalf("No challenges returned")
+							t.Errorf("No challenges returned")
 						}
 						challenge := data[0].(map[string]any)
 						if challenge["name"] != "Updated-Name-Only" {
@@ -790,11 +789,11 @@ func TestChallengesRoutes(t *testing.T) {
 					validate: func(t *testing.T, body []byte) {
 						var parsed map[string]any
 						if err := json.Unmarshal(body, &parsed); err != nil {
-							t.Fatalf("Failed to parse response: %v", err)
+							t.Errorf("Failed to parse response: %v", err)
 						}
 						data := parsed["data"].([]any)
 						if len(data) == 0 {
-							t.Fatalf("No challenges returned")
+							t.Errorf("No challenges returned")
 						}
 						challenge := data[0].(map[string]any)
 						if challenge["content"] != "Updated content only" {
@@ -824,11 +823,11 @@ func TestChallengesRoutes(t *testing.T) {
 					validate: func(t *testing.T, body []byte) {
 						var parsed map[string]any
 						if err := json.Unmarshal(body, &parsed); err != nil {
-							t.Fatalf("Failed to parse response: %v", err)
+							t.Errorf("Failed to parse response: %v", err)
 						}
 						data := parsed["data"].([]any)
 						if len(data) == 0 {
-							t.Fatalf("No challenges returned")
+							t.Errorf("No challenges returned")
 						}
 						challenge := data[0].(map[string]any)
 						if challenge["category"] != "embedded hacking" {
@@ -903,12 +902,12 @@ func TestChallengesRoutes(t *testing.T) {
 					validate: func(t *testing.T, body []byte) {
 						var parsed map[string]any
 						if err := json.Unmarshal(body, &parsed); err != nil {
-							t.Fatalf("Failed to parse response: %v", err)
+							t.Errorf("Failed to parse response: %v", err)
 						}
 
 						data, ok := parsed["data"].([]any)
 						if !ok {
-							t.Fatalf(`Expected "data" to be a list, got: %#v`, parsed["data"])
+							t.Errorf(`Expected "data" to be a list, got: %#v`, parsed["data"])
 						}
 						expectedName := "Vulnaribilities number 1"
 						expectedCategory := "web hacking"
@@ -946,16 +945,16 @@ func TestChallengesRoutes(t *testing.T) {
 					validate: func(t *testing.T, body []byte) {
 						var parsed map[string]any
 						if err := json.Unmarshal(body, &parsed); err != nil {
-							t.Fatalf("Failed to parse response: %v", err)
+							t.Errorf("Failed to parse response: %v", err)
 						}
 
 						data, ok := parsed["data"].([]any)
 						if !ok {
-							t.Fatalf(`Expected "data" to be a list, got: %#v`, parsed["data"])
+							t.Errorf(`Expected "data" to be a list, got: %#v`, parsed["data"])
 						}
 
 						if len(data) != 3 {
-							t.Fatalf("Expected 3 element but we get %v", data)
+							t.Errorf("Expected 3 element but we get %v", data)
 						}
 
 					},
@@ -970,16 +969,16 @@ func TestChallengesRoutes(t *testing.T) {
 					validate: func(t *testing.T, body []byte) {
 						var parsed map[string]any
 						if err := json.Unmarshal(body, &parsed); err != nil {
-							t.Fatalf("Failed to parse response: %v", err)
+							t.Errorf("Failed to parse response: %v", err)
 						}
 
 						data, ok := parsed["data"].([]any)
 						if !ok {
-							t.Fatalf(`Expected "data" to be a list, got: %#v`, parsed["data"])
+							t.Errorf(`Expected "data" to be a list, got: %#v`, parsed["data"])
 						}
 
 						if len(data) != 2 {
-							t.Fatalf("Expected 2 element but we get %v", len(data))
+							t.Errorf("Expected 2 element but we get %v", len(data))
 						}
 
 					},
@@ -994,13 +993,13 @@ func TestChallengesRoutes(t *testing.T) {
 					validate: func(t *testing.T, body []byte) {
 						var parsed map[string]any
 						if err := json.Unmarshal(body, &parsed); err != nil {
-							t.Fatalf("Failed to parse response: %v", err)
+							t.Errorf("Failed to parse response: %v", err)
 						}
 
 						data := parsed["data"].([]any)
 
 						if len(data) != 0 {
-							t.Fatalf("Expect empty array but get: %v", data)
+							t.Errorf("Expect empty array but get: %v", data)
 						}
 
 					},
@@ -1016,25 +1015,25 @@ func TestChallengesRoutes(t *testing.T) {
 					validate: func(t *testing.T, body []byte) {
 						var parsed map[string]any
 						if err := json.Unmarshal(body, &parsed); err != nil {
-							t.Fatalf("Failed to parse response: %v", err)
+							t.Errorf("Failed to parse response: %v", err)
 						}
 
 						data, ok := parsed["data"].([]any)
 						if !ok {
-							t.Fatalf(`Expected "data" to be a list, got: %#v`, parsed["data"])
+							t.Errorf(`Expected "data" to be a list, got: %#v`, parsed["data"])
 						}
 
 						if len(data) != 2 {
-							t.Fatalf("Expect 2 data response but get %v", len(data))
+							t.Errorf("Expect 2 data response but get %v", len(data))
 						}
 
 						metadata, ok := parsed["metadata"].(map[string]interface{})
 						if !ok {
-							t.Fatalf("Expected metadata to be a map, got: %T", parsed["metadata"])
+							t.Errorf("Expected metadata to be a map, got: %T", parsed["metadata"])
 						}
 
 						if metadata["pageSize"] != "2" || metadata["currentPage"] != "1" || metadata["maxPage"] != "10" {
-							t.Fatalf("Expected metadata {pageSize:2, currentPage:1, maxPage:10}, got: %v", metadata)
+							t.Errorf("Expected metadata {pageSize:2, currentPage:1, maxPage:10}, got: %v", metadata)
 						}
 
 					},
@@ -1049,26 +1048,26 @@ func TestChallengesRoutes(t *testing.T) {
 					validate: func(t *testing.T, body []byte) {
 						var parsed map[string]any
 						if err := json.Unmarshal(body, &parsed); err != nil {
-							t.Fatalf("Failed to parse response: %v", err)
+							t.Errorf("Failed to parse response: %v", err)
 						}
 
 						data, ok := parsed["data"].([]any)
 						if !ok {
-							t.Fatalf(`Expected "data" to be a list, got: %#v`, parsed["data"])
+							t.Errorf(`Expected "data" to be a list, got: %#v`, parsed["data"])
 						}
 
 						if len(data) != 2 {
-							t.Fatalf("Expect 2 data response but get %v", len(data))
+							t.Errorf("Expect 2 data response but get %v", len(data))
 
 						}
 
 						metadata, ok := parsed["metadata"].(map[string]interface{})
 						if !ok {
-							t.Fatalf("Expected metadata to be a map, got: %T", parsed["metadata"])
+							t.Errorf("Expected metadata to be a map, got: %T", parsed["metadata"])
 						}
 
 						if metadata["pageSize"] != "2" || metadata["currentPage"] != "2" || metadata["maxPage"] != "10" {
-							t.Fatalf("Expected metadata {pageSize:2, currentPage:2, maxPage:10}, got: %v", metadata)
+							t.Errorf("Expected metadata {pageSize:2, currentPage:2, maxPage:10}, got: %v", metadata)
 						}
 
 					},
@@ -1083,26 +1082,26 @@ func TestChallengesRoutes(t *testing.T) {
 					validate: func(t *testing.T, body []byte) {
 						var parsed map[string]any
 						if err := json.Unmarshal(body, &parsed); err != nil {
-							t.Fatalf("Failed to parse response: %v", err)
+							t.Errorf("Failed to parse response: %v", err)
 						}
 
 						data, ok := parsed["data"].([]any)
 						if !ok {
-							t.Fatalf(`Expected "data" to be a list, got: %#v`, parsed["data"])
+							t.Errorf(`Expected "data" to be a list, got: %#v`, parsed["data"])
 						}
 
 						if len(data) != 3 {
-							t.Fatalf("Expect 3 data response but get %v", len(data))
+							t.Errorf("Expect 3 data response but get %v", len(data))
 
 						}
 
 						metadata, ok := parsed["metadata"].(map[string]interface{})
 						if !ok {
-							t.Fatalf("Expected metadata to be a map, got: %T", parsed["metadata"])
+							t.Errorf("Expected metadata to be a map, got: %T", parsed["metadata"])
 						}
 
 						if metadata["pageSize"] != "3" || metadata["currentPage"] != "1" || metadata["maxPage"] != "7" {
-							t.Fatalf("Expected metadata {pageSize:3, currentPage:1, maxPage:7}, got: %v", metadata)
+							t.Errorf("Expected metadata {pageSize:3, currentPage:1, maxPage:7}, got: %v", metadata)
 						}
 
 					},
@@ -1117,26 +1116,26 @@ func TestChallengesRoutes(t *testing.T) {
 					validate: func(t *testing.T, body []byte) {
 						var parsed map[string]any
 						if err := json.Unmarshal(body, &parsed); err != nil {
-							t.Fatalf("Failed to parse response: %v", err)
+							t.Errorf("Failed to parse response: %v", err)
 						}
 
 						data, ok := parsed["data"].([]any)
 						if !ok {
-							t.Fatalf(`Expected "data" to be a list, got: %#v`, parsed["data"])
+							t.Errorf(`Expected "data" to be a list, got: %#v`, parsed["data"])
 						}
 
 						if len(data) != 3 {
-							t.Fatalf("Expect 2 data response but get %v", len(data))
+							t.Errorf("Expect 2 data response but get %v", len(data))
 
 						}
 
 						metadata, ok := parsed["metadata"].(map[string]interface{})
 						if !ok {
-							t.Fatalf("Expected metadata to be a map, got: %T", parsed["metadata"])
+							t.Errorf("Expected metadata to be a map, got: %T", parsed["metadata"])
 						}
 
 						if metadata["pageSize"] != "3" || metadata["currentPage"] != "2" || metadata["maxPage"] != "7" {
-							t.Fatalf("Expected metadata {pageSize:3, currentPage:2, maxPage:7}, got: %v", metadata)
+							t.Errorf("Expected metadata {pageSize:3, currentPage:2, maxPage:7}, got: %v", metadata)
 						}
 
 					},
@@ -1204,11 +1203,11 @@ func TestChallengesRoutes(t *testing.T) {
 					validate: func(t *testing.T, body []byte) {
 						var parsed map[string]any
 						if err := json.Unmarshal(body, &parsed); err != nil {
-							t.Fatalf("Failed to parse response: %v", err)
+							t.Errorf("Failed to parse response: %v", err)
 						}
 						data := parsed["data"].([]any)
 						if len(data) != 0 {
-							t.Fatalf("challenge still exist after being deleted %v", data)
+							t.Errorf("challenge still exist after being deleted %v", data)
 						}
 					},
 				},

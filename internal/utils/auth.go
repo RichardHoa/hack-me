@@ -12,14 +12,19 @@ import (
 	"unicode/utf8"
 )
 
+/*
+PasswordCheckResult encapsulates the result of a password validation check.
+*/
 type PasswordCheckResult struct {
 	Error        error
 	ErrorMessage string
 }
 
-// checkFormatOnly: if true, skip breach check
+/*
+CheckPasswordValid checks a password against local format rules and the 'Have I
+Been Pwned' public breach database.
+*/
 func CheckPasswordValid(password string) PasswordCheckResult {
-	// 1. Type and length check
 	if utf8.RuneCountInString(password) < 8 {
 		return PasswordCheckResult{nil, "Password length must be over 8 character"}
 	}
@@ -29,7 +34,7 @@ func CheckPasswordValid(password string) PasswordCheckResult {
 		return PasswordCheckResult{nil, "Password length is too long"}
 	}
 
-	// 2. SHA-1 hash
+	// SHA-1 hash
 	hash := sha1.Sum([]byte(password))
 	sha1Hex := strings.ToUpper(hex.EncodeToString(hash[:]))
 	prefix := sha1Hex[:5]
@@ -56,7 +61,7 @@ func CheckPasswordValid(password string) PasswordCheckResult {
 		return PasswordCheckResult{err, ""}
 	}
 
-	// 4. Search suffix in list
+	// Search suffix in list
 	scanner := bufio.NewScanner(strings.NewReader(string(body)))
 	for scanner.Scan() {
 		line := scanner.Text()
@@ -64,6 +69,7 @@ func CheckPasswordValid(password string) PasswordCheckResult {
 		if len(parts) != 2 {
 			continue
 		}
+		// check with suffix
 		if strings.TrimSpace(parts[0]) == suffix {
 			return PasswordCheckResult{nil, fmt.Sprintf("Your password has been found in breach %v times, please change to a more secure password", parts[1])}
 		}

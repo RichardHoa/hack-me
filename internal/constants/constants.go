@@ -1,3 +1,9 @@
+/*
+Package constants centralizes the management of application-wide constants and
+environment-dependent configuration. It handles loading secrets and settings
+from a .env file or the system environment, and provides a single source of
+truth for values like token secrets, error codes, and standard messages.
+*/
 package constants
 
 import (
@@ -45,6 +51,7 @@ func LoadEnv() error {
 	return nil
 }
 
+// Global variables holding configuration loaded from the environment.
 var (
 	RefreshTokenSecret string
 	AccessTokenSecret  string
@@ -53,12 +60,14 @@ var (
 	IsDevMode          bool
 )
 
+// Defines the keys for standard claims within JSON Web Tokens.
 const (
 	TokenRefreshID = "refreshID"
 	TokenUserName  = "userName"
 	TokenUserID    = "userID"
 )
 
+// Defines general application constants
 const (
 	StatusInternalErrorMessage = "Internal server error"
 	StatusInvalidJSONMessage   = "Invalid JSON format"
@@ -70,6 +79,7 @@ const (
 	DefaultPageSize            = 10
 )
 
+// Defines standard error codes for API request validation failures.
 const (
 	MSG_INVALID_REQUEST_DATA     = "INVALID_REQUEST_DATA"
 	MSG_MALFORMED_REQUEST_DATA   = "MALFORMED_REQUEST_DATA"
@@ -77,7 +87,9 @@ const (
 	MSG_LACKING_MANDATORY_FIELDS = "LACKING_MANDATORY_FIELDS"
 )
 
+// Defines enumerated integer codes for classifying various error types.
 const (
+	// Postgres Err
 	PQUniqueViolation = iota
 	PQForeignKeyViolation
 	PQInvalidEnum
@@ -89,22 +101,28 @@ const (
 	PQDatatypeMismatch
 	PQSyntaxError
 	PQInvalidByteSequence
+	// Application Err
 	ResourceNotFound
 	InvalidData
 	InternalError
 	LackingPermission
 )
 
+/*
+PQErrorMessages maps standard PostgreSQL error codes (as strings) to the
+application's internal integer-based error classification codes.
+Source: https://www.postgresql.org/docs/current/errcodes-appendix.html
+*/
 var PQErrorMessages = map[string]int{
-	"23505": PQUniqueViolation,           // unique_violation
-	"23503": PQForeignKeyViolation,       // foreign_key_violation
-	"22P02": PQInvalidTextRepresentation, // invalid_text_representation (e.g. ENUM, int fail)
-	"23502": PQNotNullViolation,          // not_null_violation
-	"23514": PQCheckViolation,            // check_violation
-	"22003": PQNumericValueOutOfRange,    // numeric_value_out_of_range
-	"22P05": PQInvalidEnum,               // untranslatable character or invalid enum
-	"22P04": PQInvalidUUIDFormat,         // bad UUID text representation
-	"42804": PQDatatypeMismatch,          // datatype_mismatch
-	"42601": PQSyntaxError,               // syntax_error
-	"22021": PQInvalidByteSequence,       //input contains null bytes
+	"23505": PQUniqueViolation,
+	"23503": PQForeignKeyViolation,
+	"22P02": PQInvalidTextRepresentation,
+	"23502": PQNotNullViolation,
+	"23514": PQCheckViolation,
+	"22003": PQNumericValueOutOfRange,
+	"22P05": PQInvalidEnum,
+	"22P04": PQInvalidUUIDFormat,
+	"42804": PQDatatypeMismatch,
+	"42601": PQSyntaxError,
+	"22021": PQInvalidByteSequence, //input contains null bytes
 }

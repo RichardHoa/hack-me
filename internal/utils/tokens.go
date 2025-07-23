@@ -16,6 +16,10 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
+/*
+generateSecureHexString creates a cryptographically secure,
+random hexadecimal string of a specified byte length.
+*/
 func generateSecureHexString(length int) (string, error) {
 	bytes := make([]byte, length)
 	if _, err := rand.Read(bytes); err != nil {
@@ -24,6 +28,10 @@ func generateSecureHexString(length int) (string, error) {
 	return hex.EncodeToString(bytes), nil
 }
 
+/*
+SendEmptyTokens sends cookies to the client with past expiration dates,
+effectively clearing the access, refresh, and CSRF tokens from the browser.
+*/
 func SendEmptyTokens(w http.ResponseWriter) {
 	http.SetCookie(w, &http.Cookie{
 		Name:     "accessToken",
@@ -59,6 +67,10 @@ func SendEmptyTokens(w http.ResponseWriter) {
 	})
 }
 
+/*
+SendTokens sets the access, refresh, and CSRF tokens as cookies in the HTTP
+response, dynamically calculates refreshToken MaxAge from the token's expiration claim.
+*/
 func SendTokens(w http.ResponseWriter, accessToken, refreshToken, csrfToken string) error {
 
 	http.SetCookie(w, &http.Cookie{
@@ -119,6 +131,11 @@ func SendTokens(w http.ResponseWriter, accessToken, refreshToken, csrfToken stri
 
 }
 
+/*
+ExtractClaimsFromJWT parses a JWT string without verifying its signature and
+extracts the values of specified claims. It handles claims of different numeric
+and string types, returning them as a slice of strings.
+*/
 func ExtractClaimsFromJWT(tokenStr string, keys []string) ([]string, error) {
 	token, _, err := new(jwt.Parser).ParseUnverified(tokenStr, jwt.MapClaims{})
 	if err != nil {
@@ -158,6 +175,7 @@ func ExtractClaimsFromJWT(tokenStr string, keys []string) ([]string, error) {
 	return result, nil
 }
 
+// CheckCSRFToken validates a CSRF token using the HMAC-based token pattern.
 func CheckCSRFToken(csrfToken string, sessionID string) (bool, error) {
 	// we use refreshTokenID as sessionID
 	parts := strings.Split(csrfToken, ".")
@@ -195,6 +213,7 @@ func CheckCSRFToken(csrfToken string, sessionID string) (bool, error) {
 	return true, nil
 }
 
+// CreateCSRFToken generates a new CSRF token bound to a session ID using the HMAC-based token pattern.
 func CreateCSRFToken(sessionID string) (string, error) {
 	randomValueHex, err := generateSecureHexString(64)
 	if err != nil {
@@ -219,6 +238,11 @@ func CreateCSRFToken(sessionID string) (string, error) {
 	return csrfToken, nil
 }
 
+/*
+CreateTokens generates a new pair of signed JWTs for a user: a short-lived
+access token and a long-lived refresh token containing the user's identity
+and a unique session identifier.
+*/
 func CreateTokens(userID, userName string, refreshTokenTime int64) (accessToken string, refreshToken string, err error) {
 
 	if refreshTokenTime == 0 {
@@ -259,6 +283,12 @@ func CreateTokens(userID, userName string, refreshTokenTime int64) (accessToken 
 
 }
 
+/*
+GetValuesFromCookieWithoutAccessToken validates only the refresh token from the
+request's cookies and extracts the specified claims. This function is intended
+for use in contexts where the access token is expired or not required, such as
+the token refresh endpoint.
+*/
 func GetValuesFromCookieWithoutAccessToken(r *http.Request, claimsList []string) (result []string, err error) {
 
 	// Refresh token: validate and extract claims
@@ -290,6 +320,12 @@ func GetValuesFromCookieWithoutAccessToken(r *http.Request, claimsList []string)
 
 }
 
+/*
+GetValuesFromCookie validates both the access and refresh tokens from the
+request's cookies. If both tokens are valid, it extracts and returns the
+specified claims from the refresh token. This is used for standard
+authenticated endpoints.
+*/
 func GetValuesFromCookie(r *http.Request, claimsList []string) (result []string, err error) {
 	// Access token: validate structure
 	accessCookie, err := r.Cookie("accessToken")

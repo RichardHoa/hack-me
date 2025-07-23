@@ -11,6 +11,12 @@ import (
 	"github.com/pressly/goose/v3"
 )
 
+/*
+Open establishes and verifies a connection to the main application database.
+It constructs the connection string from environment variables. In development
+mode, it defaults the host to "localhost". It returns the active database
+connection pool or an error if the connection fails.
+*/
 func Open() (*sql.DB, error) {
 	host := os.Getenv("DB_HOST")
 	port := os.Getenv("DB_PORT")
@@ -37,6 +43,11 @@ func Open() (*sql.DB, error) {
 	return db, err
 }
 
+/*
+OpenTesting establishes and verifies a connection to a dedicated testing database.
+It uses a hardcoded connection string suitable for a local test environment.
+It returns the active database connection pool or an error if the connection fails.
+*/
 func OpenTesting() (*sql.DB, error) {
 
 	db, err := sql.Open("pgx", "host=localhost user=postgres password=postgres dbname=postgres port=5433 sslmode=disable")
@@ -56,6 +67,9 @@ func OpenTesting() (*sql.DB, error) {
 
 }
 
+/*
+MigrateFS runs database migrations from an embedded filesystem (fs.FS).
+*/
 func MigrateFS(db *sql.DB, migrationFS fs.FS, dir string) error {
 	// set the base FS to migrations folder FS
 	goose.SetBaseFS(migrationFS)
@@ -67,6 +81,10 @@ func MigrateFS(db *sql.DB, migrationFS fs.FS, dir string) error {
 	return Migrate(db, dir)
 }
 
+/*
+Migrate runs all pending "up" database migrations found in the specified directory.
+It configures the goose migration tool for a PostgreSQL database.
+*/
 func Migrate(db *sql.DB, dir string) error {
 
 	err := goose.SetDialect("postgres")

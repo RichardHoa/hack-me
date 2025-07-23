@@ -199,12 +199,12 @@ func TestChallengeResponseRoute(t *testing.T) {
 					validate: func(t *testing.T, body []byte) {
 						var parsed map[string]any
 						if err := json.Unmarshal(body, &parsed); err != nil {
-							t.Fatalf("Failed to parse response: %v", err)
+							t.Errorf("Failed to parse response: %v", err)
 						}
 
 						data, ok := parsed["data"].([]any)
 						if !ok {
-							t.Fatalf(`Expected "data" to be a list, got: %#v`, parsed["data"])
+							t.Errorf(`Expected "data" to be a list, got: %#v`, parsed["data"])
 						}
 						expectedName := "I find a method to hack into the challenge"
 						expectedAuthor := "Richard Hoa"
@@ -252,12 +252,12 @@ func TestChallengeResponseRoute(t *testing.T) {
 					validate: func(t *testing.T, body []byte) {
 						var parsed map[string]any
 						if err := json.Unmarshal(body, &parsed); err != nil {
-							t.Fatalf("Failed to parse response: %v", err)
+							t.Errorf("Failed to parse response: %v", err)
 						}
 
 						data, ok := parsed["data"].([]any)
 						if !ok {
-							t.Fatalf(`Expected "data" to be a list, got: %#v`, parsed["data"])
+							t.Errorf(`Expected "data" to be a list, got: %#v`, parsed["data"])
 						}
 						expectedName := "This is a new name for the modify challenge response"
 						expectedContent := "this hack works better"
@@ -428,16 +428,16 @@ func TestChallengeResponseRoute(t *testing.T) {
 					validate: func(t *testing.T, body []byte) {
 						var parsed map[string]any
 						if err := json.Unmarshal(body, &parsed); err != nil {
-							t.Fatalf("Failed to parse response: %v", err)
+							t.Errorf("Failed to parse response: %v", err)
 						}
 
 						data, ok := parsed["data"].([]any)
 						if !ok {
-							t.Fatalf(`Expected "data" to be a list, got: %#v`, parsed["data"])
+							t.Errorf(`Expected "data" to be a list, got: %#v`, parsed["data"])
 						}
 
 						if len(data) != 0 {
-							t.Fatalf(`Expected "data" to be empty but get %v`, data)
+							t.Errorf(`Expected "data" to be empty but get %v`, data)
 						}
 					},
 					expectStatus: http.StatusOK,

@@ -10,11 +10,14 @@ import (
 	"testing"
 )
 
+// CleanDB resets the database to a clean state before a test run.
 func CleanDB(db *sql.DB) {
+	// "user" table connects to EVERY other table, so by truncate user we also clean all the other tables
 	db.Exec(`TRUNCATE TABLE "user" RESTART IDENTITY CASCADE`)
-	// Repeat for other tables
 }
 
+// MakeRequestAndExpectStatus is a test helper that builds and sends an HTTP request,
+// then asserts that the response status code matches the expected value.
 func MakeRequestAndExpectStatus(t *testing.T, client *http.Client, method, urlStr string, payload map[string]string, expectedStatus int) []byte {
 	body, _ := json.Marshal(payload)
 	req, _ := http.NewRequest(method, urlStr, bytes.NewReader(body))
@@ -35,25 +38,29 @@ func MakeRequestAndExpectStatus(t *testing.T, client *http.Client, method, urlSt
 
 	resp, err := client.Do(req)
 	if err != nil {
-		t.Fatalf("Request failed: %v", err)
+		t.Errorf("Request failed: %v", err)
 	}
 	respBody, _ := io.ReadAll(resp.Body)
 	t.Logf("status: %d, body: %s", resp.StatusCode, string(respBody))
 	resp.Body.Close()
 
 	if resp.StatusCode != expectedStatus {
-		t.Errorf("Expected status %d, got %d", expectedStatus, resp.StatusCode)
+		t.Errorf("Expected status %d, got %v", expectedStatus, resp.Status)
 	}
 
 	return respBody
 }
 
+// TestRequest defines the parameters for a single HTTP request to be made during a test.
 type TestRequest struct {
 	method string
 	path   string
 	body   map[string]string
 }
 
+// TestStep represents a single step in a table-driven test scenario.
+// It contains the test name, the request to perform, the status code that is
+// expected, and an optional function to perform custom validation on the response body.
 type TestStep struct {
 	name         string
 	request      TestRequest

@@ -28,7 +28,6 @@ func TestUserRoutes(t *testing.T) {
 	server := httptest.NewServer(router)
 	defer server.Close()
 
-	// Test cases
 	tests := []struct {
 		name  string
 		steps []TestStep
@@ -153,7 +152,7 @@ func TestUserRoutes(t *testing.T) {
 						}
 
 						if err := json.Unmarshal(body, &resp); err != nil {
-							t.Fatalf("Failed to parse response: %v", err)
+							t.Errorf("Failed to parse response: %v", err)
 						}
 
 						// Check user data
@@ -166,7 +165,7 @@ func TestUserRoutes(t *testing.T) {
 
 						// Check challenges
 						if len(resp.Data.Challenges) != 1 {
-							t.Fatalf("Expected 1 challenge, got %d", len(resp.Data.Challenges))
+							t.Errorf("Expected 1 challenge, got %d", len(resp.Data.Challenges))
 						}
 						challenge := resp.Data.Challenges[0]
 						if challenge.Name != "Activity Challenge 1" {
@@ -187,7 +186,7 @@ func TestUserRoutes(t *testing.T) {
 
 						// Check challenge responses
 						if len(resp.Data.ChallengeResponses) != 1 {
-							t.Fatalf("Expected 1 challenge response, got %d", len(resp.Data.ChallengeResponses))
+							t.Errorf("Expected 1 challenge response, got %d", len(resp.Data.ChallengeResponses))
 						}
 						response := resp.Data.ChallengeResponses[0]
 						if response.Name != "Activity Response 1" {
@@ -363,7 +362,7 @@ func TestUserRoutes(t *testing.T) {
 					validate: func(t *testing.T, body []byte) {
 						var resp map[string]map[string]interface{}
 						if err := json.Unmarshal(body, &resp); err != nil {
-							t.Fatalf("Failed to parse response: %v", err)
+							t.Errorf("Failed to parse response: %v", err)
 						}
 						user := resp["data"]["user"].(map[string]interface{})
 						if user["userName"] != "newActivityUser" {
@@ -859,12 +858,12 @@ func TestUserRoutes(t *testing.T) {
 }
 
 func FuzzUserLogin(f *testing.F) {
-	logFile, err := os.OpenFile("fuzz_debug.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	logFile, err := os.OpenFile("fuzz_login.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		f.Logf("Failed to open debug log file: %v", err)
 	}
 	defer logFile.Close()
-	logger := log.New(logFile, "[FUZZ] ", 0)
+	logger := log.New(logFile, "", log.LstdFlags)
 
 	// --- One-Time Setup ---
 	application, err := app.NewApplication(true)
@@ -960,12 +959,12 @@ func FuzzUserLogin(f *testing.F) {
 }
 
 func FuzzUserSignUp(f *testing.F) {
-	logFile, err := os.OpenFile("fuzz_signup_debug.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	logFile, err := os.OpenFile("fuzz_signup.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		f.Fatalf("Failed to open debug log file: %v", err)
 	}
 	defer logFile.Close()
-	logger := log.New(logFile, "[FUZZ-SIGNUP] ", log.LstdFlags)
+	logger := log.New(logFile, "", log.LstdFlags)
 
 	application, err := app.NewApplication(true)
 	if err != nil {
@@ -1003,7 +1002,7 @@ func FuzzUserSignUp(f *testing.F) {
 			"githubID":  "",
 		})
 		if err != nil {
-			t.Fatalf("Failed to marshal fuzz input to JSON: %v", err)
+			t.Errorf("Failed to marshal fuzz input to JSON: %v", err)
 		}
 
 		req := httptest.NewRequest("POST", "/v1/users", bytes.NewReader(signUpBody))
