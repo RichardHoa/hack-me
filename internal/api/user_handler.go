@@ -311,6 +311,8 @@ func (handler *UserHandler) LogoutUser(w http.ResponseWriter, r *http.Request) {
 
 	result, err := utils.GetValuesFromCookie(r, []string{constants.TokenUserID, constants.TokenRefreshID})
 	if err != nil {
+		utils.SendEmptyTokens(w)
+
 		handler.Logger.Printf("ERROR: Logout user > JWT token checking: %v", err)
 		utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, "cookies"))
 		return
@@ -370,14 +372,6 @@ func (handler *UserHandler) RefreshTokenRotation(w http.ResponseWriter, r *http.
 	}
 
 	if DBRefreshToken.ID != refreshTokenID {
-		err = handler.TokenStore.DeleteRefreshToken(userID)
-		if err != nil {
-			handler.Logger.Printf("ERROR: Refresh-token-rotation > delete refresh token : %v", err)
-			utils.WriteJSON(w, http.StatusInternalServerError, utils.NewMessage(constants.StatusInternalErrorMessage, "", ""))
-			return
-		}
-
-		utils.SendEmptyTokens(w)
 		handler.Logger.Printf("ERROR: Refresh-token-rotation >  tokenID from browser %s, tokenID from database %s", refreshTokenID, DBRefreshToken.ID)
 		utils.WriteJSON(w, http.StatusForbidden, utils.NewMessage(constants.ForbiddenMessage, "", ""))
 		return

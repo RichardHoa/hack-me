@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"time"
 
+	"github.com/RichardHoa/hack-me/internal/constants"
 	"github.com/RichardHoa/hack-me/internal/utils"
 )
 
@@ -26,6 +27,7 @@ type TokenStore interface {
 	AddRefreshToken(refreshToken string, userID string) error
 	DeleteRefreshToken(userID string) error
 	GetRefreshToken(userID string) (RefreshToken, error)
+	DeleteExpiredTokens() (int, error)
 }
 
 func (tokenStore *DBTokenStore) AddRefreshToken(refreshToken string, userID string) error {
@@ -62,11 +64,11 @@ func (tokenStore *DBTokenStore) GetRefreshToken(userID string) (RefreshToken, er
 	`
 
 	err := tokenStore.DB.QueryRow(query, userID).Scan(&ID, &CreatedAt)
-
 	if err != nil {
 		return RefreshToken{}, nil
 	}
 
+	// Token is valid, return it.
 	return RefreshToken{ID: ID, CreatedAt: CreatedAt}, nil
 }
 
@@ -82,4 +84,22 @@ func (tokenStore *DBTokenStore) DeleteRefreshToken(userID string) error {
 	}
 
 	return nil
+}
+
+func (tokenStore *DBTokenStore) DeleteExpiredTokens() (int, error) {
+	cutoffTime := time.Now().Add(-constants.RefreshTokenTime)
+
+	query := `DELETE FROM refresh_token WHERE created_at < $1;`
+
+	result, err := tokenStore.DB.Exec(query, cutoffTime)
+	if err != nil {
+		return 0, err
+	}
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return 0, err
+	}
+
+	return int(rowsAffected), err
+
 }

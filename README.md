@@ -1,3 +1,8 @@
+# TODO
+[ ] implement password recovery
+[ ] implement email check
+[ ] implement login blocking after `n` attempts
+
 # 🚀 Hack-Me Backend
 
 | | |

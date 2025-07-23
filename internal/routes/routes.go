@@ -65,7 +65,7 @@ func SetUpRoutes(app *app.Application) *chi.Mux {
 		})
 
 		outerRouter.Route("/auth", func(r chi.Router) {
-			r.Post("/tokens", app.UserHandler.RefreshTokenRotation)
+			r.Get("/tokens", app.UserHandler.RefreshTokenRotation)
 		})
 
 		outerRouter.Route("/users", func(r chi.Router) {

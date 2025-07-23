@@ -73,14 +73,22 @@ response, dynamically calculates refreshToken MaxAge from the token's expiration
 */
 func SendTokens(w http.ResponseWriter, accessToken, refreshToken, csrfToken string) error {
 
+	secureAttribute := true
+	sameSiteAttribute := http.SameSiteStrictMode
+
+	if constants.IsDevMode {
+		secureAttribute = false
+		sameSiteAttribute = http.SameSiteLaxMode
+	}
+
 	http.SetCookie(w, &http.Cookie{
 		Name:     "accessToken",
 		Path:     "/",
 		Value:    accessToken,
 		MaxAge:   int(constants.AccessTokenTime.Seconds()),
 		HttpOnly: false,
-		Secure:   false,
-		SameSite: http.SameSiteLaxMode,
+		Secure:   secureAttribute,
+		SameSite: sameSiteAttribute,
 	})
 
 	http.SetCookie(w, &http.Cookie{
@@ -89,8 +97,8 @@ func SendTokens(w http.ResponseWriter, accessToken, refreshToken, csrfToken stri
 		Value:    csrfToken,
 		MaxAge:   int(constants.AccessTokenTime.Seconds()),
 		HttpOnly: false,
-		Secure:   false,
-		SameSite: http.SameSiteLaxMode,
+		Secure:   secureAttribute,
+		SameSite: sameSiteAttribute,
 	})
 
 	result, err := ExtractClaimsFromJWT(refreshToken, []string{"iat", "exp"})
@@ -123,8 +131,8 @@ func SendTokens(w http.ResponseWriter, accessToken, refreshToken, csrfToken stri
 		Value:    refreshToken,
 		MaxAge:   int(refreshTokenDuration.Seconds()),
 		HttpOnly: true,
-		Secure:   false,
-		SameSite: http.SameSiteLaxMode,
+		Secure:   secureAttribute,
+		SameSite: sameSiteAttribute,
 	})
 
 	return nil

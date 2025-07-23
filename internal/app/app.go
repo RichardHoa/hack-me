@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"log"
 	"os"
+	"time"
 
 	"github.com/RichardHoa/hack-me/internal/api"
 	"github.com/RichardHoa/hack-me/internal/constants"
@@ -81,6 +82,10 @@ func NewApplication(isTesting bool) (*Application, error) {
 	//NOTE: Middleware creation
 	middleware := middleware.NewMiddleWare(logger)
 
+	//NOTE: Jobs
+	logger.Println("Start clean up jobs")
+	StartTokenCleanupJob(logger, tokenStore)
+
 	application := &Application{
 		Logger:                       logger,
 		InfoLogger:                   infoLogger,
@@ -94,4 +99,25 @@ func NewApplication(isTesting bool) (*Application, error) {
 	}
 
 	return application, nil
+}
+
+func StartTokenCleanupJob(logger *log.Logger, tokenStore store.TokenStore) {
+	ticker := time.NewTicker(24 * time.Hour)
+
+	// Launch a goroutine that runs forever.
+	go func() {
+		for {
+			// This will block until the next tick from the ticker.
+			<-ticker.C
+
+			logger.Println("Running scheduled job: cleaning up expired refresh tokens...")
+
+			rowsDeleted, err := tokenStore.DeleteExpiredTokens()
+			if err != nil {
+				logger.Printf("ERROR: failed to clean up expired tokens: %v", err)
+			} else {
+				logger.Printf("Background job finished. Deleted %d stale tokens.", rowsDeleted)
+			}
+		}
+	}()
 }
