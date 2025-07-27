@@ -1,8 +1,0 @@
-[FUZZ-SIGNUP] 2025/07/22 15:23:10 
-				[FUZZ FAILURE]
-				status:   500 Internal Server Error
-				message:  ""
-				userName: "\xff                                                               "
-				email:    "0"
-				password: "\aҞ|\xe3(5y#\xf1\xf6g\x1er<k\xcaˠ~/\xe2\x10\xc70"
-					

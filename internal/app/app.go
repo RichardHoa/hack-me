@@ -11,12 +11,14 @@ import (
 	"github.com/RichardHoa/hack-me/internal/middleware"
 	"github.com/RichardHoa/hack-me/internal/store"
 	"github.com/RichardHoa/hack-me/migrations"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type Application struct {
-	Logger     *log.Logger
-	InfoLogger *log.Logger
-	DB         *sql.DB
+	Logger         *log.Logger
+	InfoLogger     *log.Logger
+	DB             *sql.DB
+	ConnectionPool *pgxpool.Pool
 	/*
 		use pointer for handler to make sure the handler never get copies,
 		thus all the handler data is always up-to-date and there is no local lag
@@ -34,8 +36,9 @@ func NewApplication(isTesting bool) (*Application, error) {
 	infoLogger := log.New(os.Stdout, "", log.Ldate|log.Ltime)
 
 	var (
-		db  *sql.DB
-		err error
+		db       *sql.DB
+		connPool *pgxpool.Pool
+		err      error
 	)
 
 	err = constants.LoadEnv()
@@ -49,7 +52,7 @@ func NewApplication(isTesting bool) (*Application, error) {
 			panic(err)
 		}
 	} else {
-		db, err = store.Open()
+		db, connPool, err = store.Open()
 		if err != nil {
 			panic(err)
 		}
@@ -90,6 +93,7 @@ func NewApplication(isTesting bool) (*Application, error) {
 		Logger:                       logger,
 		InfoLogger:                   infoLogger,
 		DB:                           db,
+		ConnectionPool:               connPool,
 		ChallengeHandler:             challengeHandler,
 		ChallengeResponseHandler:     challengeResponseHandler,
 		ChallengeresponseVoteHandler: challengeResponseVoteHandler,

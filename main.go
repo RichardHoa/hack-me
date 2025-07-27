@@ -16,16 +16,16 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	defer application.DB.Close()
+	defer application.ConnectionPool.Close()
 
 	router := routes.SetUpRoutes(application)
 
 	server := http.Server{
-		Addr:         fmt.Sprintf(":%d", constants.AppPort),
-		Handler:      router,
-		IdleTimeout:  time.Minute,
-		ReadTimeout:  10 * time.Minute,
-		WriteTimeout: 30 * time.Minute,
+		Addr:              fmt.Sprintf(":%d", constants.AppPort),
+		Handler:           router,
+		IdleTimeout:       time.Minute,
+		ReadHeaderTimeout: 30 * time.Second,
+		WriteTimeout:      30 * time.Second,
 	}
 
 	application.Logger.Printf("Server is running on port: %d", constants.AppPort)

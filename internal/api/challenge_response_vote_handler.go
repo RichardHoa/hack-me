@@ -60,15 +60,18 @@ func (handler *ChallengeResponseVoteHandler) PostVote(w http.ResponseWriter, r *
 		switch utils.ClassifyError(err) {
 		case constants.InvalidData:
 			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(err.Error(), "", ""))
+			return
 		case constants.PQForeignKeyViolation:
 			utils.WriteJSON(w, http.StatusNotFound, utils.NewMessage("challengeResponseID not found", constants.MSG_INVALID_REQUEST_DATA, "challengeResponseID"))
+			return
 		case constants.PQInvalidTextRepresentation:
 			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("invalid data type", constants.MSG_MALFORMED_REQUEST_DATA, "request body"))
+			return
 		default:
 			handler.Logger.Printf("ERROR: PostChallengeResponseVote > PostVote error: %v", err)
 			utils.WriteJSON(w, http.StatusInternalServerError, utils.NewMessage(constants.StatusInternalErrorMessage, "", ""))
+			return
 		}
-		return
 	}
 
 	utils.WriteJSON(w, http.StatusCreated, utils.NewMessage("new vote has been created", "", ""))

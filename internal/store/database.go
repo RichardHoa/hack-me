@@ -1,14 +1,18 @@
 package store
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"io/fs"
 	"os"
 
 	"github.com/RichardHoa/hack-me/internal/constants"
-	_ "github.com/jackc/pgx/v4/stdlib"
 	"github.com/pressly/goose/v3"
+
+	// _ "github.com/jackc/pgx/v4/stdlib"
+	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/jackc/pgx/v5/stdlib"
 )
 
 /*
@@ -17,30 +21,50 @@ It constructs the connection string from environment variables. In development
 mode, it defaults the host to "localhost". It returns the active database
 connection pool or an error if the connection fails.
 */
-func Open() (*sql.DB, error) {
-	host := os.Getenv("DB_HOST")
-	port := os.Getenv("DB_PORT")
-	user := os.Getenv("DB_USER")
-	password := os.Getenv("DB_PASSWORD")
-	dbname := os.Getenv("DB_NAME")
+func Open() (*sql.DB, *pgxpool.Pool, error) {
+	var connStr string
 
 	if constants.IsDevMode {
-		host = "localhost"
+		fmt.Println("DEV MODE")
+		host := "localhost"
+		user := "postgres"
+		password := "postgres"
+		port := "5432"
+		dbname := "postgres"
+
+		connStr = fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
+			host, user, password, dbname, port)
+
+	} else {
+		fmt.Println("PRODUCTION MODE")
+		password := os.Getenv("DB_PASSWORD")
+		if password == "" {
+			return nil, nil, fmt.Errorf("DB_PASSWORD environment variable not set")
+		}
+
+		host := "db.fpawuhzfufwaudittxlx.supabase.co"
+		user := "postgres"
+		port := "5432"
+		dbname := "postgres"
+
+		connStr = fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=require",
+			host, user, password, dbname, port)
+
 	}
 
-	connStr := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
-		host, user, password, dbname, port)
-
-	db, err := sql.Open("pgx", connStr)
+	dbPool, err := pgxpool.New(context.Background(), connStr)
 	if err != nil {
-		return nil, fmt.Errorf("Error opening database connection: %w", err)
+		return nil, nil, fmt.Errorf("Error opening database connection: %w", err)
 	}
+
+	db := stdlib.OpenDBFromPool(dbPool)
+
 	err = db.Ping()
 	if err != nil {
-		return nil, fmt.Errorf("Error opening database connection: %w", err)
+		return nil, nil, fmt.Errorf("Error opening database connection: %w", err)
 	}
-	fmt.Println("Connected to database")
-	return db, err
+	fmt.Println("Establish database connection")
+	return db, dbPool, err
 }
 
 /*

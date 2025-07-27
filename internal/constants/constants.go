@@ -45,6 +45,12 @@ func LoadEnv() error {
 	}
 
 	if RefreshTokenSecret == "" || AccessTokenSecret == "" || CSRFTokenSecret == "" {
+		fmt.Println("--- DEBUG: Missing required secrets. Dumping all environment variables: ---")
+		for _, env := range os.Environ() {
+			fmt.Println(env)
+		}
+		fmt.Println("--- END DEBUG DUMP ---")
+
 		return errors.New("Missing token secrets in .env")
 	}
 

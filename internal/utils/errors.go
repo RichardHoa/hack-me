@@ -2,9 +2,8 @@ package utils
 
 import (
 	"errors"
-
 	"github.com/RichardHoa/hack-me/internal/constants"
-	"github.com/jackc/pgconn"
+	"github.com/jackc/pgx/v5/pgconn"
 )
 
 // CustomAppError represents an application-specific error with a unique code

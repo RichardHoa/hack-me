@@ -54,7 +54,7 @@ func SetUpRoutes(app *app.Application) *chi.Mux {
 				})
 
 				innerRouter.Route("/votes", func(router chi.Router) {
-					router.Use(app.Middleware.RequireCSRFToken)
+					// router.Use(app.Middleware.RequireCSRFToken)
 					router.Post("/", app.ChallengeresponseVoteHandler.PostVote)
 					router.Delete("/", app.ChallengeresponseVoteHandler.DeleteVote)
 

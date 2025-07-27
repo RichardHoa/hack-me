@@ -1,25 +1,58 @@
-
 GOCMD=go
 GOBUILD=$(GOCMD) build
 GOFMT=$(GOCMD) fmt
 GOVULNCHECK=govulncheck
-BINARY_NAME=hack-me-backend
-BINARY_UNIX=$(BINARY_NAME)
 
-# Runs all checks and builds the application.
-# Use: `make` or `make all`
-all: check build
+prod: check build
 
-# Formats the code, checks for vulnerabilities.
-# Use: `make check`
 check: vet fmt vulncheck
+
+up:
+	docker compose up -d
+
+down:
+	docker compose down -v
+
+run: 
+	doppler run -- go run main.go
+
+air:
+	doppler run -- air
 
 # Builds the application binary.
 # Use: `make build`
 build:
+	@echo "Delete all previous images in ECR"
+	@IDS_TAGGED=$$(aws ecr list-images --repository-name hack-me/backend --region ap-southeast-1 --filter "tagStatus=TAGGED" --query 'imageIds[*]' --output json); \
+	if [ "$$IDS_TAGGED" != "[]" ] && [ "$$IDS_TAGGED" != "null" ]; then \
+		echo "Deleting tagged images..."; \
+		aws ecr batch-delete-image \
+			--repository-name hack-me/backend \
+			--region ap-southeast-1 \
+			--image-ids "$$IDS_TAGGED"; \
+	else \
+		echo "No tagged images to delete."; \
+	fi
+
+	@IDS_UNTAGGED=$$(aws ecr list-images --repository-name hack-me/backend --region ap-southeast-1 --filter "tagStatus=UNTAGGED" --query 'imageIds[*]' --output json); \
+	if [ "$$IDS_UNTAGGED" != "[]" ] && [ "$$IDS_UNTAGGED" != "null" ]; then \
+		echo "Deleting untagged images..."; \
+		aws ecr batch-delete-image \
+			--repository-name hack-me/backend \
+			--region ap-southeast-1 \
+			--image-ids "$$IDS_UNTAGGED"; \
+	else \
+		echo "No untagged images to delete."; \
+	fi
+
 	@echo "Building the application..."
-	$(GOBUILD) -o $(BINARY_NAME) .
-	@echo "Application built successfully: $(BINARY_NAME)"
+	docker buildx build --platform linux/amd64 -t hack-me/backend .
+
+	@echo "Tag the build image"
+	docker tag hack-me/backend:latest 004843574486.dkr.ecr.ap-southeast-1.amazonaws.com/hack-me/backend:latest
+
+	@echo "Push the image into ECR"
+	docker push 004843574486.dkr.ecr.ap-southeast-1.amazonaws.com/hack-me/backend:latest
 
 # Use: `make fmt`
 fmt:
@@ -31,15 +64,18 @@ vulncheck:
 	@echo "Checking for vulnerabilities..."
 	$(GOVULNCHECK) ./...
 
+update:
+	@echo "Checking for update"
+	go get -u ./...
+
+tidy:
+	@echo "Tidy"
+	go mod tidy
+
 vet:
 	@echo "Checking for suspicious constructs..."
 	go vet ./...
 
-# Use: `make clean`
-clean:
-	@echo "Cleaning up..."
-	if [ -f $(BINARY_UNIX) ]; then rm $(BINARY_UNIX); fi
-	@echo "Cleanup complete."
 
 # Phony targets are not files.
 .PHONY: all check build fmt vulncheck clean
