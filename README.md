@@ -1,19 +1,10 @@
-# TODO
-[ ] implement password recovery
-[ ] implement email check
-[ ] implement login blocking after `n` attempts
+# Future features
+[ ] password recovery
+[ ] email check
+[ ] login blocking after `n` attempts
 [ ] implement allowing app to consume only maximum 80% of resources, set timeout times
-
-
-# CODE
-
-```bash
-docker buildx build --platform linux/amd64 -t hack-me/backend .
-
-docker tag hack-me/backend:latest 004843574486.dkr.ecr.ap-southeast-1.amazonaws.com/hack-me/backend:latest
-
-docker push 004843574486.dkr.ecr.ap-southeast-1.amazonaws.com/hack-me/backend:latest
-```
+[ ] implement to allow only google domain on imageLink
+[ ] instrumenting the server
 
 
 # 🚀 Hack-Me Backend

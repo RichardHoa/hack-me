@@ -29,6 +29,7 @@ func SetUpRoutes(app *app.Application) *chi.Mux {
 	router.Route("/v1", func(outerRouter chi.Router) {
 
 		if constants.IsDevMode {
+			app.Logger.Println("Use middleware")
 			outerRouter.Use(app.Middleware.CorsMiddleware)
 		}
 
