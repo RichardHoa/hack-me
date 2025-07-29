@@ -246,6 +246,7 @@ func (handler *UserHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
 		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(constants.StatusInvalidJSONMessage, constants.MSG_MALFORMED_REQUEST_DATA, "request"))
 		return
 	}
+
 	if strings.TrimSpace(user.Email) == "" {
 		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("email must exist", constants.MSG_LACKING_MANDATORY_FIELDS, "email"))
 		return
@@ -257,7 +258,7 @@ func (handler *UserHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if user.Password.PlainText == "" && user.GoogleID == "" && user.GithubID == "" {
-		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("One of the three fields must exist", constants.MSG_LACKING_MANDATORY_FIELDS, "googleID and githubID and password"))
+		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("One of the three fields must exist", constants.MSG_LACKING_MANDATORY_FIELDS, "googleID or githubID or password"))
 		return
 	}
 

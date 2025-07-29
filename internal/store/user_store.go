@@ -340,34 +340,33 @@ func (userStore *DBUserStore) LoginAndIssueTokens(user *User) (accessToken, refr
 	switch {
 	case user.GoogleID != "":
 		err = userStore.DB.QueryRow(`SELECT id, username FROM "user" WHERE google_id = $1`, user.GoogleID).Scan(&userID, &userName)
-
 	case user.GithubID != "":
 		err = userStore.DB.QueryRow(`SELECT id, username FROM "user" WHERE github_id = $1`, user.GithubID).Scan(&userID, &userName)
-
 	case user.Email != "" && user.Password.PlainText != "":
-		var hashed string
-		err = userStore.DB.QueryRow(`SELECT id, username, password FROM "user" WHERE email = $1`, user.Email).Scan(&userID, &userName, &hashed)
-		if err == nil {
-			match, cmpErr := argon2id.ComparePasswordAndHash(user.Password.PlainText, hashed)
-			if cmpErr != nil {
-				return "", "", "", cmpErr
-			}
-			if !match {
-				// password not correct
+		var hashed sql.NullString
+
+		err := userStore.DB.QueryRow(`SELECT id, username, password FROM "user" WHERE email = $1`, user.Email).Scan(&userID, &userName, &hashed)
+		if err != nil {
+			if errors.Is(err, sql.ErrNoRows) {
+				// cannot find user in database
 				return "", "", "", utils.NewCustomAppError(constants.InvalidData, "Either password is not correct or user email is not found")
 			}
+			return "", "", "", err
+		}
+		if !hashed.Valid {
+			return "", "", "", utils.NewCustomAppError(constants.InvalidData, "Please login through google or github")
+		}
+
+		match, cmpErr := argon2id.ComparePasswordAndHash(user.Password.PlainText, hashed.String)
+		if cmpErr != nil {
+			return "", "", "", cmpErr
+		}
+		if !match {
+			return "", "", "", utils.NewCustomAppError(constants.InvalidData, "Either password is not correct or user email is not found")
 		}
 
 	default:
 		panic("user_store > Missing login credentials while login")
-	}
-
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			// cannot find user in database
-			return "", "", "", utils.NewCustomAppError(constants.InvalidData, "Either password is not correct or user email is not found")
-		}
-		return "", "", "", err
 	}
 
 	user.ID = userID
