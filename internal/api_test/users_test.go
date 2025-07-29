@@ -21,7 +21,7 @@ func TestUserRoutes(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create application: %v", err)
 	}
-	defer application.DB.Close()
+	defer application.ConnectionPool.Close()
 	defer CleanDB(application.DB)
 
 	router := routes.SetUpRoutes(application)
@@ -871,7 +871,7 @@ func FuzzUserLogin(f *testing.F) {
 		logger.Printf("failed to create application: %v", err)
 	}
 	f.Cleanup(func() {
-		application.DB.Close()
+		application.ConnectionPool.Close()
 	})
 
 	router := routes.SetUpRoutes(application)
@@ -971,7 +971,7 @@ func FuzzUserSignUp(f *testing.F) {
 		logger.Fatalf("failed to create application: %v", err)
 	}
 	f.Cleanup(func() {
-		application.DB.Close()
+		application.ConnectionPool.Close()
 	})
 
 	router := routes.SetUpRoutes(application)

@@ -19,7 +19,7 @@ func TestChallengesRoutes(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create application: %v", err)
 	}
-	defer application.DB.Close()
+	defer application.ConnectionPool.Close()
 	defer CleanDB(application.DB)
 
 	router := routes.SetUpRoutes(application)

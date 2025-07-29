@@ -17,9 +17,6 @@ import (
 
 /*
 Open establishes and verifies a connection to the main application database.
-It constructs the connection string from environment variables. In development
-mode, it defaults the host to "localhost". It returns the active database
-connection pool or an error if the connection fails.
 */
 func Open() (*sql.DB, *pgxpool.Pool, error) {
 	var connStr string
@@ -69,25 +66,25 @@ func Open() (*sql.DB, *pgxpool.Pool, error) {
 
 /*
 OpenTesting establishes and verifies a connection to a dedicated testing database.
-It uses a hardcoded connection string suitable for a local test environment.
-It returns the active database connection pool or an error if the connection fails.
 */
-func OpenTesting() (*sql.DB, error) {
+func OpenTesting() (*sql.DB, *pgxpool.Pool, error) {
+	connStr := "host=localhost user=postgres password=postgres dbname=postgres port=5433 sslmode=disable"
 
-	db, err := sql.Open("pgx", "host=localhost user=postgres password=postgres dbname=postgres port=5433 sslmode=disable")
-
+	dbPool, err := pgxpool.New(context.Background(), connStr)
 	if err != nil {
-		return nil, fmt.Errorf("Error opening database connection: %w", err)
+		return nil, nil, fmt.Errorf("Error opening database connection: %w", err)
 	}
+
+	db := stdlib.OpenDBFromPool(dbPool)
 
 	err = db.Ping()
 	if err != nil {
-		return nil, fmt.Errorf("Error opening database connection: %w", err)
+		return nil, nil, fmt.Errorf("Error opening database connection: %w", err)
 	}
 
 	fmt.Println(
 		"Connected to testing database")
-	return db, err
+	return db, dbPool, err
 
 }
 

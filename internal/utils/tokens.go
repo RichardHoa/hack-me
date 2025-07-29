@@ -20,8 +20,8 @@ import (
 generateSecureHexString creates a cryptographically secure,
 random hexadecimal string of a specified byte length.
 */
-func generateSecureHexString(length int) (string, error) {
-	bytes := make([]byte, length)
+func generateSecureHexString(byteLength int) (string, error) {
+	bytes := make([]byte, byteLength)
 	if _, err := rand.Read(bytes); err != nil {
 		return "", err
 	}
@@ -29,8 +29,8 @@ func generateSecureHexString(length int) (string, error) {
 }
 
 /*
-SendEmptyTokens sends cookies to the client with past expiration dates,
-effectively clearing the access, refresh, and CSRF tokens from the browser.
+SendEmptyTokens sends cookies to the client with past expiration dates.
+Effectively clean the tokens out of browser
 */
 func SendEmptyTokens(w http.ResponseWriter) {
 	http.SetCookie(w, &http.Cookie{
@@ -101,13 +101,13 @@ func SendTokens(w http.ResponseWriter, accessToken, refreshToken, csrfToken stri
 		SameSite: sameSiteAttribute,
 	})
 
-	result, err := ExtractClaimsFromJWT(refreshToken, []string{"iat", "exp"})
+	refreshTokenResult, err := ExtractClaimsFromJWT(refreshToken, []string{"iat", "exp"})
 	if err != nil {
 		return err
 	}
 
-	iatStr := result[0]
-	expStr := result[1]
+	iatStr := refreshTokenResult[0]
+	expStr := refreshTokenResult[1]
 
 	iatUnix, err := strconv.ParseInt(iatStr, 10, 64)
 	if err != nil {
@@ -119,17 +119,16 @@ func SendTokens(w http.ResponseWriter, accessToken, refreshToken, csrfToken stri
 		return err
 	}
 
-	iatTime := time.Unix(iatUnix, 0)
-	expTime := time.Unix(expUnix, 0)
+	issuedAtTime := time.Unix(iatUnix, 0)
+	expiresTime := time.Unix(expUnix, 0)
 
-	refreshTokenDuration := expTime.Sub(iatTime)
-	// fmt.Printf("time left: %v\n", refreshTokenDuration.Seconds())
+	refreshTokenTime := expiresTime.Sub(issuedAtTime)
 
 	http.SetCookie(w, &http.Cookie{
 		Name:     "refreshToken",
 		Path:     "/",
 		Value:    refreshToken,
-		MaxAge:   int(refreshTokenDuration.Seconds()),
+		MaxAge:   int(refreshTokenTime.Seconds()),
 		HttpOnly: true,
 		Secure:   secureAttribute,
 		SameSite: sameSiteAttribute,
@@ -141,8 +140,8 @@ func SendTokens(w http.ResponseWriter, accessToken, refreshToken, csrfToken stri
 
 /*
 ExtractClaimsFromJWT parses a JWT string without verifying its signature and
-extracts the values of specified claims. It handles claims of different numeric
-and string types, returning them as a slice of strings.
+extracts the values of specified claims. It returns a slice of string,
+regardless of the token key type
 */
 func ExtractClaimsFromJWT(tokenStr string, keys []string) ([]string, error) {
 	token, _, err := new(jwt.Parser).ParseUnverified(tokenStr, jwt.MapClaims{})
@@ -152,7 +151,7 @@ func ExtractClaimsFromJWT(tokenStr string, keys []string) ([]string, error) {
 
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
-		return nil, errors.New("invalid token claims")
+		return nil, errors.New("invalid jwt claims")
 	}
 
 	result := make([]string, len(keys))
@@ -185,7 +184,6 @@ func ExtractClaimsFromJWT(tokenStr string, keys []string) ([]string, error) {
 
 // CheckCSRFToken validates a CSRF token using the HMAC-based token pattern.
 func CheckCSRFToken(csrfToken string, sessionID string) (bool, error) {
-	// we use refreshTokenID as sessionID
 	parts := strings.Split(csrfToken, ".")
 	if len(parts) != 2 {
 		return false, errors.New("invalid CSRF token format")
@@ -202,7 +200,6 @@ func CheckCSRFToken(csrfToken string, sessionID string) (bool, error) {
 		randomValue,
 	)
 
-	// Generate expected HMAC
 	h := hmac.New(sha256.New, []byte(constants.CSRFTokenSecret))
 	h.Write([]byte(message))
 	expectedHmac := h.Sum(nil)
@@ -212,7 +209,6 @@ func CheckCSRFToken(csrfToken string, sessionID string) (bool, error) {
 		return false, fmt.Errorf("invalid HMAC hex from request: %w", err)
 	}
 
-	// Safe compare
 	if !hmac.Equal(hmacRequestBytes, expectedHmac) {
 		fmt.Printf("CSRF Error: Invalid HMAC for sessionID: %s\n", sessionID)
 		return false, nil
@@ -221,7 +217,7 @@ func CheckCSRFToken(csrfToken string, sessionID string) (bool, error) {
 	return true, nil
 }
 
-// CreateCSRFToken generates a new CSRF token bound to a session ID using the HMAC-based token pattern.
+// CreateCSRFToken generates a new CSRF token
 func CreateCSRFToken(sessionID string) (string, error) {
 	randomValueHex, err := generateSecureHexString(64)
 	if err != nil {
@@ -236,7 +232,6 @@ func CreateCSRFToken(sessionID string) (string, error) {
 		randomValueHex,
 	)
 
-	// Generate HMAC
 	h := hmac.New(sha256.New, []byte(constants.CSRFTokenSecret))
 	h.Write([]byte(message))
 	hmacSum := h.Sum(nil)
@@ -248,46 +243,43 @@ func CreateCSRFToken(sessionID string) (string, error) {
 
 /*
 CreateTokens generates a new pair of signed JWTs for a user: a short-lived
-access token and a long-lived refresh token containing the user's identity
-and a unique session identifier.
+access token and a long-lived refresh token
 */
-func CreateTokens(userID, userName string, refreshTokenTime int64) (accessToken string, refreshToken string, err error) {
+func CreateTokens(userID, userName string, refreshTokenTime int64) (signedAccessToken string, signedRefreshToken string, err error) {
 
 	if refreshTokenTime == 0 {
 		refreshTokenTime = time.Now().Add(constants.RefreshTokenTime).Unix()
 	}
 
-	secureID, err := generateSecureHexString(16)
-	if err != nil {
-		return "", "", err
-	}
-
-	// 1. Create Access Token
 	accessClaims := jwt.MapClaims{
 		"exp": time.Now().Add(constants.AccessTokenTime).Unix(),
 		"iat": time.Now().Unix(),
 	}
-	accessTokenObj := jwt.NewWithClaims(jwt.SigningMethodHS512, accessClaims)
-	accessToken, err = accessTokenObj.SignedString([]byte(constants.AccessTokenSecret))
+	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS512, accessClaims)
+	signedAccessToken, err = accessToken.SignedString([]byte(constants.AccessTokenSecret))
 	if err != nil {
 		return "", "", err
 	}
 
-	// 2. Create Refresh Token
+	refreshID, err := generateSecureHexString(32)
+	if err != nil {
+		return "", "", err
+	}
+
 	refreshClaims := jwt.MapClaims{
-		constants.TokenRefreshID: secureID,
+		constants.TokenRefreshID: refreshID,
 		constants.TokenUserName:  userName,
 		constants.TokenUserID:    userID,
 		"exp":                    refreshTokenTime,
 		"iat":                    time.Now().Unix(),
 	}
-	refreshTokenObj := jwt.NewWithClaims(jwt.SigningMethodHS512, refreshClaims)
-	refreshToken, err = refreshTokenObj.SignedString([]byte(constants.RefreshTokenSecret))
+	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS512, refreshClaims)
+	signedRefreshToken, err = refreshToken.SignedString([]byte(constants.RefreshTokenSecret))
 	if err != nil {
 		return "", "", err
 	}
 
-	return accessToken, refreshToken, nil
+	return signedAccessToken, signedRefreshToken, nil
 
 }
 

@@ -15,10 +15,13 @@ func SetUpRoutes(app *app.Application) *chi.Mux {
 
 	// add ID to each request
 	router.Use(middleware.RequestID)
+
 	// Extracts the real client IP address from headers like X-Forwarded-For or X-Real-IP
 	router.Use(middleware.RealIP)
+
 	// Log path
 	router.Use(middleware.Logger)
+
 	// Send 500 error if server panic, output stack trace
 	router.Use(middleware.Recoverer)
 
@@ -34,7 +37,6 @@ func SetUpRoutes(app *app.Application) *chi.Mux {
 		}
 
 		outerRouter.Route("/challenges", func(r chi.Router) {
-			// GET /challenges?popularity=asc|desc&category=cat1&category=cat2&name=searchTerm
 			r.Get("/", app.ChallengeHandler.GetChallenges)
 
 			r.Group(func(csrfRouter chi.Router) {
@@ -55,13 +57,21 @@ func SetUpRoutes(app *app.Application) *chi.Mux {
 				})
 
 				innerRouter.Route("/votes", func(router chi.Router) {
-					// router.Use(app.Middleware.RequireCSRFToken)
+					router.Use(app.Middleware.RequireCSRFToken)
 					router.Post("/", app.ChallengeresponseVoteHandler.PostVote)
 					router.Delete("/", app.ChallengeresponseVoteHandler.DeleteVote)
 
 				})
 
 			})
+
+		})
+
+		outerRouter.Route("/comments", func(r chi.Router) {
+			r.Use(app.Middleware.RequireCSRFToken)
+			r.Put("/", app.CommentHandler.ModifyComment)
+			r.Post("/", app.CommentHandler.PostComment)
+			r.Delete("/", app.CommentHandler.DeleteComment)
 
 		})
 
@@ -79,14 +89,6 @@ func SetUpRoutes(app *app.Application) *chi.Mux {
 
 			r.Put("/password", app.UserHandler.ChangePassword)
 			r.Put("/username", app.UserHandler.ChangeUsername)
-
-		})
-
-		outerRouter.Route("/comments", func(r chi.Router) {
-			r.Use(app.Middleware.RequireCSRFToken)
-			r.Put("/", app.CommentHandler.ModifyComment)
-			r.Post("/", app.CommentHandler.PostComment)
-			r.Delete("/", app.CommentHandler.DeleteComment)
 
 		})
 

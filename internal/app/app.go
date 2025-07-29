@@ -47,7 +47,7 @@ func NewApplication(isTesting bool) (*Application, error) {
 	}
 
 	if isTesting {
-		db, err = store.OpenTesting()
+		db, connPool, err = store.OpenTesting()
 		if err != nil {
 			panic(err)
 		}

@@ -12,12 +12,9 @@ import (
 	"unicode/utf8"
 )
 
-/*
-PasswordCheckResult encapsulates the result of a password validation check.
-*/
 type PasswordCheckResult struct {
-	Error        error
-	ErrorMessage string
+	Error        error  // application error
+	ErrorMessage string // message to send to user
 }
 
 /*

@@ -11,16 +11,11 @@ import (
 	"github.com/RichardHoa/hack-me/internal/constants"
 )
 
-/*
-Message defines a generic type for creating simple key-value JSON objects,
-used for API responses.
-*/
 type Message map[string]any
 
 /*
 BeautifyJSON marshals an interface into a pretty-printed JSON string.
-It returns an empty string if a marshaling error occurs. This function is
-primarily intended for logging or debugging purposes.
+This function is primarily intended for logging or debugging purposes.
 */
 func BeautifyJSON(v any) string {
 	bytes, err := json.MarshalIndent(v, "", "  ")
@@ -51,9 +46,7 @@ func NewMessage(message, errCode, errSource string) Message {
 }
 
 /*
-WriteJSON is a helper function to send a JSON response. It marshals the
-provided data, sets the appropriate headers (Content-Type, Content-Language),
-writes the HTTP status code, and sends the JSON payload.
+WriteJSON is a helper function to send a JSON response.
 */
 func WriteJSON(w http.ResponseWriter, statusCode int, data Message) error {
 	jsonBytes, err := json.MarshalIndent(data, "", " ")
@@ -73,9 +66,8 @@ func WriteJSON(w http.ResponseWriter, statusCode int, data Message) error {
 /*
 ValidateJSONFieldsNotEmpty uses reflection to check that all string fields of a
 given struct with a 'json' tag are not empty or consist only of whitespace.
-If an empty field is found, it automatically writes a 400 Bad Request error
-response and returns an error. It's designed to be used for validating
-API request bodies.
+If an empty field is found, it automatically writes a 400 Bad Request error response and returns an error.
+It's designed to be used for validating API request bodies.
 */
 func ValidateJSONFieldsNotEmpty(w http.ResponseWriter, input any) error {
 	v := reflect.ValueOf(input)
