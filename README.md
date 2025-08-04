@@ -143,16 +143,10 @@ When you create or modify a migration file, you **must reset both the main and t
 
 
 # Future features
-[ ] password recovery
-
-[ ] email check
-
-[ ] login blocking after `n` attempts
-
-[ ] implement allowing app to consume only maximum 80% of resources, set timeout times
-
-[ ] implement to allow only google domain on imageLink
-
-[ ] instrumenting the server
-
-[ ] design test for library to capture their behaviour, make sure future version still do what we expect it to do
+- [ ] password recovery
+- [ ] email check
+- [ ] login blocking after `n` attempts
+- [ ] implement allowing app to consume only maximum 80% of resources, set timeout times
+- [ ] implement to allow only google domain on imageLink
+- [ ] instrumenting the server
+- [ ] design test for library to capture their behaviour, make sure future version still do what we expect it to do
