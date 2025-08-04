@@ -5,10 +5,10 @@ GOVULNCHECK=govulncheck
 
 prod: check build
 
-check: vet fmt vulncheck
+check: update tidy vet fmt vulncheck
 
 up:
-	docker compose up -d
+	docker compose up --build -d
 
 down:
 	docker compose down -v
@@ -46,7 +46,7 @@ build:
 	fi
 
 	@echo "Building the application..."
-	docker buildx build --platform linux/amd64 -t hack-me/backend .
+	docker buildx build --platform linux/amd64 -t hack-me/backend . --target=prod
 
 	@echo "Tag the build image"
 	docker tag hack-me/backend:latest 004843574486.dkr.ecr.ap-southeast-1.amazonaws.com/hack-me/backend:latest

@@ -1,12 +1,3 @@
-# Future features
-[ ] password recovery
-[ ] email check
-[ ] login blocking after `n` attempts
-[ ] implement allowing app to consume only maximum 80% of resources, set timeout times
-[ ] implement to allow only google domain on imageLink
-[ ] instrumenting the server
-
-
 # 🚀 Hack-Me Backend
 
 | | |
@@ -43,23 +34,20 @@ This is the fastest way to get the entire application stack running without inst
 
     Build and run the containers in detached mode:
     ```bash
-    docker-compose up --build -d
+    make up
     ```
-
-<details>
-<summary><strong>View Logs & Stop the App</strong></summary>
 
 To view the backend server logs in real-time:
 ```bash
-docker-compose logs -f app
+docker-compose logs
 ```
 
 When you are finished, stop and remove all containers, networks, and volumes:
 ```bash
-docker-compose down -v
+make down
 ```
 
-</details>
+NOTE: Some of the Makefile commands cannot be run in your machine, this github repo does not have a CI/CD pipeline so I use Makefile to automate some deploy
 
 ---
 
@@ -67,12 +55,7 @@ docker-compose down -v
 
 Follow these steps for local development and debugging.
 
-1.  **Set Development Mode**
-
-    In your `.env` file, set the `DEV_MODE` to `LOCAL`:
-    ```env
-    DEV_MODE="LOCAL"
-    ```
+1. **Comment out the code that build go app in the docker-compose, we'll run the server manually**
 
 2.  **Download Dependencies**
 
@@ -87,8 +70,6 @@ Follow these steps for local development and debugging.
     ```bash
     docker-compose up --build -d db
     ```
-    > **Note:** If you run `docker-compose up --build` without specifying the `db` service, you will see the `app` container start and then crash. This is expected behavior in local mode, as we will run the Go server manually on our host machine.
-
 4.  **Run the Go Server**
 
     Start the server from the project root. You can use either the standard Go command or `air` for live reloading.
@@ -159,3 +140,13 @@ When you create or modify a migration file, you **must reset both the main and t
     CREATE SCHEMA public;
     ```
     This ensures that both your development and testing environments are perfectly in sync with the latest schema.
+
+
+# Future features
+[ ] password recovery
+[ ] email check
+[ ] login blocking after `n` attempts
+[ ] implement allowing app to consume only maximum 80% of resources, set timeout times
+[ ] implement to allow only google domain on imageLink
+[ ] instrumenting the server
+[ ] design test for library to capture their behaviour, make sure future version still do what we expect it to do

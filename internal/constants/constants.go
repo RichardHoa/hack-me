@@ -17,6 +17,7 @@ import (
 )
 
 func LoadEnv() error {
+	// Load env file in local dev
 	if _, err := os.Stat(".env"); err == nil {
 		err := godotenv.Load(".env")
 		if err != nil {

@@ -56,6 +56,7 @@ func (handler *UserHandler) RegisterNewUser(w http.ResponseWriter, r *http.Reque
 
 	decoder := json.NewDecoder(r.Body)
 	decoder.DisallowUnknownFields()
+
 	err := decoder.Decode(&User)
 	if err != nil {
 		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(constants.StatusInvalidJSONMessage, constants.MSG_MALFORMED_REQUEST_DATA, "request"))
@@ -97,7 +98,6 @@ func (handler *UserHandler) RegisterNewUser(w http.ResponseWriter, r *http.Reque
 			handler.Logger.Printf("ERROR: RegisterNewUser > CreateUser: %v", err)
 			utils.WriteJSON(w, http.StatusInternalServerError, utils.NewMessage(err.Error(), "", ""))
 			return
-
 		}
 	}
 
