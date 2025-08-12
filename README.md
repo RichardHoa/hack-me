@@ -1,13 +1,5 @@
 # 🚀 Hack-Me Backend
 
-| | |
-| :--- | :--- |
-| **Start Date** | 26/06/2025 |
-| **Finish Date** | 19/07/2025 |
-| **Frontend Repository** | [**github.com/RichardHoa/hack-me-frontend**](https://github.com/RichardHoa/hack-me-frontend) |
-
----
-
 ## 📋 Table of Contents
 
 - [🐳 **Run with Docker**](#-run-the-whole-app-with-docker) (Recommended for a quick start)
