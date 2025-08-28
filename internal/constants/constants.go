@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/joho/godotenv"
@@ -29,30 +30,43 @@ func LoadEnv() error {
 			fmt.Printf("Error loading ../../.env file: %v\n", err)
 		}
 	} else {
-		fmt.Printf("No .env file found - assuming environment variables\n")
+		fmt.Printf("No .env file found\n")
 	}
 
-	RefreshTokenSecret = os.Getenv("REFRESH_TOKEN_SECRET")
-	AccessTokenSecret = os.Getenv("ACCESS_TOKEN_SECRET")
-	CSRFTokenSecret = os.Getenv("CSRF_TOKEN_SECRET")
-	AppPort, _ = strconv.Atoi(os.Getenv("APP_PORT"))
-
-	DevMode := os.Getenv("DEV_MODE")
-
-	if DevMode == "LOCAL" {
-		IsDevMode = true
-	} else {
-		IsDevMode = false
+	requiredSecrets := map[string]*string{
+		"REFRESH_TOKEN_SECRET": &RefreshTokenSecret,
+		"ACCESS_TOKEN_SECRET":  &AccessTokenSecret,
+		"CSRF_TOKEN_SECRET":    &CSRFTokenSecret,
+		"AI_MODEL":             &AIModel,
+		"AI_SECRET_KEY":        &AISecretKey,
 	}
 
-	if RefreshTokenSecret == "" || AccessTokenSecret == "" || CSRFTokenSecret == "" {
-		fmt.Println("--- DEBUG: Missing required secrets. Dumping all environment variables: ---")
-		for _, env := range os.Environ() {
-			fmt.Println(env)
+	var missing []string
+	for key, dst := range requiredSecrets {
+		val := os.Getenv(key)
+		if val == "" {
+			missing = append(missing, key)
+		}
+		*dst = val
+	}
+
+	if p := os.Getenv("APP_PORT"); p != "" {
+		if n, err := strconv.Atoi(p); err == nil {
+			AppPort = n
+		} else {
+			return fmt.Errorf("invalid APP_PORT %q: %w", p, err)
+		}
+	}
+
+	IsDevMode = os.Getenv("DEV_MODE") == "LOCAL"
+
+	if len(missing) > 0 {
+		fmt.Println("--- DEBUG: Missing required secrets ---")
+		for _, k := range missing {
+			fmt.Printf("%s is missing\n", k)
 		}
 		fmt.Println("--- END DEBUG DUMP ---")
-
-		return errors.New("Missing token secrets in .env")
+		return errors.New("missing required secrets: " + strings.Join(missing, ", "))
 	}
 
 	return nil
@@ -65,6 +79,8 @@ var (
 	CSRFTokenSecret    string
 	AppPort            int
 	IsDevMode          bool
+	AIModel            string
+	AISecretKey        string
 )
 
 // Defines the keys for standard claims within JSON Web Tokens.

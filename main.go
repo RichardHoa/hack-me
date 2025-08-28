@@ -3,12 +3,21 @@ package main
 import (
 	"fmt"
 	"net/http"
+	_ "net/http/pprof"
+	"runtime"
 	"time"
 
 	"github.com/RichardHoa/hack-me/internal/app"
+
 	"github.com/RichardHoa/hack-me/internal/constants"
 	"github.com/RichardHoa/hack-me/internal/routes"
 )
+
+func init() {
+	// Optional: enable block & mutex profiling
+	runtime.SetBlockProfileRate(1)     // capture all blocking events
+	runtime.SetMutexProfileFraction(1) // capture all mutex contention
+}
 
 func main() {
 
@@ -27,6 +36,10 @@ func main() {
 		ReadHeaderTimeout: 30 * time.Second,
 		WriteTimeout:      30 * time.Second,
 	}
+
+	go func() {
+		fmt.Println(http.ListenAndServe("localhost:6060", nil)) // OR ":8081", etc.
+	}()
 
 	application.Logger.Printf("Server is running on port: %d", constants.AppPort)
 

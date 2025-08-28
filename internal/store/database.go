@@ -23,7 +23,7 @@ func Open() (*sql.DB, *pgxpool.Pool, error) {
 
 	if constants.IsDevMode {
 		fmt.Println("DEV MODE")
-		host := "db"
+		host := "localhost"
 		user := "postgres"
 		password := "postgres"
 		port := "5432"
