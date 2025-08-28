@@ -34,11 +34,15 @@ func LoadEnv() error {
 	}
 
 	requiredSecrets := map[string]*string{
-		"REFRESH_TOKEN_SECRET": &RefreshTokenSecret,
-		"ACCESS_TOKEN_SECRET":  &AccessTokenSecret,
-		"CSRF_TOKEN_SECRET":    &CSRFTokenSecret,
-		"AI_MODEL":             &AIModel,
-		"AI_SECRET_KEY":        &AISecretKey,
+		"REFRESH_TOKEN_SECRET":   &RefreshTokenSecret,
+		"ACCESS_TOKEN_SECRET":    &AccessTokenSecret,
+		"CSRF_TOKEN_SECRET":      &CSRFTokenSecret,
+		"AI_MODEL":               &AIModel,
+		"AI_SECRET_KEY":          &AISecretKey,
+		"VECTOR_DB_HOST":         &VectorHost,
+		"VECTOR_DB_PORT":         &VectorPort,
+		"VECTOR_DB_SECRET":       &VectorSecret,
+		"VECTOR_COLLECTION_NAME": &VectorCollectionName,
 	}
 
 	var missing []string
@@ -74,13 +78,17 @@ func LoadEnv() error {
 
 // Global variables holding configuration loaded from the environment.
 var (
-	RefreshTokenSecret string
-	AccessTokenSecret  string
-	CSRFTokenSecret    string
-	AppPort            int
-	IsDevMode          bool
-	AIModel            string
-	AISecretKey        string
+	RefreshTokenSecret   string
+	AccessTokenSecret    string
+	CSRFTokenSecret      string
+	AppPort              int
+	IsDevMode            bool
+	AIModel              string
+	AISecretKey          string
+	VectorSecret         string
+	VectorHost           string
+	VectorPort           string
+	VectorCollectionName string
 )
 
 // Defines the keys for standard claims within JSON Web Tokens.
@@ -100,6 +108,7 @@ const (
 	RefreshTokenTime           = 7 * (24 * time.Hour)
 	CommentNestedLevel         = 5
 	DefaultPageSize            = 10
+	VectorDim                  = 768
 )
 
 // Defines standard error codes for API request validation failures.

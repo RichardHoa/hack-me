@@ -1,9 +1,12 @@
 package app
 
 import (
+	"context"
 	"database/sql"
+	"fmt"
 	"log"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/RichardHoa/hack-me/internal/api"
@@ -12,6 +15,8 @@ import (
 	"github.com/RichardHoa/hack-me/internal/store"
 	"github.com/RichardHoa/hack-me/migrations"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/qdrant/go-client/qdrant"
+	"google.golang.org/genai"
 )
 
 type Application struct {
@@ -19,6 +24,7 @@ type Application struct {
 	InfoLogger     *log.Logger
 	DB             *sql.DB
 	ConnectionPool *pgxpool.Pool
+
 	/*
 		use pointer for handler to make sure the handler never get copies,
 		thus all the handler data is always up-to-date and there is no local lag
@@ -28,6 +34,7 @@ type Application struct {
 	ChallengeResponseHandler     *api.ChallengeResponseHandler
 	ChallengeresponseVoteHandler *api.ChallengeResponseVoteHandler
 	CommentHandler               *api.CommentHandler
+	ChatboxHandler               *api.ChatboxHandler
 	Middleware                   middleware.MiddleWare
 }
 
@@ -63,6 +70,21 @@ func NewApplication(isTesting bool) (*Application, error) {
 		panic(err)
 	}
 
+	AIClient, err := InitAI(context.Background())
+	if err != nil {
+		panic(err)
+	}
+
+	QdrantClient, err := InitQdrant(context.Background())
+	if err != nil {
+		panic(err)
+	}
+
+	err = EnsureCollectionExist(context.Background(), QdrantClient)
+	if err != nil {
+		panic(err)
+	}
+
 	/*
 		all the stores are returned as pointers
 		because we satisfy all interface by functions with pointer receiver
@@ -81,13 +103,10 @@ func NewApplication(isTesting bool) (*Application, error) {
 	challengeResponseHandler := api.NewChallengeResponseHandler(challengeResponseStore, logger)
 	challengeResponseVoteHandler := api.NewChallengeResponseVoteHandler(challengeResponseVoteStore, logger)
 	commentHandler := api.NewCommentHandler(commentStore, logger)
+	chatboxHandler := api.NewChatboxHandler(logger, AIClient, QdrantClient)
 
 	//NOTE: Middleware creation
 	middleware := middleware.NewMiddleWare(logger)
-
-	//NOTE: Jobs
-	logger.Println("Start clean up jobs")
-	StartTokenCleanupJob(logger, tokenStore)
 
 	application := &Application{
 		Logger:                       logger,
@@ -98,14 +117,18 @@ func NewApplication(isTesting bool) (*Application, error) {
 		ChallengeResponseHandler:     challengeResponseHandler,
 		ChallengeresponseVoteHandler: challengeResponseVoteHandler,
 		CommentHandler:               commentHandler,
+		ChatboxHandler:               chatboxHandler,
 		UserHandler:                  userHandler,
 		Middleware:                   middleware,
 	}
 
+	logger.Println("Start clean up jobs")
+	application.StartTokenCleanupJob()
+
 	return application, nil
 }
 
-func StartTokenCleanupJob(logger *log.Logger, tokenStore store.TokenStore) {
+func (a *Application) StartTokenCleanupJob() {
 	ticker := time.NewTicker(24 * time.Hour)
 
 	// Launch a goroutine that runs forever.
@@ -114,14 +137,68 @@ func StartTokenCleanupJob(logger *log.Logger, tokenStore store.TokenStore) {
 			// This will block until the next tick from the ticker.
 			<-ticker.C
 
-			logger.Println("Running scheduled job: cleaning up expired refresh tokens...")
+			a.Logger.Println("Running scheduled job: cleaning up expired refresh tokens...")
 
-			rowsDeleted, err := tokenStore.DeleteExpiredTokens()
+			rowsDeleted, err := a.UserHandler.TokenStore.DeleteExpiredTokens()
 			if err != nil {
-				logger.Printf("ERROR: failed to clean up expired tokens: %v", err)
+				a.Logger.Printf("ERROR: failed to clean up expired tokens: %v", err)
 			} else {
-				logger.Printf("Background job finished. Deleted %d stale tokens.", rowsDeleted)
+				a.Logger.Printf("Background job finished. Deleted %d stale tokens.", rowsDeleted)
 			}
 		}
 	}()
+}
+
+func InitAI(ctx context.Context) (*genai.Client, error) {
+	key := constants.AISecretKey
+
+	c, err := genai.NewClient(ctx, &genai.ClientConfig{
+		APIKey:  key,
+		Backend: genai.BackendGeminiAPI,
+	})
+	if err != nil {
+		return &genai.Client{}, err
+	}
+	return c, nil
+}
+
+func InitQdrant(ctx context.Context) (*qdrant.Client, error) {
+	intVectorPort, err := strconv.Atoi(constants.VectorPort)
+	if err != nil {
+		return &qdrant.Client{}, fmt.Errorf("Qdrant port is not valid integer %d", constants.VectorPort)
+	}
+
+	client, err := qdrant.NewClient(&qdrant.Config{
+		Host:   constants.VectorHost,
+		Port:   intVectorPort,
+		APIKey: constants.VectorSecret,
+		UseTLS: true,
+	})
+	if err != nil {
+		return &qdrant.Client{}, fmt.Errorf("qdrant: %w", err)
+	}
+	return client, nil
+}
+
+func EnsureCollectionExist(ctx context.Context, cli *qdrant.Client) error {
+	// First try to get it
+	_, err := cli.GetCollectionInfo(ctx, constants.VectorCollectionName)
+	if err == nil {
+		// Already exists
+		return nil
+	}
+
+	// If it's not found, create it
+	err = cli.CreateCollection(ctx, &qdrant.CreateCollection{
+		CollectionName: constants.VectorCollectionName,
+		VectorsConfig: &qdrant.VectorsConfig{
+			Config: &qdrant.VectorsConfig_Params{
+				Params: &qdrant.VectorParams{
+					Size:     uint64(constants.VectorDim),
+					Distance: qdrant.Distance_Cosine,
+				},
+			},
+		},
+	})
+	return err
 }

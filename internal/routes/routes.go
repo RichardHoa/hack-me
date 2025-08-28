@@ -36,6 +36,9 @@ func SetUpRoutes(app *app.Application) *chi.Mux {
 			outerRouter.Use(app.Middleware.CorsMiddleware)
 		}
 
+		outerRouter.Post("/chatbox", app.ChatboxHandler.ReplyChat)
+		outerRouter.Post("/chatbox/ingest", app.ChatboxHandler.Ingest)
+
 		outerRouter.Route("/challenges", func(r chi.Router) {
 			r.Get("/", app.ChallengeHandler.GetChallenges)
 
