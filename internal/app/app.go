@@ -3,10 +3,8 @@ package app
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"log"
 	"os"
-	"strconv"
 	"time"
 
 	"github.com/RichardHoa/hack-me/internal/api"
@@ -15,8 +13,6 @@ import (
 	"github.com/RichardHoa/hack-me/internal/store"
 	"github.com/RichardHoa/hack-me/migrations"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/qdrant/go-client/qdrant"
-	"google.golang.org/genai"
 )
 
 type Application struct {
@@ -70,17 +66,12 @@ func NewApplication(isTesting bool) (*Application, error) {
 		panic(err)
 	}
 
-	AIClient, err := InitAI(context.Background())
+	AIClient, err := store.InitAI(context.Background())
 	if err != nil {
 		panic(err)
 	}
 
-	QdrantClient, err := InitQdrant(context.Background())
-	if err != nil {
-		panic(err)
-	}
-
-	err = EnsureCollectionExist(context.Background(), QdrantClient)
+	QdrantClient, err := store.InitVectorDB(context.Background())
 	if err != nil {
 		panic(err)
 	}
@@ -147,58 +138,4 @@ func (a *Application) StartTokenCleanupJob() {
 			}
 		}
 	}()
-}
-
-func InitAI(ctx context.Context) (*genai.Client, error) {
-	key := constants.AISecretKey
-
-	c, err := genai.NewClient(ctx, &genai.ClientConfig{
-		APIKey:  key,
-		Backend: genai.BackendGeminiAPI,
-	})
-	if err != nil {
-		return &genai.Client{}, err
-	}
-	return c, nil
-}
-
-func InitQdrant(ctx context.Context) (*qdrant.Client, error) {
-	intVectorPort, err := strconv.Atoi(constants.VectorPort)
-	if err != nil {
-		return &qdrant.Client{}, fmt.Errorf("Qdrant port is not valid integer %d", constants.VectorPort)
-	}
-
-	client, err := qdrant.NewClient(&qdrant.Config{
-		Host:   constants.VectorHost,
-		Port:   intVectorPort,
-		APIKey: constants.VectorSecret,
-		UseTLS: true,
-	})
-	if err != nil {
-		return &qdrant.Client{}, fmt.Errorf("qdrant: %w", err)
-	}
-	return client, nil
-}
-
-func EnsureCollectionExist(ctx context.Context, cli *qdrant.Client) error {
-	// First try to get it
-	_, err := cli.GetCollectionInfo(ctx, constants.VectorCollectionName)
-	if err == nil {
-		// Already exists
-		return nil
-	}
-
-	// If it's not found, create it
-	err = cli.CreateCollection(ctx, &qdrant.CreateCollection{
-		CollectionName: constants.VectorCollectionName,
-		VectorsConfig: &qdrant.VectorsConfig{
-			Config: &qdrant.VectorsConfig_Params{
-				Params: &qdrant.VectorParams{
-					Size:     uint64(constants.VectorDimensions),
-					Distance: qdrant.Distance_Cosine,
-				},
-			},
-		},
-	})
-	return err
 }

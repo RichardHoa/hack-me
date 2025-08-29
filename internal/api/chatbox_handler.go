@@ -8,27 +8,26 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
 	"github.com/RichardHoa/hack-me/internal/constants"
+	"github.com/RichardHoa/hack-me/internal/store"
 	"github.com/RichardHoa/hack-me/internal/utils"
-	"google.golang.org/genai"
-
-	"github.com/qdrant/go-client/qdrant"
 )
 
 type ChatboxHandler struct {
-	Logger       *log.Logger
-	QdrantClient *qdrant.Client
-	GeminiClient *genai.Client
+	Logger   *log.Logger
+	VectorDB store.VectorDB
+	AI       store.AIClient
 }
 
-func NewChatboxHandler(logger *log.Logger, AIClient *genai.Client, VectorClient *qdrant.Client) *ChatboxHandler {
+func NewChatboxHandler(logger *log.Logger, ai store.AIClient, vdb store.VectorDB) *ChatboxHandler {
 	return &ChatboxHandler{
-		Logger:       logger,
-		GeminiClient: AIClient,
-		QdrantClient: VectorClient,
+		Logger:   logger,
+		AI:       ai,
+		VectorDB: vdb,
 	}
 }
 
@@ -53,6 +52,7 @@ type IngestRequest struct {
 }
 
 type RelevantVectorDoc struct {
+	Order string
 	Title string
 	URL   string
 	Text  string
@@ -80,11 +80,9 @@ func (handler *ChatboxHandler) HandleChat(w http.ResponseWriter, r *http.Request
 	for _, hisItem := range req.History {
 		role := strings.ToLower(strings.TrimSpace(hisItem.Role))
 		content := strings.TrimSpace(hisItem.Content)
-
 		if content == "" {
 			continue
 		}
-
 		switch role {
 		case "assistant":
 			hist.WriteString("Assistant: ")
@@ -93,15 +91,11 @@ func (handler *ChatboxHandler) HandleChat(w http.ResponseWriter, r *http.Request
 		default:
 			hist.WriteString("User: ")
 		}
-
 		hist.WriteString(content)
 		hist.WriteString("\n")
 	}
 
-	hist.WriteString("User: ")
-	hist.WriteString(trimmedQuestion)
-
-	docs, err := handler.SearchRelevantDoc(ctx, trimmedQuestion, 10)
+	docs, err := handler.SearchRelevantDoc(ctx, trimmedQuestion, 5)
 	if err != nil {
 		handler.Logger.Printf("RAG retrieve error: %v\n", err)
 		utils.WriteJSON(w, http.StatusInternalServerError, utils.NewMessage(
@@ -112,11 +106,9 @@ func (handler *ChatboxHandler) HandleChat(w http.ResponseWriter, r *http.Request
 	var contextBuilder strings.Builder
 	total := 0
 	for _, item := range docs {
-		handler.Logger.Printf("LOGGING: text %s has score %v\n", item.Title, item.Score)
-
 		seg := "### " + item.Title + " (" + item.URL + ")\n" + item.Text + "\n\n"
 		if total+len(seg) > constants.MaxContextLength {
-			handler.Logger.Printf("question %v retrieves too much docs %v\n", trimmedQuestion, docs)
+			handler.Logger.Printf("question %v retrieves too much docs %v\n", trimmedQuestion, len(docs))
 			break
 		}
 		contextBuilder.WriteString(seg)
@@ -126,12 +118,7 @@ func (handler *ChatboxHandler) HandleChat(w http.ResponseWriter, r *http.Request
 
 	userPrompt := "QUESTION:\n" + trimmedQuestion + "\n\nCONTEXT:\n" + contextText + "\n\nHISTORY:\n" + hist.String()
 
-	result, err := handler.GeminiClient.Models.GenerateContent(
-		ctx,
-		constants.AIModel,
-		genai.Text(constants.SystemPrompts+"\n\n"+userPrompt),
-		nil,
-	)
+	answer, err := handler.AI.Generate(ctx, constants.SystemPrompts, userPrompt)
 	if err != nil {
 		handler.Logger.Printf("AI cannot generate content: %v\n", err)
 		utils.WriteJSON(w, http.StatusInternalServerError, utils.NewMessage(
@@ -139,11 +126,9 @@ func (handler *ChatboxHandler) HandleChat(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	answer := strings.TrimSpace(result.Text())
-
 	utils.WriteJSON(w, http.StatusOK, utils.Message{
 		"data": []map[string]any{
-			{"response": answer},
+			{"response": strings.TrimSpace(answer)},
 		},
 	})
 }
@@ -155,7 +140,6 @@ func (handler *ChatboxHandler) AddDocsToVectorDB(w http.ResponseWriter, r *http.
 			constants.StatusInvalidJSONMessage, constants.MSG_MALFORMED_REQUEST_DATA, "request"))
 		return
 	}
-
 	if len(req.Docs) == 0 {
 		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(
 			constants.StatusInvalidJSONMessage, constants.MSG_LACKING_MANDATORY_FIELDS, "docs"))
@@ -165,91 +149,57 @@ func (handler *ChatboxHandler) AddDocsToVectorDB(w http.ResponseWriter, r *http.
 	ctx, cancel := context.WithTimeout(r.Context(), 60*time.Second)
 	defer cancel()
 
-	var batch []*qdrant.PointStruct
-
+	var batch []store.VectorPoint
 	intVectorDimensions := int32(constants.VectorDimensions)
 
 	for _, doc := range req.Docs {
-		err := utils.ValidateJSONFieldsNotEmpty(w, req)
-		if err != nil {
+		if err := utils.ValidateJSONFieldsNotEmpty(w, req); err != nil {
 			return
 		}
-
 		chunks := SplitTextIntoChunks(doc.Text, 1000, 200)
 
 		for i, chunk := range chunks {
-			embededResponse, err := handler.GeminiClient.Models.EmbedContent(
-				ctx,
-				"text-embedding-004",
-				genai.Text(chunk),
-				&genai.EmbedContentConfig{
-					OutputDimensionality: &intVectorDimensions,
-				},
-			)
-
+			embedding, err := handler.AI.EmbedText(ctx, chunk, intVectorDimensions)
 			if err != nil {
 				handler.Logger.Printf("Cannot embed chunk, error: %v, chunk: %v\n", err, chunk)
 				utils.WriteJSON(w, http.StatusInternalServerError, utils.NewMessage(
 					constants.StatusInternalErrorMessage, "", ""))
 				return
 			}
-
-			if len(embededResponse.Embeddings) == 0 {
-				handler.Logger.Printf("Empty embedded response")
-				utils.WriteJSON(w, http.StatusInternalServerError, utils.NewMessage(
-					constants.StatusInternalErrorMessage, "", ""))
-				return
-			}
-
-			embeddingValues := embededResponse.Embeddings[0].Values
-
-			vector := make([]float32, len(embeddingValues))
-			copy(vector, embeddingValues)
-
-			if len(vector) != constants.VectorDimensions {
-				handler.Logger.Printf("unexpected embedding dimmensions: %d", len(vector))
+			if len(embedding) != constants.VectorDimensions {
+				handler.Logger.Printf("unexpected embedding dimensions: %d", len(embedding))
 				utils.WriteJSON(w, http.StatusInternalServerError, utils.NewMessage(
 					constants.StatusInternalErrorMessage, "", ""))
 				return
 			}
 
 			idNumber := hashToUint64(fmt.Sprintf("%s|%d|%s", doc.URL, i, chunk))
-
-			point := &qdrant.PointStruct{
-				Id: &qdrant.PointId{
-					PointIdOptions: &qdrant.PointId_Num{
-						Num: idNumber,
-					},
-				},
-				Vectors: &qdrant.Vectors{
-					VectorsOptions: &qdrant.Vectors_Vector{
-						Vector: &qdrant.Vector{Data: vector},
-					},
-				},
-				Payload: qdrant.NewValueMap(map[string]any{
+			batch = append(batch, store.VectorPoint{
+				ID:     idNumber,
+				Vector: embedding,
+				Payload: map[string]any{
 					"url":   doc.URL,
 					"title": doc.Title,
 					"ord":   i,
 					"text":  chunk,
-				}),
-			}
-			batch = append(batch, point)
+				},
+			})
 
-			// 3) flush in batches
+			// flush in batches
 			if len(batch) >= 128 {
-				if err := upsertBatch(ctx, handler.QdrantClient, constants.VectorCollectionName, batch); err != nil {
+				if err := handler.VectorDB.Upsert(ctx, batch); err != nil {
 					utils.WriteJSON(w, http.StatusInternalServerError, utils.NewMessage(
-						constants.StatusInternalErrorMessage, "qdrant upsert failed", doc.URL))
+						constants.StatusInternalErrorMessage, "vector upsert failed", doc.URL))
 					return
 				}
 				batch = batch[:0]
 			}
 		}
 	}
+
 	if len(batch) > 0 {
-		err := upsertBatch(ctx, handler.QdrantClient, constants.VectorCollectionName, batch)
-		if err != nil {
-			handler.Logger.Printf("qdrant upsert failed: %v", err)
+		if err := handler.VectorDB.Upsert(ctx, batch); err != nil {
+			handler.Logger.Printf("vector upsert failed: %v", err)
 			utils.WriteJSON(w, http.StatusInternalServerError, utils.NewMessage(
 				constants.StatusInternalErrorMessage, "", ""))
 			return
@@ -260,53 +210,54 @@ func (handler *ChatboxHandler) AddDocsToVectorDB(w http.ResponseWriter, r *http.
 }
 
 func (handler *ChatboxHandler) SearchRelevantDoc(ctx context.Context, question string, limit uint64) ([]RelevantVectorDoc, error) {
-	embededResponse, err := handler.GeminiClient.Models.EmbedContent(ctx, "text-embedding-004", genai.Text(question), nil)
+	vector, err := handler.AI.EmbedText(ctx, question, 0)
 	if err != nil {
 		return nil, fmt.Errorf("embed question %v failed: %w", question, err)
 	}
 
-	if len(embededResponse.Embeddings) == 0 {
-		return nil, fmt.Errorf("empty embedding")
-	}
-
-	vector := embededResponse.Embeddings[0].Values
-
-	points, err := handler.QdrantClient.Query(ctx, &qdrant.QueryPoints{
-		CollectionName: constants.VectorCollectionName,
-		Query:          qdrant.NewQuery(vector...),
-		Limit:          &limit,
-		WithPayload:    qdrant.NewWithPayloadInclude("title", "url", "text"),
-	})
+	points, err := handler.VectorDB.Query(ctx, vector, limit, []string{"title", "url", "text", "ord"})
 	if err != nil {
-		return nil, fmt.Errorf("Search fail: %v", err)
+		return nil, fmt.Errorf("search fail: %v", err)
 	}
 
 	out := make([]RelevantVectorDoc, 0, len(points))
-	for _, point := range points {
-		payload := point.Payload
+	for _, p := range points {
+		title, ok1 := p.Payload["title"].(string)
+		url, ok2 := p.Payload["url"].(string)
+		text, ok3 := p.Payload["text"].(string)
+		ordVal, ok4 := p.Payload["ord"]
+
+		if !ok1 || !ok2 || !ok3 || !ok4 {
+			return nil, fmt.Errorf("payload missing required fields: %+v", p.Payload)
+		}
+
+		var orderStr string
+		switch v := ordVal.(type) {
+		case string:
+			orderStr = v
+		case int:
+			orderStr = strconv.Itoa(v)
+		case int64:
+			orderStr = strconv.FormatInt(v, 10)
+		case uint64:
+			orderStr = strconv.FormatUint(v, 10)
+		case float64:
+			// JSON decoding often gives numbers as float64
+			orderStr = strconv.FormatFloat(v, 'f', -1, 64)
+		default:
+			return nil, fmt.Errorf("ord has unsupported type %T", v)
+		}
+
 		out = append(out, RelevantVectorDoc{
-			Title: payload["title"].GetStringValue(),
-			URL:   payload["url"].GetStringValue(),
-			Text:  payload["text"].GetStringValue(),
-			Score: float32(point.Score),
+			Title: title,
+			URL:   url,
+			Text:  text,
+			Order: orderStr,
+			Score: p.Score,
 		})
 	}
 
 	return out, nil
-}
-
-func upsertBatch(ctx context.Context, cli *qdrant.Client, col string, pts []*qdrant.PointStruct) error {
-	wait := true
-	_, err := cli.Upsert(ctx, &qdrant.UpsertPoints{
-		CollectionName: col,
-		Points:         pts,
-		Wait:           &wait,
-	})
-	if err != nil {
-		return fmt.Errorf("QDRANT UPSERT ERROR: %v", err)
-	}
-
-	return nil
 }
 
 func SplitTextIntoChunks(text string, maxSize, overlapSize int) []string {
@@ -320,7 +271,6 @@ func SplitTextIntoChunks(text string, maxSize, overlapSize int) []string {
 			if chunk != "" {
 				chunks = append(chunks, chunk)
 			}
-
 			current.Reset()
 			if len(chunk) > overlapSize {
 				tail := chunk[len(chunk)-overlapSize:]
@@ -328,21 +278,17 @@ func SplitTextIntoChunks(text string, maxSize, overlapSize int) []string {
 				current.WriteString("\n\n")
 			}
 		}
-
 		current.WriteString(p)
 		current.WriteString("\n\n")
 	}
-
 	if leftover := strings.TrimSpace(current.String()); leftover != "" {
 		chunks = append(chunks, leftover)
 	}
-
 	return chunks
 }
 
 func hashToUint64(s string) uint64 {
 	sum := sha256.Sum256([]byte(s))
-
 	var out uint64
 	for i := 0; i < 4; i++ {
 		part := binary.LittleEndian.Uint64(sum[i*8 : (i+1)*8])

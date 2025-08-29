@@ -37,7 +37,6 @@ func LoadEnv() error {
 		"REFRESH_TOKEN_SECRET":   &RefreshTokenSecret,
 		"ACCESS_TOKEN_SECRET":    &AccessTokenSecret,
 		"CSRF_TOKEN_SECRET":      &CSRFTokenSecret,
-		"AI_MODEL":               &AIModel,
 		"AI_SECRET_KEY":          &AISecretKey,
 		"VECTOR_DB_HOST":         &VectorHost,
 		"VECTOR_DB_PORT":         &VectorPort,
@@ -83,7 +82,6 @@ var (
 	CSRFTokenSecret      string
 	AppPort              int
 	IsDevMode            bool
-	AIModel              string
 	AISecretKey          string
 	VectorSecret         string
 	VectorHost           string
@@ -100,6 +98,8 @@ const (
 
 // Defines constants for AI related functions
 const (
+	AIModel          = "gemini-2.5-flash"
+	AIEmbededModel   = "text-embedding-004"
 	MaxContextLength = 12000
 	SystemPrompts    = `
 		ROLE
