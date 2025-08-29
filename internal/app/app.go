@@ -194,7 +194,7 @@ func EnsureCollectionExist(ctx context.Context, cli *qdrant.Client) error {
 		VectorsConfig: &qdrant.VectorsConfig{
 			Config: &qdrant.VectorsConfig_Params{
 				Params: &qdrant.VectorParams{
-					Size:     uint64(constants.VectorDim),
+					Size:     uint64(constants.VectorDimensions),
 					Distance: qdrant.Distance_Cosine,
 				},
 			},

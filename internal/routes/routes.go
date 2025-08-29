@@ -34,10 +34,11 @@ func SetUpRoutes(app *app.Application) *chi.Mux {
 		if constants.IsDevMode {
 			app.Logger.Println("Use middleware")
 			outerRouter.Use(app.Middleware.CorsMiddleware)
+
+			outerRouter.Post("/chatbox/upload-data", app.ChatboxHandler.AddDocsToVectorDB)
 		}
 
-		outerRouter.Post("/chatbox", app.ChatboxHandler.ReplyChat)
-		outerRouter.Post("/chatbox/ingest", app.ChatboxHandler.Ingest)
+		outerRouter.Post("/chatbox", app.ChatboxHandler.HandleChat)
 
 		outerRouter.Route("/challenges", func(r chi.Router) {
 			r.Get("/", app.ChallengeHandler.GetChallenges)
