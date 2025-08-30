@@ -135,7 +135,6 @@ When you create or modify a migration file, you **must reset both the main and t
 
 
 # Future features
-- [ ] understand the AI system
 - [ ] password recovery
 - [ ] email check
 - [ ] login blocking after `n` attempts

@@ -39,9 +39,11 @@ func NewApplication(isTesting bool) (*Application, error) {
 	infoLogger := log.New(os.Stdout, "", log.Ldate|log.Ltime)
 
 	var (
-		db       *sql.DB
-		connPool *pgxpool.Pool
-		err      error
+		db           *sql.DB
+		connPool     *pgxpool.Pool
+		err          error
+		AIClient     *store.GeminiAI
+		QdrantClient *store.QdrantDB
 	)
 
 	err = constants.LoadEnv()
@@ -59,19 +61,18 @@ func NewApplication(isTesting bool) (*Application, error) {
 		if err != nil {
 			panic(err)
 		}
+		AIClient, err = store.InitAI(context.Background())
+		if err != nil {
+			panic(err)
+		}
+
+		QdrantClient, err = store.InitVectorDB(context.Background())
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	err = store.MigrateFS(db, migrations.FS, ".")
-	if err != nil {
-		panic(err)
-	}
-
-	AIClient, err := store.InitAI(context.Background())
-	if err != nil {
-		panic(err)
-	}
-
-	QdrantClient, err := store.InitVectorDB(context.Background())
 	if err != nil {
 		panic(err)
 	}

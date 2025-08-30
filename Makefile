@@ -19,6 +19,10 @@ run:
 air:
 	doppler run -- air
 
+test:
+	doppler run -- go test ./... -v
+
+
 # Builds the application binary.
 # Use: `make build`
 build:

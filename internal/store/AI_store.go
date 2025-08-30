@@ -56,7 +56,7 @@ func InitAI(ctx context.Context) (*GeminiAI, error) {
 func InitVectorDB(ctx context.Context) (*QdrantDB, error) {
 	intVectorPort, err := strconv.Atoi(constants.VectorPort)
 	if err != nil {
-		return &QdrantDB{}, fmt.Errorf("Qdrant port is not valid integer %d", constants.VectorPort)
+		return &QdrantDB{}, fmt.Errorf("Qdrant port is not valid integer %d", intVectorPort)
 	}
 
 	client, err := qdrant.NewClient(&qdrant.Config{
