@@ -26,37 +26,8 @@ test:
 # Builds the application binary.
 # Use: `make build`
 build:
-	@echo "Delete all previous images in ECR"
-	@IDS_TAGGED=$$(aws ecr list-images --repository-name hack-me/backend --region ap-southeast-1 --filter "tagStatus=TAGGED" --query 'imageIds[*]' --output json); \
-	if [ "$$IDS_TAGGED" != "[]" ] && [ "$$IDS_TAGGED" != "null" ]; then \
-		echo "Deleting tagged images..."; \
-		aws ecr batch-delete-image \
-			--repository-name hack-me/backend \
-			--region ap-southeast-1 \
-			--image-ids "$$IDS_TAGGED"; \
-	else \
-		echo "No tagged images to delete."; \
-	fi
-
-	@IDS_UNTAGGED=$$(aws ecr list-images --repository-name hack-me/backend --region ap-southeast-1 --filter "tagStatus=UNTAGGED" --query 'imageIds[*]' --output json); \
-	if [ "$$IDS_UNTAGGED" != "[]" ] && [ "$$IDS_UNTAGGED" != "null" ]; then \
-		echo "Deleting untagged images..."; \
-		aws ecr batch-delete-image \
-			--repository-name hack-me/backend \
-			--region ap-southeast-1 \
-			--image-ids "$$IDS_UNTAGGED"; \
-	else \
-		echo "No untagged images to delete."; \
-	fi
-
 	@echo "Building the application..."
-	docker buildx build --platform linux/amd64 -t hack-me/backend . --target=prod
-
-	@echo "Tag the build image"
-	docker tag hack-me/backend:latest 004843574486.dkr.ecr.ap-southeast-1.amazonaws.com/hack-me/backend:latest
-
-	@echo "Push the image into ECR"
-	docker push 004843574486.dkr.ecr.ap-southeast-1.amazonaws.com/hack-me/backend:latest
+	sudo docker buildx build --platform linux/amd64 -t hack-me/backend . --target=prod
 
 # Use: `make fmt`
 fmt:

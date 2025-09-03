@@ -39,8 +39,8 @@ func Open() (*sql.DB, *pgxpool.Pool, error) {
 			return nil, nil, fmt.Errorf("DB_PASSWORD environment variable not set")
 		}
 
-		host := "db.fpawuhzfufwaudittxlx.supabase.co"
-		user := "postgres"
+		host := os.Getenv("DB_HOST")
+		user := os.Getenv("DB_USER")
 		port := "5432"
 		dbname := "postgres"
 
