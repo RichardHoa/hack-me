@@ -48,7 +48,6 @@ func Open() (*sql.DB, *pgxpool.Pool, error) {
 			host, user, password, dbname, port)
 
 	}
-	fmt.Println("Conn str", connStr)
 
 	dbPool, err := pgxpool.New(context.Background(), connStr)
 	if err != nil {

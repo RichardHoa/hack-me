@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/RichardHoa/hack-me/internal/constants"
 	"github.com/RichardHoa/hack-me/internal/store"
@@ -26,6 +27,7 @@ func NewChallengeHandler(challengeStore store.ChallengeStore, logger *log.Logger
 
 func (handler *ChallengeHandler) GetChallenges(w http.ResponseWriter, r *http.Request) {
 
+	t1 := time.Now()
 	query := r.URL.Query()
 
 	popularity := query.Get("popularity")
@@ -77,7 +79,14 @@ func (handler *ChallengeHandler) GetChallenges(w http.ResponseWriter, r *http.Re
 		Page:       page,
 	}
 
+	t2 := time.Now()
+	handler.Logger.Println("Receive request -> before calling store: ", t2.Sub(t1))
+
 	challenges, metaPage, err := handler.ChallengeStore.GetChallenges(freeQuery)
+
+	t3 := time.Now()
+
+	handler.Logger.Println("Time take to call store: ", t3.Sub(t2))
 
 	if err != nil {
 		handler.Logger.Printf("ERROR: GetChallenges -> storeGetChallenges: %v", err)
