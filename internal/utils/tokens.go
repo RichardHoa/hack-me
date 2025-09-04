@@ -73,8 +73,12 @@ response, dynamically calculates refreshToken MaxAge from the token's expiration
 */
 func SendTokens(w http.ResponseWriter, accessToken, refreshToken, csrfToken string) error {
 
-	secureAttribute := true
-	sameSiteAttribute := http.SameSiteStrictMode
+	// secureAttribute := true
+	// sameSiteAttribute := http.SameSiteStrictMode
+
+	//NOTE: USE FOR TESTING ONLY, MUST DELETE THIS AND REPLACE WITH THE ABOVE AFTER DONE TESTING
+	secureAttribute := false
+	sameSiteAttribute := http.SameSiteLaxMode
 
 	if constants.IsDevMode {
 		secureAttribute = false

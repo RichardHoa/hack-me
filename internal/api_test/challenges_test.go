@@ -1304,11 +1304,8 @@ func TestChallengesRoutes(t *testing.T) {
 		jar, _ := cookiejar.New(nil)
 		client := &http.Client{Jar: jar}
 
-		test := test // shadow variable
-
 		t.Run(test.name, func(t *testing.T) {
 			for _, step := range test.steps {
-				step := step // shadow variable
 				t.Run(fmt.Sprintf("%s-%s-%d-%s", step.request.method, step.request.path, step.expectStatus, step.name), func(t *testing.T) {
 					body := MakeRequestAndExpectStatus(t, client, step.request.method, server.URL+step.request.path, step.request.body, step.expectStatus)
 
