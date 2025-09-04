@@ -92,7 +92,7 @@ func (handler *UserHandler) RegisterNewUser(w http.ResponseWriter, r *http.Reque
 		case constants.PQInvalidByteSequence:
 			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("input contains null character", constants.MSG_INVALID_REQUEST_DATA, "body"))
 		case constants.PQUniqueViolation:
-			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("User already exist", constants.MSG_INVALID_REQUEST_DATA, "userName or email"))
+			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("User already exist, please try again with a different account", constants.MSG_INVALID_REQUEST_DATA, "userName or email"))
 			return
 		default:
 			handler.Logger.Printf("ERROR: RegisterNewUser > CreateUser: %v", err)

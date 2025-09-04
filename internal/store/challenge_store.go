@@ -153,7 +153,10 @@ func (Store *DBChallengeStore) GetChallenges(freeQuery ChallengeFreeQuery) (*Cha
 	baseQuery += fmt.Sprintf(" LIMIT %d OFFSET %d", pageSize, offset)
 
 	var total int
+	before := time.Now()
 	err := Store.DB.QueryRow(countQuery, args...).Scan(&total)
+	after := time.Now()
+	fmt.Println("Time takes to do challenges query: ", after.Sub(before))
 	if err != nil {
 		return &Challenges{}, &MetaDataPage{}, err
 	}

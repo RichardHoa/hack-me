@@ -1,0 +1,2749 @@
+Server crashed/exited at Thu  4 Sep 2025 11:22:01 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:22:04 +07
+doppler run -- go run main.go
+DEV MODE
+Establish database connection
+2025/09/04 11:22:06 goose: no migrations to run. current version: 8
+2025/09/04 11:22:06 Start clean up jobs
+2025/09/04 11:22:06 Use middleware
+2025/09/04 11:22:06 Server is running on port: 8080
+signal: killed
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:22:33 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:22:35 +07
+doppler run -- go run main.go
+DEV MODE
+Establish database connection
+2025/09/04 11:22:37 goose: no migrations to run. current version: 8
+2025/09/04 11:22:37 Start clean up jobs
+2025/09/04 11:22:37 Use middleware
+2025/09/04 11:22:37 Server is running on port: 8080
+signal: terminated
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:23:18 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:23:21 +07
+doppler run -- go run main.go
+DEV MODE
+panic: Error opening database connection: failed to connect to `user=postgres database=postgres`:
+		[::1]:5432 (localhost): dial error: dial tcp [::1]:5432: connect: connection refused
+		127.0.0.1:5432 (localhost): dial error: dial tcp 127.0.0.1:5432: connect: connection refused
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:23:21 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:23:24 +07
+doppler run -- go run main.go
+DEV MODE
+panic: Error opening database connection: failed to connect to `user=postgres database=postgres`:
+		[::1]:5432 (localhost): dial error: dial tcp [::1]:5432: connect: connection refused
+		127.0.0.1:5432 (localhost): dial error: dial tcp 127.0.0.1:5432: connect: connection refused
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:23:24 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:23:26 +07
+doppler run -- go run main.go
+DEV MODE
+panic: Error opening database connection: failed to connect to `user=postgres database=postgres`:
+		[::1]:5432 (localhost): dial error: dial tcp [::1]:5432: connect: connection refused
+		127.0.0.1:5432 (localhost): dial error: dial tcp 127.0.0.1:5432: connect: connection refused
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:23:27 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:23:29 +07
+doppler run -- go run main.go
+DEV MODE
+panic: Error opening database connection: failed to connect to `user=postgres database=postgres`:
+		[::1]:5432 (localhost): dial error: dial tcp [::1]:5432: connect: connection refused
+		127.0.0.1:5432 (localhost): dial error: dial tcp 127.0.0.1:5432: connect: connection refused
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:23:30 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:23:32 +07
+doppler run -- go run main.go
+DEV MODE
+panic: Error opening database connection: failed to connect to `user=postgres database=postgres`:
+		[::1]:5432 (localhost): dial error: dial tcp [::1]:5432: connect: connection refused
+		127.0.0.1:5432 (localhost): dial error: dial tcp 127.0.0.1:5432: connect: connection refused
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:23:33 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:23:35 +07
+doppler run -- go run main.go
+DEV MODE
+panic: Error opening database connection: failed to connect to `user=postgres database=postgres`:
+		[::1]:5432 (localhost): dial error: dial tcp [::1]:5432: connect: connection refused
+		127.0.0.1:5432 (localhost): dial error: dial tcp 127.0.0.1:5432: connect: connection refused
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:23:36 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:23:38 +07
+doppler run -- go run main.go
+DEV MODE
+panic: Error opening database connection: failed to connect to `user=postgres database=postgres`:
+		[::1]:5432 (localhost): dial error: dial tcp [::1]:5432: connect: connection refused
+		127.0.0.1:5432 (localhost): dial error: dial tcp 127.0.0.1:5432: connect: connection refused
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:23:38 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:23:40 +07
+doppler run -- go run main.go
+DEV MODE
+panic: Error opening database connection: failed to connect to `user=postgres database=postgres`:
+		[::1]:5432 (localhost): dial error: dial tcp [::1]:5432: connect: connection refused
+		127.0.0.1:5432 (localhost): dial error: dial tcp 127.0.0.1:5432: connect: connection refused
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:23:41 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:23:43 +07
+doppler run -- go run main.go
+DEV MODE
+panic: Error opening database connection: failed to connect to `user=postgres database=postgres`:
+		[::1]:5432 (localhost): failed to receive message: read tcp [::1]:50310->[::1]:5432: read: connection reset by peer
+		127.0.0.1:5432 (localhost): failed to receive message: read tcp 127.0.0.1:50311->127.0.0.1:5432: read: connection reset by peer
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:23:44 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:23:46 +07
+doppler run -- go run main.go
+DEV MODE
+Establish database connection
+2025/09/04 11:23:48 goose: no migrations to run. current version: 8
+2025/09/04 11:23:48 Start clean up jobs
+2025/09/04 11:23:48 Use middleware
+2025/09/04 11:23:48 Server is running on port: 8080
+panic: listen tcp :8080: bind: address already in use
+
+goroutine 1 [running]:
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:47 +0x1cc
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:23:48 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:23:50 +07
+doppler run -- go run main.go
+DEV MODE
+Establish database connection
+2025/09/04 11:23:52 goose: no migrations to run. current version: 8
+2025/09/04 11:23:52 Start clean up jobs
+2025/09/04 11:23:52 Use middleware
+2025/09/04 11:23:52 Server is running on port: 8080
+panic: listen tcp :8080: bind: address already in use
+
+goroutine 1 [running]:
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:47 +0x1cc
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:23:52 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:23:54 +07
+doppler run -- go run main.go
+DEV MODE
+Establish database connection
+2025/09/04 11:23:56 goose: no migrations to run. current version: 8
+2025/09/04 11:23:56 Start clean up jobs
+2025/09/04 11:23:56 Use middleware
+2025/09/04 11:23:56 Server is running on port: 8080
+panic: listen tcp :8080: bind: address already in use
+
+goroutine 1 [running]:
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:47 +0x1cc
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:23:56 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:23:58 +07
+doppler run -- go run main.go
+DEV MODE
+Establish database connection
+2025/09/04 11:23:59 goose: no migrations to run. current version: 8
+2025/09/04 11:23:59 Start clean up jobs
+2025/09/04 11:23:59 Use middleware
+2025/09/04 11:23:59 Server is running on port: 8080
+panic: listen tcp :8080: bind: address already in use
+
+goroutine 1 [running]:
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:47 +0x1cc
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:23:59 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:24:01 +07
+doppler run -- go run main.go
+DEV MODE
+Establish database connection
+2025/09/04 11:24:03 goose: no migrations to run. current version: 8
+2025/09/04 11:24:03 Start clean up jobs
+2025/09/04 11:24:03 Use middleware
+2025/09/04 11:24:03 Server is running on port: 8080
+panic: listen tcp :8080: bind: address already in use
+
+goroutine 1 [running]:
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:47 +0x1cc
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:24:03 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:24:05 +07
+doppler run -- go run main.go
+DEV MODE
+Establish database connection
+2025/09/04 11:24:07 goose: no migrations to run. current version: 8
+2025/09/04 11:24:07 Start clean up jobs
+2025/09/04 11:24:07 Use middleware
+2025/09/04 11:24:07 Server is running on port: 8080
+panic: listen tcp :8080: bind: address already in use
+
+goroutine 1 [running]:
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:47 +0x1cc
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:24:07 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:24:09 +07
+doppler run -- go run main.go
+DEV MODE
+Establish database connection
+2025/09/04 11:24:11 goose: no migrations to run. current version: 8
+2025/09/04 11:24:11 Start clean up jobs
+2025/09/04 11:24:11 Use middleware
+2025/09/04 11:24:11 Server is running on port: 8080
+panic: listen tcp :8080: bind: address already in use
+
+goroutine 1 [running]:
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:47 +0x1cc
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:24:11 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:24:13 +07
+doppler run -- go run main.go
+DEV MODE
+Establish database connection
+2025/09/04 11:24:15 goose: no migrations to run. current version: 8
+2025/09/04 11:24:15 Start clean up jobs
+2025/09/04 11:24:15 Use middleware
+2025/09/04 11:24:15 Server is running on port: 8080
+panic: listen tcp :8080: bind: address already in use
+
+goroutine 1 [running]:
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:47 +0x1cc
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:24:15 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:24:17 +07
+doppler run -- go run main.go
+DEV MODE
+Establish database connection
+2025/09/04 11:24:19 goose: no migrations to run. current version: 8
+2025/09/04 11:24:19 Start clean up jobs
+2025/09/04 11:24:19 Use middleware
+2025/09/04 11:24:19 Server is running on port: 8080
+panic: listen tcp :8080: bind: address already in use
+
+goroutine 1 [running]:
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:47 +0x1cc
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:24:19 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:24:21 +07
+doppler run -- go run main.go
+DEV MODE
+Establish database connection
+2025/09/04 11:24:23 goose: no migrations to run. current version: 8
+2025/09/04 11:24:23 Start clean up jobs
+2025/09/04 11:24:23 Use middleware
+2025/09/04 11:24:23 Server is running on port: 8080
+panic: listen tcp :8080: bind: address already in use
+
+goroutine 1 [running]:
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:47 +0x1cc
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:24:23 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:24:25 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: DB_PASSWORD environment variable not set
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:24:26 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:24:28 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: DB_PASSWORD environment variable not set
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:24:28 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:24:30 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: DB_PASSWORD environment variable not set
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:24:31 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:24:33 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: DB_PASSWORD environment variable not set
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:24:34 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:24:36 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: DB_PASSWORD environment variable not set
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:24:37 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:24:39 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: DB_PASSWORD environment variable not set
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:24:39 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:24:41 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: DB_PASSWORD environment variable not set
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:24:42 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:24:44 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: DB_PASSWORD environment variable not set
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:24:45 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:24:47 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: DB_PASSWORD environment variable not set
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:24:48 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:24:50 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:24:51 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:24:53 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:24:53 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:24:55 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:24:56 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:24:58 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:24:59 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:25:01 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:25:02 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:25:04 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:25:05 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:25:07 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:25:08 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:25:10 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:25:10 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:25:12 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:25:13 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:25:15 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:25:16 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:25:18 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:25:19 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:25:21 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:25:22 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:25:24 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:25:24 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:25:26 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:25:27 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:25:29 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:25:30 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:25:32 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:25:33 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:25:35 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:25:35 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:25:37 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:25:38 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:25:40 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:25:41 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:25:43 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:25:44 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:25:46 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:25:47 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:25:49 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:25:49 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:25:51 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:25:55 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:25:57 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:25:58 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:26:00 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:26:00 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:26:02 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:26:03 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:26:05 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:26:06 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:26:08 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:26:09 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:26:11 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:26:11 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:26:13 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:26:14 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:26:16 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:26:17 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:26:19 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:26:20 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:26:22 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:26:22 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:26:24 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:26:25 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:26:27 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:26:28 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:26:30 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:26:31 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:26:33 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:26:34 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:26:36 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:26:37 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:26:39 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:26:39 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:26:41 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:26:42 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:26:44 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:26:45 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:26:47 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:26:48 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:26:50 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:26:50 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:26:52 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:26:53 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:26:55 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:26:56 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:26:58 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:26:59 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:27:01 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:27:02 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:27:04 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:27:04 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:27:06 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:27:07 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:27:09 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:27:10 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:27:12 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:27:13 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:27:15 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:27:15 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:27:17 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:27:18 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:27:20 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:27:21 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:27:23 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:27:24 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:27:26 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:27:27 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:27:29 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:27:30 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:27:32 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:27:32 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:27:34 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:27:35 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:27:37 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:27:38 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:27:40 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:27:41 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:27:43 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:27:43 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:27:45 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:27:46 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:27:48 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:27:49 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:27:51 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:27:52 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:27:54 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:27:55 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:27:57 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:27:57 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:27:59 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:28:00 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:28:02 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:28:03 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:28:05 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:28:06 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:28:08 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:28:09 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:28:11 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:28:12 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:28:14 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:28:15 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:28:17 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:28:17 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:28:19 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:28:20 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:28:22 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:28:23 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:28:25 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:28:26 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:28:28 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:28:29 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:28:31 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:28:31 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:28:33 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:28:34 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:28:36 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:28:37 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:28:39 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:28:40 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:28:42 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:28:43 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:28:45 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:28:45 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:28:47 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:28:48 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:28:50 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:28:51 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:28:53 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:28:54 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:28:56 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:28:57 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:28:59 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:29:00 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:29:02 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:29:02 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:29:04 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:29:05 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:29:07 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:29:08 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:29:10 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=disable
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:29:13 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:29:15 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=disable
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:29:16 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:29:18 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=disable
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:29:19 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:29:21 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=disable
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:29:22 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:29:24 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=disable
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:29:25 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:29:27 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=disable
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:29:27 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:29:29 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=required
+panic: Error opening database connection: cannot parse `host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=xxxxx dbname=postgres port=5432 sslmode=required`: failed to configure TLS (sslmode is invalid)
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:29:32 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:29:34 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=required
+panic: Error opening database connection: cannot parse `host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=xxxxx dbname=postgres port=5432 sslmode=required`: failed to configure TLS (sslmode is invalid)
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:29:35 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:29:37 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=required
+panic: Error opening database connection: cannot parse `host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=xxxxx dbname=postgres port=5432 sslmode=required`: failed to configure TLS (sslmode is invalid)
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:29:38 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:29:40 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=required
+panic: Error opening database connection: cannot parse `host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=xxxxx dbname=postgres port=5432 sslmode=required`: failed to configure TLS (sslmode is invalid)
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:29:41 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:29:43 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=required
+panic: Error opening database connection: cannot parse `host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=xxxxx dbname=postgres port=5432 sslmode=required`: failed to configure TLS (sslmode is invalid)
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:29:44 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:29:46 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=required
+panic: Error opening database connection: cannot parse `host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=xxxxx dbname=postgres port=5432 sslmode=required`: failed to configure TLS (sslmode is invalid)
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:29:47 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:29:49 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=required
+panic: Error opening database connection: cannot parse `host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=xxxxx dbname=postgres port=5432 sslmode=required`: failed to configure TLS (sslmode is invalid)
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:29:49 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:29:51 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=required
+panic: Error opening database connection: cannot parse `host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=xxxxx dbname=postgres port=5432 sslmode=required`: failed to configure TLS (sslmode is invalid)
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:29:52 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:29:54 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=required
+panic: Error opening database connection: cannot parse `host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=xxxxx dbname=postgres port=5432 sslmode=required`: failed to configure TLS (sslmode is invalid)
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:29:55 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:29:57 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=require
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:30:00 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:30:02 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=require
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:30:03 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:30:05 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=require
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:30:05 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:30:07 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=require
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:30:08 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:30:10 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=require
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:30:12 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:30:14 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=require
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:30:14 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:30:16 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=require
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:30:17 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:30:19 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=require
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:30:20 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:30:22 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=require
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:30:23 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:30:25 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=require
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:30:26 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:30:28 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=require
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:30:28 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:30:31 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=require
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:30:31 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:30:33 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=require
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:30:34 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:30:36 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=require
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:30:37 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:30:39 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=require
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:30:40 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:30:42 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=require
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:30:43 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:30:45 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=require
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:30:45 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:30:47 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=require
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:30:48 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:30:50 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=require
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:30:51 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:30:53 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=require
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:30:54 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:30:56 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=require
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:30:57 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:30:59 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=require
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:30:59 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:31:01 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=require
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:31:02 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:31:04 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=require
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:31:05 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:31:07 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=require
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:31:08 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:31:10 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=require
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:31:11 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:31:13 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=require
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:31:13 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:31:15 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=require
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:31:16 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:31:18 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=require
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:31:19 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:31:21 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=require
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:31:22 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:31:24 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=require
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:31:24 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:31:26 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=require
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:31:27 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:31:29 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=require
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:31:30 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:31:32 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=require
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:31:33 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:31:35 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=require
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:31:36 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:31:38 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=require
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:31:38 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:31:40 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=require
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:31:41 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:31:43 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=require
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:31:44 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:31:46 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=require
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:31:47 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:31:49 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=require
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:31:50 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:31:52 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=db.fpawuhzfufwaudittxlx.supabase.co user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=require
+panic: Error opening database connection: failed to connect to `user=postgres.fpawuhzfufwaudittxlx database=postgres`: [2406:da18:243:7415:1003:a9d:4404:284b]:5432 (db.fpawuhzfufwaudittxlx.supabase.co): dial error: dial tcp [2406:da18:243:7415:1003:a9d:4404:284b]:5432: connect: no route to host
+
+goroutine 1 [running]:
+github.com/RichardHoa/hack-me/internal/app.NewApplication(0x0)
+	/Users/richardhoa/Documents/CODE/hack-me/internal/app/app.go:62 +0x5a4
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:23 +0x30
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:31:53 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:31:55 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+host=aws-0-ap-southeast-1.pooler.supabase.com user=postgres.fpawuhzfufwaudittxlx password=07Q8thUP3tbkjFujUxxWaYoYuZTlknCbQOxaMAmwQkQImnPq4PmXDeYIOD9v dbname=postgres port=5432 sslmode=require
+Establish database connection
+2025/09/04 11:31:57 goose: no migrations to run. current version: 8
+2025/09/04 11:31:57 Start clean up jobs
+2025/09/04 11:31:57 Server is running on port: 8080
+signal: killed
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:32:42 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:32:44 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+Establish database connection
+2025/09/04 11:32:46 goose: no migrations to run. current version: 8
+2025/09/04 11:32:46 Start clean up jobs
+2025/09/04 11:32:46 Server is running on port: 8080
+signal: killed
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:33:00 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:33:02 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+Establish database connection
+2025/09/04 11:33:04 goose: no migrations to run. current version: 8
+2025/09/04 11:33:04 Start clean up jobs
+2025/09/04 11:33:04 Server is running on port: 8080
+signal: killed
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:33:13 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:33:15 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+Establish database connection
+2025/09/04 11:33:18 goose: no migrations to run. current version: 8
+2025/09/04 11:33:18 Start clean up jobs
+2025/09/04 11:33:18 Server is running on port: 8080
+signal: killed
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:33:27 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:33:29 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+Establish database connection
+2025/09/04 11:33:31 goose: no migrations to run. current version: 8
+2025/09/04 11:33:31 Start clean up jobs
+2025/09/04 11:33:31 Server is running on port: 8080
+signal: killed
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:35:25 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:35:27 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+Establish database connection
+2025/09/04 11:35:30 goose: no migrations to run. current version: 8
+2025/09/04 11:35:30 Start clean up jobs
+2025/09/04 11:35:30 Server is running on port: 8080
+signal: killed
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:36:53 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:36:55 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+Establish database connection
+2025/09/04 11:36:57 goose: no migrations to run. current version: 8
+2025/09/04 11:36:57 Start clean up jobs
+2025/09/04 11:36:57 Server is running on port: 8080
+signal: killed
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:37:12 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:37:14 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+Establish database connection
+2025/09/04 11:37:16 goose: no migrations to run. current version: 8
+2025/09/04 11:37:16 Start clean up jobs
+2025/09/04 11:37:16 Server is running on port: 8080
+panic: listen tcp :8080: bind: address already in use
+
+goroutine 1 [running]:
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:47 +0x1cc
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:37:16 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:37:18 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+Establish database connection
+2025/09/04 11:37:21 goose: no migrations to run. current version: 8
+2025/09/04 11:37:21 Start clean up jobs
+2025/09/04 11:37:21 Server is running on port: 8080
+panic: listen tcp :8080: bind: address already in use
+
+goroutine 1 [running]:
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:47 +0x1cc
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:37:21 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:37:23 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+Establish database connection
+2025/09/04 11:37:25 goose: no migrations to run. current version: 8
+2025/09/04 11:37:25 Start clean up jobs
+2025/09/04 11:37:25 Server is running on port: 8080
+panic: listen tcp :8080: bind: address already in use
+
+goroutine 1 [running]:
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:47 +0x1cc
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:37:25 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:37:27 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+Establish database connection
+2025/09/04 11:37:29 goose: no migrations to run. current version: 8
+2025/09/04 11:37:29 Start clean up jobs
+2025/09/04 11:37:29 Server is running on port: 8080
+panic: listen tcp :8080: bind: address already in use
+
+goroutine 1 [running]:
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:47 +0x1cc
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:37:29 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:37:31 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+Establish database connection
+2025/09/04 11:37:34 goose: no migrations to run. current version: 8
+2025/09/04 11:37:34 Start clean up jobs
+2025/09/04 11:37:34 Server is running on port: 8080
+panic: listen tcp :8080: bind: address already in use
+
+goroutine 1 [running]:
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:47 +0x1cc
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:37:34 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:37:36 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+Establish database connection
+2025/09/04 11:37:38 goose: no migrations to run. current version: 8
+2025/09/04 11:37:38 Start clean up jobs
+2025/09/04 11:37:38 Server is running on port: 8080
+panic: listen tcp :8080: bind: address already in use
+
+goroutine 1 [running]:
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:47 +0x1cc
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:37:38 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:37:40 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+Establish database connection
+2025/09/04 11:37:42 goose: no migrations to run. current version: 8
+2025/09/04 11:37:42 Start clean up jobs
+2025/09/04 11:37:42 Server is running on port: 8080
+panic: listen tcp :8080: bind: address already in use
+
+goroutine 1 [running]:
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:47 +0x1cc
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:37:42 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:37:44 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+Establish database connection
+2025/09/04 11:37:46 goose: no migrations to run. current version: 8
+2025/09/04 11:37:46 Start clean up jobs
+2025/09/04 11:37:47 Server is running on port: 8080
+panic: listen tcp :8080: bind: address already in use
+
+goroutine 1 [running]:
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:47 +0x1cc
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:37:47 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:37:49 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+Establish database connection
+2025/09/04 11:37:51 goose: no migrations to run. current version: 8
+2025/09/04 11:37:51 Start clean up jobs
+2025/09/04 11:37:51 Server is running on port: 8080
+panic: listen tcp :8080: bind: address already in use
+
+goroutine 1 [running]:
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:47 +0x1cc
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:37:51 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:37:53 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+Establish database connection
+2025/09/04 11:37:56 goose: no migrations to run. current version: 8
+2025/09/04 11:37:56 Start clean up jobs
+2025/09/04 11:37:56 Server is running on port: 8080
+panic: listen tcp :8080: bind: address already in use
+
+goroutine 1 [running]:
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:47 +0x1cc
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:37:56 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:37:58 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+Establish database connection
+2025/09/04 11:38:00 goose: no migrations to run. current version: 8
+2025/09/04 11:38:00 Start clean up jobs
+2025/09/04 11:38:00 Server is running on port: 8080
+panic: listen tcp :8080: bind: address already in use
+
+goroutine 1 [running]:
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:47 +0x1cc
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:38:00 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:38:02 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+Establish database connection
+2025/09/04 11:38:05 goose: no migrations to run. current version: 8
+2025/09/04 11:38:05 Start clean up jobs
+2025/09/04 11:38:05 Server is running on port: 8080
+panic: listen tcp :8080: bind: address already in use
+
+goroutine 1 [running]:
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:47 +0x1cc
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:38:05 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:38:07 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+Establish database connection
+2025/09/04 11:38:10 goose: no migrations to run. current version: 8
+2025/09/04 11:38:10 Start clean up jobs
+2025/09/04 11:38:10 Server is running on port: 8080
+panic: listen tcp :8080: bind: address already in use
+
+goroutine 1 [running]:
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:47 +0x1cc
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:38:10 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:38:12 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+Establish database connection
+2025/09/04 11:38:14 goose: no migrations to run. current version: 8
+2025/09/04 11:38:14 Start clean up jobs
+2025/09/04 11:38:14 Server is running on port: 8080
+panic: listen tcp :8080: bind: address already in use
+
+goroutine 1 [running]:
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:47 +0x1cc
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:38:14 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:38:16 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+Establish database connection
+2025/09/04 11:38:19 goose: no migrations to run. current version: 8
+2025/09/04 11:38:19 Start clean up jobs
+2025/09/04 11:38:19 Server is running on port: 8080
+panic: listen tcp :8080: bind: address already in use
+
+goroutine 1 [running]:
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:47 +0x1cc
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:38:19 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:38:21 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+Establish database connection
+2025/09/04 11:38:23 goose: no migrations to run. current version: 8
+2025/09/04 11:38:23 Start clean up jobs
+2025/09/04 11:38:23 Server is running on port: 8080
+panic: listen tcp :8080: bind: address already in use
+
+goroutine 1 [running]:
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:47 +0x1cc
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:38:23 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:38:25 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+Establish database connection
+2025/09/04 11:38:27 goose: no migrations to run. current version: 8
+2025/09/04 11:38:27 Start clean up jobs
+2025/09/04 11:38:27 Server is running on port: 8080
+panic: listen tcp :8080: bind: address already in use
+
+goroutine 1 [running]:
+main.main()
+	/Users/richardhoa/Documents/CODE/hack-me/main.go:47 +0x1cc
+exit status 2
+make: *** [run] Error 1
+Server crashed/exited at Thu  4 Sep 2025 11:38:27 +07. Restarting in 2s...
+Starting Go server at Thu  4 Sep 2025 11:38:29 +07
+doppler run -- go run main.go
+PRODUCTION MODE
+Establish database connection
+2025/09/04 11:38:31 goose: no migrations to run. current version: 8
+2025/09/04 11:38:31 Start clean up jobs
+2025/09/04 11:38:31 Server is running on port: 8080
+make: *** [run] Error 255

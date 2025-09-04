@@ -333,26 +333,25 @@ func (userStore *DBUserStore) GetUserName(userID string) (userName string, err e
 func (userStore *DBUserStore) LoginAndIssueTokens(user *User) (accessToken, refreshToken, csrfToken string, err error) {
 
 	var (
-		userID   string
-		userName string
+		userID     string
+		userName   string
+		errMessage string
 	)
 
 	switch {
 	case user.GoogleID != "":
 		err = userStore.DB.QueryRow(`SELECT id, username FROM "user" WHERE google_id = $1`, user.GoogleID).Scan(&userID, &userName)
+		errMessage = ""
 	case user.GithubID != "":
 		err = userStore.DB.QueryRow(`SELECT id, username FROM "user" WHERE github_id = $1`, user.GithubID).Scan(&userID, &userName)
+
+		errMessage = ""
 	case user.Email != "" && user.Password.PlainText != "":
 		var hashed sql.NullString
 
-		err := userStore.DB.QueryRow(`SELECT id, username, password FROM "user" WHERE email = $1`, user.Email).Scan(&userID, &userName, &hashed)
-		if err != nil {
-			if errors.Is(err, sql.ErrNoRows) {
-				// cannot find user in database
-				return "", "", "", utils.NewCustomAppError(constants.InvalidData, "Either password is not correct or user email is not found")
-			}
-			return "", "", "", err
-		}
+		err = userStore.DB.QueryRow(`SELECT id, username, password FROM "user" WHERE email = $1`, user.Email).Scan(&userID, &userName, &hashed)
+
+		errMessage = "Either password is not correct or user email is not found"
 		if !hashed.Valid {
 			return "", "", "", utils.NewCustomAppError(constants.InvalidData, "Please login through google or github")
 		}
@@ -367,6 +366,14 @@ func (userStore *DBUserStore) LoginAndIssueTokens(user *User) (accessToken, refr
 
 	default:
 		panic("user_store > Missing login credentials while login")
+	}
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			// cannot find user in database
+			return "", "", "", utils.NewCustomAppError(constants.InvalidData, errMessage)
+		}
+		return "", "", "", err
 	}
 
 	user.ID = userID
