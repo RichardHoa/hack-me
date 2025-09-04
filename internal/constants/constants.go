@@ -153,6 +153,7 @@ const (
 	RefreshTokenTime           = 7 * (24 * time.Hour)
 	CommentNestedLevel         = 5
 	DefaultPageSize            = 10
+	DefaultPage                = 1
 	VectorDimensions           = 768
 )
 

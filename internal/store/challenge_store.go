@@ -139,10 +139,13 @@ func (Store *DBChallengeStore) GetChallenges(freeQuery ChallengeFreeQuery) (*Cha
 	if ps, err := strconv.Atoi(freeQuery.PageSize); err == nil && ps > 0 {
 		pageSize = ps
 	}
-	page := 1
+
+	page := constants.DefaultPage
+
 	if p, err := strconv.Atoi(freeQuery.Page); err == nil && p > 0 {
 		page = p
 	}
+
 	offset := (page - 1) * pageSize
 	baseQuery += fmt.Sprintf(" LIMIT %d OFFSET %d", pageSize, offset)
 
