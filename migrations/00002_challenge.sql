@@ -29,7 +29,10 @@ CREATE TABLE IF NOT EXISTS challenge (
 );
 
 -- make sure name is case-insensitive unique
-CREATE UNIQUE INDEX unique_name_lower ON challenge (lower(name));
+CREATE INDEX IF NOT EXISTS idx_challenge_name ON challenge(name);
+CREATE INDEX IF NOT EXISTS idx_challenge_category ON challenge(category);
+CREATE INDEX IF NOT EXISTS idx_challenge_popular_score ON challenge(popular_score);
+CREATE INDEX IF NOT EXISTS idx_challenge_name_lower ON challenge(LOWER(name));
 -- +goose StatementEnd
 
 -- +goose Down

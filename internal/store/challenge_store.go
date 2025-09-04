@@ -90,18 +90,15 @@ func (Store *DBChallengeStore) GetChallenges(freeQuery ChallengeFreeQuery) (*Cha
 		FROM challenge c
 		JOIN "user" u ON c.user_id = u.id
 	`
-
 	countQuery := `SELECT COUNT(*) FROM challenge c`
-
 	isExactQuery := false
-
-	conditions := []string{}
+	conditions := make([]string, 0, 3) // Pre-allocate with max possible conditions
 	args := []any{}
 	argIndex := 1
 
 	// Filter by name (case-insensitive)
 	if freeQuery.Name != "" {
-		conditions = append(conditions, fmt.Sprintf("LOWER(name) LIKE LOWER($%d)", argIndex))
+		conditions = append(conditions, fmt.Sprintf("LOWER(c.name) LIKE LOWER($%d)", argIndex))
 		args = append(args, "%"+freeQuery.Name+"%")
 		argIndex++
 	}
@@ -109,20 +106,20 @@ func (Store *DBChallengeStore) GetChallenges(freeQuery ChallengeFreeQuery) (*Cha
 	// Filter by name (case sensitive, filter by exact)
 	if freeQuery.ExactName != "" {
 		isExactQuery = true
-		conditions = append(conditions, fmt.Sprintf("name = $%d", argIndex))
+		conditions = append(conditions, fmt.Sprintf("c.name = $%d", argIndex))
 		args = append(args, freeQuery.ExactName)
 		argIndex++
 	}
 
 	// Filter by category
 	if len(freeQuery.Category) > 0 {
-		placeholders := []string{}
-		for _, cat := range freeQuery.Category {
-			placeholders = append(placeholders, fmt.Sprintf("$%d", argIndex))
+		placeholders := make([]string, len(freeQuery.Category)) // Pre-allocate exact size
+		for i, cat := range freeQuery.Category {
+			placeholders[i] = fmt.Sprintf("$%d", argIndex)
 			args = append(args, cat)
 			argIndex++
 		}
-		conditions = append(conditions, fmt.Sprintf("category IN (%s)", strings.Join(placeholders, ", ")))
+		conditions = append(conditions, fmt.Sprintf("c.category IN (%s)", strings.Join(placeholders, ", ")))
 	}
 
 	if len(conditions) > 0 {
@@ -133,23 +130,20 @@ func (Store *DBChallengeStore) GetChallenges(freeQuery ChallengeFreeQuery) (*Cha
 
 	switch strings.ToLower(freeQuery.Popularity) {
 	case "asc":
-		baseQuery += " ORDER BY popular_score ASC"
+		baseQuery += " ORDER BY c.popular_score ASC"
 	default:
-		baseQuery += " ORDER BY popular_score DESC"
+		baseQuery += " ORDER BY c.popular_score DESC"
 	}
 
 	pageSize := constants.DefaultPageSize
 	if ps, err := strconv.Atoi(freeQuery.PageSize); err == nil && ps > 0 {
 		pageSize = ps
 	}
-
 	page := 1
 	if p, err := strconv.Atoi(freeQuery.Page); err == nil && p > 0 {
 		page = p
 	}
-
 	offset := (page - 1) * pageSize
-
 	baseQuery += fmt.Sprintf(" LIMIT %d OFFSET %d", pageSize, offset)
 
 	var total int
@@ -158,8 +152,16 @@ func (Store *DBChallengeStore) GetChallenges(freeQuery ChallengeFreeQuery) (*Cha
 		return &Challenges{}, &MetaDataPage{}, err
 	}
 
-	maxPage := (total + pageSize - 1) / pageSize
+	// Early return if no results - avoid unnecessary work
+	if total == 0 {
+		return &Challenges{}, &MetaDataPage{
+			MaxPage:     "0",
+			PageSize:    strconv.Itoa(pageSize),
+			CurrentPage: strconv.Itoa(page),
+		}, nil
+	}
 
+	maxPage := (total + pageSize - 1) / pageSize
 	if page > maxPage {
 		return &Challenges{}, &MetaDataPage{}, nil
 	}
@@ -170,12 +172,10 @@ func (Store *DBChallengeStore) GetChallenges(freeQuery ChallengeFreeQuery) (*Cha
 		CurrentPage: strconv.Itoa(page),
 	}
 
-	challenges := Challenges{}
-
+	challenges := make(Challenges, 0, pageSize) // Pre-allocate with capacity
 	rows, err := Store.DB.Query(baseQuery, args...)
 	if err != nil {
 		return &Challenges{}, &MetaDataPage{}, err
-
 	}
 	defer rows.Close()
 
@@ -185,20 +185,21 @@ func (Store *DBChallengeStore) GetChallenges(freeQuery ChallengeFreeQuery) (*Cha
 		if err != nil {
 			return nil, nil, err
 		}
-
-		if isExactQuery == true {
-			// Fetch comments for this challenge
-			c.Comments, err = Store.CommentStore.GetRootComments("challenge_id", c.ID)
-			if err != nil {
-				return &Challenges{}, &MetaDataPage{}, err
-			}
-		}
-
 		challenges = append(challenges, c)
 	}
 
 	if err := rows.Err(); err != nil {
 		return &Challenges{}, &MetaDataPage{}, err
+	}
+
+	// Fetch comments only for exact queries (single challenge)
+	if isExactQuery && len(challenges) > 0 {
+		for i := range challenges {
+			challenges[i].Comments, err = Store.CommentStore.GetRootComments("challenge_id", challenges[i].ID)
+			if err != nil {
+				return &Challenges{}, &MetaDataPage{}, err
+			}
+		}
 	}
 
 	return &challenges, &metaPage, nil
