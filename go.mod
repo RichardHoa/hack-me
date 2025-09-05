@@ -11,11 +11,11 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/pressly/goose/v3 v3.25.0
 	github.com/qdrant/go-client v1.15.2
-	google.golang.org/genai v1.22.0
+	google.golang.org/genai v1.23.0
 )
 
 require (
-	cloud.google.com/go v0.121.6 // indirect
+	cloud.google.com/go v0.122.0 // indirect
 	cloud.google.com/go/auth v0.16.5 // indirect
 	cloud.google.com/go/compute/metadata v0.8.0 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
