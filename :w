@@ -39,6 +39,8 @@ func (handler *ChallengeHandler) GetChallenges(w http.ResponseWriter, r *http.Re
 	pageSize := query.Get("pageSize")
 	page := query.Get("page")
 
+	handler.Logger.Println("Exact name: ", exactName)
+
 	trimmedName := strings.TrimSpace(name)
 	trimmedExactName := strings.TrimSpace(exactName)
 
@@ -143,7 +145,7 @@ func (handler *ChallengeHandler) PostChallenge(w http.ResponseWriter, r *http.Re
 
 	if nameLength > constants.MaxLengthName {
 		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(
-			fmt.Sprintf("Challenge name has the maximum of %d characters, your name %d characters", constants.MaxLengthName, nameLength),
+			fmt.Sprintf("Max length name is %d, your name has the length %d", constants.MaxLengthName, nameLength),
 			constants.MSG_INVALID_REQUEST_DATA,
 			"name"))
 		return

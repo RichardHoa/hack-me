@@ -141,6 +141,7 @@ const (
 		- "I don’t have this in my content. Here’s a general overview…" (then provide helpful, non-site-specific guidance).
 		- "I can’t find pricing details; please check the Pricing page or contact support."
 		`
+	VectorDimensions = 768
 )
 
 // Defines general application constants
@@ -154,7 +155,7 @@ const (
 	CommentNestedLevel         = 5
 	DefaultPageSize            = 10
 	DefaultPage                = 1
-	VectorDimensions           = 768
+	MaxLengthName              = 50
 )
 
 // Defines standard error codes for API request validation failures.
