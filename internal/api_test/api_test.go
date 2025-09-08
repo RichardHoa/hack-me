@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -24,52 +23,20 @@ func MakeRequestAndExpectStatus(t *testing.T, client *http.Client, method, urlSt
 	req, _ := http.NewRequest(method, urlStr, bytes.NewReader(body))
 	req.Header.Set("Content-Type", "application/json")
 
-	fmt.Println("----- DEBUGGING COOKIES -----")
-	fmt.Printf("Request URL: %s\n", urlStr)
-
 	if client.Jar != nil {
 		u, err := url.Parse(urlStr)
 		if err != nil {
 			t.Errorf("Parse url string failed: %v", err)
 		}
 
-		fmt.Printf("Parsed URL Host: %s\n", u.Host)
-		fmt.Printf("Parsed URL Scheme: %s\n", u.Scheme)
-
 		cookies := client.Jar.Cookies(u)
-		fmt.Printf("Cookies for this URL: %d\n", len(cookies))
-
-		for i, cookie := range cookies {
-			fmt.Printf("Cookie %d: Name=%s, Value=%s, Domain=%s, Path=%s\n",
-				i, cookie.Name, cookie.Value[:min(20, len(cookie.Value))], cookie.Domain, cookie.Path)
-		}
-
-		// Try different URL variations
-		testUrls := []string{
-			"http://127.0.0.1",
-			"http://localhost",
-			urlStr,
-		}
-
-		for _, testUrl := range testUrls {
-			if testU, err := url.Parse(testUrl); err == nil {
-				testCookies := client.Jar.Cookies(testU)
-				fmt.Printf("Cookies for %s: %d\n", testUrl, len(testCookies))
-			}
-		}
 
 		// Look for CSRF token
-		csrfFound := false
 		for _, cookie := range cookies {
 			if cookie.Name == "csrfToken" {
 				req.Header.Set("X-CSRF-Token", cookie.Value)
-				csrfFound = true
-				fmt.Printf("CSRF Token added: %s\n", cookie.Value[:min(20, len(cookie.Value))])
 				break
 			}
-		}
-		if !csrfFound {
-			fmt.Println("CSRF Token NOT found in cookies")
 		}
 	}
 

@@ -3,6 +3,7 @@ package middleware
 import (
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/RichardHoa/hack-me/internal/constants"
 	"github.com/RichardHoa/hack-me/internal/utils"
@@ -27,6 +28,15 @@ func (middleware *MiddleWare) CorsMiddleware(next http.Handler) http.Handler {
 			w.WriteHeader(http.StatusNoContent)
 			return
 		}
+		next.ServeHTTP(w, r)
+	})
+}
+
+func (middleware *MiddleWare) WaitMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		time.Sleep(1200 * time.Millisecond)
+
+		// Continue with the next handler
 		next.ServeHTTP(w, r)
 	})
 }
