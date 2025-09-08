@@ -1,14 +1,9 @@
 # 🚀 Hack-Me Backend
 
-## 📋 Table of Contents
-
-- [🐳 **Run with Docker**](#-run-the-whole-app-with-docker) (Recommended for a quick start)
-- [🧑‍💻 **Run Locally**](#-running-the-server-locally) (For active development)
-- [🧪 **Run Tests**](#-running-tests)
-- [🏗️ **Project Structure**](#️-project-structure)
-- [📝 **Important Notes**](#-important-notes)
-
 ---
+
+## Warning
+All the installation instructions is kind of obsolete since I move to [doppler](https://www.doppler.com/) as a secret manager rather than using .env file, as such a lot of code won't work because it lack the environment variables
 
 ## 🐳 Run the whole app with Docker
 
@@ -134,7 +129,7 @@ When you create or modify a migration file, you **must reset both the main and t
     This ensures that both your development and testing environments are perfectly in sync with the latest schema.
 
 
-# Future features
+# TODO lists
 - [ ] password recovery
 - [ ] email check
 - [ ] login blocking after `n` attempts
