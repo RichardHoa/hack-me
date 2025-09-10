@@ -2,6 +2,7 @@
 
 ---
 
+
 ## Warning
 All the installation instructions is kind of obsolete since I move to [doppler](https://www.doppler.com/) as a secret manager rather than using .env file, as such a lot of code won't work because it lack the environment variables
 
@@ -130,6 +131,7 @@ When you create or modify a migration file, you **must reset both the main and t
 
 
 # TODO lists
+- [ ] set up to reject NUL character
 - [ ] password recovery
 - [ ] email check
 - [ ] login blocking after `n` attempts
