@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/RichardHoa/hack-me/internal/constants"
 	"github.com/RichardHoa/hack-me/internal/store"
@@ -29,7 +30,7 @@ func (handler *UserHandler) GetUserActivity(w http.ResponseWriter, r *http.Reque
 	result, err := utils.GetValuesFromCookie(r, []string{constants.TokenUserID})
 	if err != nil {
 		handler.Logger.Printf("ERROR: GetUserActivity > JWT token checking: %v", err)
-		utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, "cookies"))
+		utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, ""))
 		return
 	}
 	userID := result[0]
@@ -109,7 +110,7 @@ func (handler *UserHandler) ChangeUsername(w http.ResponseWriter, r *http.Reques
 	result, err := utils.GetValuesFromCookie(r, []string{constants.TokenUserID})
 	if err != nil {
 		handler.Logger.Printf("ERROR: ChangeUsername > JWT token checking: %v", err)
-		utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, "cookies"))
+		utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, ""))
 		return
 	}
 	userID := result[0]
@@ -155,7 +156,7 @@ func (handler *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	result, err := utils.GetValuesFromCookie(r, []string{constants.TokenUserID})
 	if err != nil {
 		handler.Logger.Printf("ERROR: DeleteUser > JWT token checking: %v", err)
-		utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, "cookies"))
+		utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, ""))
 		return
 	}
 	userID := result[0]
@@ -181,7 +182,7 @@ func (handler *UserHandler) ChangePassword(w http.ResponseWriter, r *http.Reques
 	result, err := utils.GetValuesFromCookie(r, []string{constants.TokenUserID})
 	if err != nil {
 		handler.Logger.Printf("ERROR: ChangePassword > JWT token checking: %v", err)
-		utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, "cookies"))
+		utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, ""))
 		return
 	}
 	userID := result[0]
@@ -218,15 +219,16 @@ func (handler *UserHandler) ChangePassword(w http.ResponseWriter, r *http.Reques
 	req.UserID = userID
 	err = handler.UserStore.ChangePassword(req)
 	if err != nil {
+		handler.Logger.Printf("ERROR: ChangePassword > userStore.ChangePassword: %v", err)
 		switch utils.ClassifyError(err) {
 		case constants.InvalidData:
 			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(err.Error(), constants.MSG_INVALID_REQUEST_DATA, "password"))
 			return
 		case constants.ResourceNotFound:
-			utils.WriteJSON(w, http.StatusNotFound, utils.NewMessage(err.Error(), constants.MSG_INVALID_REQUEST_DATA, "user"))
+			// unusual case, there is something odd here
+			utils.WriteJSON(w, http.StatusInternalServerError, utils.NewMessage("System error, please contact admin to change your password", "", ""))
 			return
 		default:
-			handler.Logger.Printf("ERROR: ChangePassword > userStore.ChangePassword: %v", err)
 			utils.WriteJSON(w, http.StatusInternalServerError, utils.NewMessage(constants.StatusInternalErrorMessage, "", ""))
 			return
 		}
@@ -236,6 +238,19 @@ func (handler *UserHandler) ChangePassword(w http.ResponseWriter, r *http.Reques
 }
 
 func (handler *UserHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
+
+	startTime := time.Now()
+	const targetDuration = 300 * time.Millisecond
+
+	defer func() {
+		elapsed := time.Since(startTime)
+		if elapsed < targetDuration {
+			remaining := targetDuration - elapsed
+			if remaining > 0 {
+				time.Sleep(remaining)
+			}
+		}
+	}()
 
 	var user store.User
 
@@ -315,7 +330,7 @@ func (handler *UserHandler) LogoutUser(w http.ResponseWriter, r *http.Request) {
 		utils.SendEmptyTokens(w)
 
 		handler.Logger.Printf("ERROR: Logout user > JWT token checking: %v", err)
-		utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, "cookies"))
+		utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, ""))
 		return
 	}
 	userID := result[0]
@@ -352,7 +367,7 @@ func (handler *UserHandler) RefreshTokenRotation(w http.ResponseWriter, r *http.
 
 	if err != nil {
 		handler.Logger.Printf("ERROR: Refresh-token-rotation > JWT token checking: %v", err)
-		utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, "cookies"))
+		utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, ""))
 		return
 	}
 

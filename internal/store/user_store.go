@@ -151,7 +151,7 @@ func (userStore *DBUserStore) ChangePassword(req ChangePasswordRequest) error {
 	err := userStore.DB.QueryRow(query, req.UserID).Scan(&currentHashedPassword)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return utils.NewCustomAppError(constants.ResourceNotFound, "user not found")
+			return utils.NewCustomAppError(constants.ResourceNotFound, fmt.Sprintf("userID: %v does not exist in database", req.UserID))
 		}
 		return err
 	}
@@ -341,17 +341,23 @@ func (userStore *DBUserStore) LoginAndIssueTokens(user *User) (accessToken, refr
 	switch {
 	case user.GoogleID != "":
 		err = userStore.DB.QueryRow(`SELECT id, username FROM "user" WHERE google_id = $1`, user.GoogleID).Scan(&userID, &userName)
-		errMessage = ""
+		errMessage = "Your google auth has problem"
 	case user.GithubID != "":
 		err = userStore.DB.QueryRow(`SELECT id, username FROM "user" WHERE github_id = $1`, user.GithubID).Scan(&userID, &userName)
-
-		errMessage = ""
+		errMessage = "Your github auth has problem"
 	case user.Email != "" && user.Password.PlainText != "":
 		var hashed sql.NullString
 
 		err = userStore.DB.QueryRow(`SELECT id, username, password FROM "user" WHERE email = $1`, user.Email).Scan(&userID, &userName, &hashed)
 
 		errMessage = "Either password is not correct or user email is not found"
+
+		if errors.Is(err, sql.ErrNoRows) {
+			// cannot find user in database
+			return "", "", "", utils.NewCustomAppError(constants.InvalidData, errMessage)
+		}
+
+		// user does not have a password
 		if !hashed.Valid {
 			return "", "", "", utils.NewCustomAppError(constants.InvalidData, "Please login through google or github")
 		}
@@ -361,7 +367,7 @@ func (userStore *DBUserStore) LoginAndIssueTokens(user *User) (accessToken, refr
 			return "", "", "", cmpErr
 		}
 		if !match {
-			return "", "", "", utils.NewCustomAppError(constants.InvalidData, "Either password is not correct or user email is not found")
+			return "", "", "", utils.NewCustomAppError(constants.InvalidData, errMessage)
 		}
 
 	default:

@@ -27,7 +27,7 @@ func (handler *ChallengeResponseHandler) PostChallengeResponse(w http.ResponseWr
 	result, err := utils.GetValuesFromCookie(r, []string{constants.TokenUserID})
 	if err != nil {
 		handler.Logger.Printf("ERROR: PostChallengeResponse > JWT token checking: %v", err)
-		utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, "cookies"))
+		utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, ""))
 		return
 	}
 	userID := result[0]
@@ -78,7 +78,7 @@ func (handler *ChallengeResponseHandler) ModifyChallengeResponse(w http.Response
 	result, err := utils.GetValuesFromCookie(r, []string{constants.TokenUserID})
 	if err != nil {
 		handler.Logger.Printf("ERROR: ModifyChallengeResponse > JWT token checking: %v", err)
-		utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, "cookies"))
+		utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, ""))
 		return
 	}
 	userID := result[0]
@@ -130,7 +130,7 @@ func (handler *ChallengeResponseHandler) DeleteChallengeResponse(w http.Response
 	result, err := utils.GetValuesFromCookie(r, []string{constants.TokenUserID})
 	if err != nil {
 		handler.Logger.Printf("ERROR: DeleteChallengeResponse > JWT token checking: %v", err)
-		utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, "cookies"))
+		utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, ""))
 		return
 	}
 

@@ -36,6 +36,7 @@ type GeminiAI struct {
 }
 
 func InitAI(ctx context.Context) (*GeminiAI, error) {
+	fmt.Println("INIT AI")
 	key := constants.AISecretKey
 
 	genAIClient, err := genai.NewClient(ctx, &genai.ClientConfig{
@@ -54,6 +55,7 @@ func InitAI(ctx context.Context) (*GeminiAI, error) {
 }
 
 func InitVectorDB(ctx context.Context) (*QdrantDB, error) {
+	fmt.Println("INIT VECTOR DB")
 	intVectorPort, err := strconv.Atoi(constants.VectorPort)
 	if err != nil {
 		return &QdrantDB{}, fmt.Errorf("Qdrant port is not valid integer %d", intVectorPort)

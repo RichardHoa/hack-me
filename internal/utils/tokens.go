@@ -294,7 +294,7 @@ func GetValuesFromCookieWithoutAccessToken(r *http.Request, claimsList []string)
 	// Refresh token: validate and extract claims
 	refreshCookie, err := r.Cookie("refreshToken")
 	if err != nil || refreshCookie.Value == "" {
-		return []string{}, err
+		return []string{}, fmt.Errorf("refreshToken is not present")
 	}
 
 	refreshToken, err := jwt.Parse(refreshCookie.Value, func(token *jwt.Token) (interface{}, error) {
@@ -330,7 +330,7 @@ func GetValuesFromCookie(r *http.Request, claimsList []string) (result []string,
 	// Access token: validate structure
 	accessCookie, err := r.Cookie("accessToken")
 	if err != nil || accessCookie.Value == "" {
-		return []string{}, err
+		return []string{}, fmt.Errorf("accessToken is not present")
 	}
 
 	accessToken, err := jwt.Parse(accessCookie.Value, func(token *jwt.Token) (interface{}, error) {
@@ -346,7 +346,7 @@ func GetValuesFromCookie(r *http.Request, claimsList []string) (result []string,
 	// Refresh token: validate and extract claims
 	refreshCookie, err := r.Cookie("refreshToken")
 	if err != nil || refreshCookie.Value == "" {
-		return []string{}, err
+		return []string{}, fmt.Errorf("refreshToken is not present")
 	}
 
 	refreshToken, err := jwt.Parse(refreshCookie.Value, func(token *jwt.Token) (interface{}, error) {

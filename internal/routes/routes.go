@@ -32,11 +32,11 @@ func SetUpRoutes(app *app.Application) *chi.Mux {
 	router.Route("/v1", func(outerRouter chi.Router) {
 
 		// use middleware to stimulate the lag in production
-		// outerRouter.Use(app.Middleware.WaitMiddleware)
 
 		if constants.IsDevMode {
-			app.Logger.Println("Use middleware")
+			app.Logger.Println("Use middleware and add waiting time")
 			outerRouter.Use(app.Middleware.CorsMiddleware)
+			// outerRouter.Use(app.Middleware.WaitMiddleware)
 
 			outerRouter.Post("/chatbox/upload-data", app.ChatboxHandler.AddDocsToVectorDB)
 		}
