@@ -2,7 +2,6 @@
 
 ---
 
-
 ## Warning
 All the installation instructions is kind of obsolete since I move to [doppler](https://www.doppler.com/) as a secret manager rather than using .env file, as such a lot of code won't work because it lack the environment variables
 
