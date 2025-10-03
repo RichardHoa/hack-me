@@ -19,7 +19,7 @@
         "cells": [
           {
             "position": {
-              "x": 94.99999999999997,
+              "x": 69.99999999999997,
               "y": 100
             },
             "size": {
@@ -40,8 +40,8 @@
           },
           {
             "position": {
-              "x": 715,
-              "y": 350
+              "x": 650,
+              "y": 420
             },
             "size": {
               "width": 250,
@@ -61,7 +61,7 @@
           },
           {
             "position": {
-              "x": 842,
+              "x": 872,
               "y": 85
             },
             "size": {
@@ -82,12 +82,12 @@
           },
           {
             "position": {
-              "x": 454,
-              "y": 55.00000000000034
+              "x": 444.0000000000002,
+              "y": -385
             },
             "size": {
-              "width": 250,
-              "height": 220
+              "width": 300,
+              "height": 660
             },
             "visible": true,
             "shape": "trust-boundary-box",
@@ -209,7 +209,7 @@
             "data": {
               "type": "tm.Process",
               "name": "Go backend",
-              "description": "",
+              "description": "hosted inside a GCP vm machine",
               "outOfScope": false,
               "isTrustBoundary": false,
               "reasonOutOfScope": "",
@@ -223,7 +223,7 @@
           },
           {
             "position": {
-              "x": 902,
+              "x": 942,
               "y": 115
             },
             "size": {
@@ -347,8 +347,8 @@
           },
           {
             "position": {
-              "x": 780,
-              "y": 390
+              "x": 715,
+              "y": 460
             },
             "size": {
               "width": 120,
@@ -516,11 +516,11 @@
             "vertices": [
               {
                 "x": 750,
-                "y": 105
+                "y": 140
               },
               {
-                "x": 830,
-                "y": 105
+                "x": 840,
+                "y": 140
               }
             ]
           },
@@ -731,8 +731,8 @@
                 "y": 260
               },
               {
-                "x": 840,
-                "y": 330
+                "x": 790,
+                "y": 340
               }
             ]
           },
@@ -895,7 +895,7 @@
           },
           {
             "position": {
-              "x": 119.99999999999997,
+              "x": 94.99999999999997,
               "y": 145
             },
             "size": {
