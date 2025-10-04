@@ -61,7 +61,7 @@
           },
           {
             "position": {
-              "x": 972,
+              "x": 962,
               "y": 80
             },
             "size": {
@@ -640,10 +640,6 @@
             },
             "vertices": [
               {
-                "x": 770,
-                "y": 130
-              },
-              {
                 "x": 830,
                 "y": 130
               }
@@ -826,8 +822,8 @@
             "connector": "smooth",
             "data": {
               "type": "tm.Flow",
-              "name": "Send data",
-              "description": "",
+              "name": "send response",
+              "description": "data or acknowledgement",
               "outOfScope": false,
               "isTrustBoundary": false,
               "reasonOutOfScope": "",
@@ -839,7 +835,7 @@
               "threats": []
             },
             "labels": [
-              "Send data"
+              "send response"
             ],
             "id": "f1687efa-37ea-40e5-b314-b3729b8ca306",
             "source": {
