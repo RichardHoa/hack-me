@@ -425,11 +425,50 @@
                   "new": false,
                   "number": 8,
                   "score": ""
+                },
+                {
+                  "id": "9dd1f459-4a10-4a71-b3f5-4f6316013d74",
+                  "title": "New STRIDE threat",
+                  "status": "Open",
+                  "severity": "TBD",
+                  "type": "Repudiation",
+                  "description": "Provide a description for this threat",
+                  "mitigation": "Provide remediation for this threat or a reason if status is N/A",
+                  "modelType": "STRIDE",
+                  "new": true,
+                  "number": 9,
+                  "score": ""
+                },
+                {
+                  "id": "69a5dc5b-085c-4a27-b563-b63568438ed7",
+                  "title": "No unchangable tracking mechanism",
+                  "status": "Open",
+                  "severity": "Medium",
+                  "type": "Repudiation",
+                  "description": "Team cannot know who did what",
+                  "mitigation": "N/A",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 10,
+                  "score": ""
+                },
+                {
+                  "id": "9119e214-9461-4f9a-a61e-8c573005c966",
+                  "title": "New STRIDE threat",
+                  "status": "Open",
+                  "severity": "TBD",
+                  "type": "Tampering",
+                  "description": "Provide a description for this threat",
+                  "mitigation": "Provide remediation for this threat or a reason if status is N/A",
+                  "modelType": "STRIDE",
+                  "new": true,
+                  "number": 13,
+                  "score": ""
                 }
               ],
               "threatFrequency": {
                 "tampering": 1,
-                "repudiation": 0,
+                "repudiation": 1,
                 "informationDisclosure": 2,
                 "denialOfService": 1
               }
@@ -584,11 +623,37 @@
                   "new": false,
                   "number": 4,
                   "score": ""
+                },
+                {
+                  "id": "175c2487-5138-4e7c-b676-2f3da599c211",
+                  "title": "No tracking",
+                  "status": "Open",
+                  "severity": "Medium",
+                  "type": "Repudiation",
+                  "description": "",
+                  "mitigation": "N/A",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 11,
+                  "score": ""
+                },
+                {
+                  "id": "d00fd22b-ff08-49c9-8399-46b06de0264d",
+                  "title": "New STRIDE threat",
+                  "status": "Open",
+                  "severity": "TBD",
+                  "type": "Denial of service",
+                  "description": "Provide a description for this threat",
+                  "mitigation": "Provide remediation for this threat or a reason if status is N/A",
+                  "modelType": "STRIDE",
+                  "new": true,
+                  "number": 12,
+                  "score": ""
                 }
               ],
               "threatFrequency": {
                 "tampering": 1,
-                "repudiation": 0,
+                "repudiation": 1,
                 "informationDisclosure": 4,
                 "denialOfService": 0
               }
@@ -1464,6 +1529,6 @@
     ],
     "diagramTop": 2,
     "reviewer": "Richard Hoa",
-    "threatTop": 8
+    "threatTop": 13
   }
 }
