@@ -1522,6 +1522,30 @@
               "privilegeLevel": "",
               "threats": []
             }
+          },
+          {
+            "position": {
+              "x": 93.74999999999997,
+              "y": 85
+            },
+            "size": {
+              "width": 112.5,
+              "height": 60
+            },
+            "attrs": {
+              "text": {
+                "text": "Google Gemini for now"
+              }
+            },
+            "visible": true,
+            "shape": "td-text-block",
+            "id": "f3c42b1c-23e6-476f-b5a8-b6af20559ef2",
+            "zIndex": 14,
+            "data": {
+              "type": "tm.Text",
+              "name": "Google Gemini for now",
+              "hasOpenThreats": false
+            }
           }
         ],
         "description": "made by me"
