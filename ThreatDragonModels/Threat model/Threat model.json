@@ -61,8 +61,8 @@
           },
           {
             "position": {
-              "x": 872,
-              "y": 85
+              "x": 972,
+              "y": 80
             },
             "size": {
               "width": 280,
@@ -265,7 +265,7 @@
           },
           {
             "position": {
-              "x": 942,
+              "x": 1022,
               "y": 115
             },
             "size": {
@@ -277,11 +277,13 @@
                 "text": "Postgres database"
               },
               "topLine": {
-                "strokeWidth": 1.5,
+                "stroke": "red",
+                "strokeWidth": 2.5,
                 "strokeDasharray": null
               },
               "bottomLine": {
-                "strokeWidth": 1.5,
+                "stroke": "red",
+                "strokeWidth": 2.5,
                 "strokeDasharray": null
               }
             },
@@ -378,13 +380,59 @@
               "outOfScope": false,
               "isTrustBoundary": false,
               "reasonOutOfScope": "",
-              "hasOpenThreats": false,
+              "hasOpenThreats": true,
               "isALog": false,
-              "isEncrypted": false,
+              "isEncrypted": true,
               "isSigned": false,
-              "storesCredentials": false,
-              "storesInventory": false,
-              "threats": []
+              "storesCredentials": true,
+              "storesInventory": true,
+              "threats": [
+                {
+                  "id": "14e780f1-f902-4040-b354-907c804fbc8f",
+                  "title": "Wrong data get posted into database",
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Tampering",
+                  "description": "Through backend or direct access, the database record is being changed",
+                  "mitigation": "N/A",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 6,
+                  "score": ""
+                },
+                {
+                  "id": "8164d194-39ac-457f-8296-9d9d21d4ada2",
+                  "title": "Sensitive data is exposed",
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Information disclosure",
+                  "description": "Data exposed through misconfiguration, insecure API endpoints, etc.",
+                  "mitigation": "Leak sensitive information about user",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 7,
+                  "score": ""
+                },
+                {
+                  "id": "22b7dce1-1dd1-4371-97c6-102f91146b8c",
+                  "title": "Threat actor gains admin access",
+                  "status": "Open",
+                  "severity": "Critical",
+                  "type": "Denial of service",
+                  "description": "Attacker gain access through some means",
+                  "mitigation": "N/A",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 8,
+                  "score": ""
+                }
+              ],
+              "threatFrequency": {
+                "tampering": 1,
+                "repudiation": 0,
+                "informationDisclosure": 2,
+                "denialOfService": 1
+              }
             }
           },
           {
@@ -566,7 +614,7 @@
             "connector": "smooth",
             "data": {
               "type": "tm.Flow",
-              "name": "Fetch data",
+              "name": "Send SQL query",
               "description": "",
               "outOfScope": false,
               "isTrustBoundary": false,
@@ -579,7 +627,7 @@
               "threats": []
             },
             "labels": [
-              "Fetch data"
+              "Send SQL query"
             ],
             "id": "64b3ba18-bf9a-461e-8168-319a4b92d0cb",
             "source": {
@@ -592,12 +640,12 @@
             },
             "vertices": [
               {
-                "x": 750,
-                "y": 140
+                "x": 770,
+                "y": 130
               },
               {
-                "x": 840,
-                "y": 140
+                "x": 830,
+                "y": 130
               }
             ]
           },
@@ -727,7 +775,7 @@
             "connector": "smooth",
             "data": {
               "type": "tm.Flow",
-              "name": "Send request",
+              "name": "Send vector query",
               "description": "",
               "outOfScope": false,
               "isTrustBoundary": false,
@@ -740,7 +788,7 @@
               "threats": []
             },
             "labels": [
-              "Send request"
+              "Send vector query"
             ],
             "id": "6a2c4bd6-1607-45f9-bb32-ccf538cce16f",
             "source": {
@@ -804,7 +852,7 @@
             },
             "vertices": [
               {
-                "x": 840,
+                "x": 850,
                 "y": 200
               },
               {
@@ -1420,6 +1468,6 @@
     ],
     "diagramTop": 2,
     "reviewer": "Richard Hoa",
-    "threatTop": 4
+    "threatTop": 8
   }
 }
