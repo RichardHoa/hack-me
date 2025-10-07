@@ -564,6 +564,19 @@
                   "new": true,
                   "number": 16,
                   "score": ""
+                },
+                {
+                  "id": "9c5181b3-d64f-4311-89fe-90c428f64064",
+                  "title": "New STRIDE threat",
+                  "status": "Open",
+                  "severity": "TBD",
+                  "type": "Tampering",
+                  "description": "Provide a description for this threat",
+                  "mitigation": "Provide remediation for this threat or a reason if status is N/A",
+                  "modelType": "STRIDE",
+                  "new": true,
+                  "number": 41,
+                  "score": ""
                 }
               ],
               "threatFrequency": {
@@ -1393,11 +1406,24 @@
                   "new": false,
                   "number": 17,
                   "score": ""
+                },
+                {
+                  "id": "04c5942a-1af8-4f11-ae70-850c3d5dd621",
+                  "title": "Does not show what request is being process and how",
+                  "status": "Open",
+                  "severity": "Medium",
+                  "type": "Repudiation",
+                  "description": "Provide a description for this threat",
+                  "mitigation": "Provide remediation for this threat or a reason if status is N/A",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 40,
+                  "score": ""
                 }
               ],
               "threatFrequency": {
                 "spoofing": 1,
-                "repudiation": 0
+                "repudiation": 1
               }
             }
           },
@@ -1832,6 +1858,6 @@
     ],
     "diagramTop": 2,
     "reviewer": "Richard Hoa",
-    "threatTop": 39
+    "threatTop": 41
   }
 }
