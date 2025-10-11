@@ -137,3 +137,6 @@ When you create or modify a migration file, you **must reset both the main and t
 - [ ] implement to allow only google domain on imageLink
 - [ ] instrumenting the server
 - [ ] design test for library to capture their behaviour, make sure future version still do what we expect it to do
+
+# Behaviour
+- AI chat is very long since the AI response take 99% of the time

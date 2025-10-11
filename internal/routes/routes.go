@@ -34,7 +34,7 @@ func SetUpRoutes(app *app.Application) *chi.Mux {
 		// use middleware to stimulate the lag in production
 
 		if constants.IsDevMode {
-			app.Logger.Println("Use middleware and add waiting time")
+			app.Logger.Println("Use middleware")
 			outerRouter.Use(app.Middleware.CorsMiddleware)
 			// outerRouter.Use(app.Middleware.WaitMiddleware)
 

@@ -108,7 +108,7 @@ func (handler *ChatboxHandler) HandleChat(w http.ResponseWriter, r *http.Request
 	for _, item := range docs {
 		seg := "### " + item.Title + " (" + item.URL + ")\n" + item.Text + "\n\n"
 		if total+len(seg) > constants.MaxContextLength {
-			handler.Logger.Printf("question %v retrieves too much docs %v\n", trimmedQuestion, len(docs))
+			handler.Logger.Printf("question %v retrieves too much docs %v, maxLength is %v\n", trimmedQuestion, len(docs), constants.MaxContextLength)
 			break
 		}
 		contextBuilder.WriteString(seg)
@@ -118,6 +118,9 @@ func (handler *ChatboxHandler) HandleChat(w http.ResponseWriter, r *http.Request
 
 	userPrompt := "QUESTION:\n" + trimmedQuestion + "\n\nCONTEXT:\n" + contextText + "\n\nHISTORY:\n" + hist.String()
 
+	handler.Logger.Println("---------- START AI CHAT ----------")
+	handler.Logger.Println(userPrompt)
+
 	answer, err := handler.AI.Generate(ctx, constants.SystemPrompts, userPrompt)
 	if err != nil {
 		handler.Logger.Printf("AI cannot generate content: %v\n", err)
@@ -126,6 +129,9 @@ func (handler *ChatboxHandler) HandleChat(w http.ResponseWriter, r *http.Request
 		return
 	}
 
+	handler.Logger.Println("---------- START AI ANSWER ----------")
+	handler.Logger.Println(answer)
+	handler.Logger.Println("---------- END AI CHAT ----------")
 	utils.WriteJSON(w, http.StatusOK, utils.Message{
 		"data": []map[string]any{
 			{"response": strings.TrimSpace(answer)},
