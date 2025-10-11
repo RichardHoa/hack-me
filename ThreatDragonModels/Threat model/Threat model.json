@@ -283,32 +283,6 @@
               "privilegeLevel": "",
               "threats": [
                 {
-                  "id": "a4247c91-6fab-4172-b54a-e3cc14a10d01",
-                  "title": "Pretending to be a user",
-                  "status": "Open",
-                  "severity": "Medium",
-                  "type": "Spoofing",
-                  "description": "Enforce authentication",
-                  "mitigation": "Provide remediation for this threat or a reason if status is N/A",
-                  "modelType": "STRIDE",
-                  "new": false,
-                  "number": 29,
-                  "score": ""
-                },
-                {
-                  "id": "f9645351-59e4-475c-b6e4-b33f72379f1f",
-                  "title": "Change other people post or setting",
-                  "status": "Open",
-                  "severity": "Critical",
-                  "type": "Tampering",
-                  "description": "Enforce proper authorization",
-                  "mitigation": "Provide remediation for this threat or a reason if status is N/A",
-                  "modelType": "STRIDE",
-                  "new": false,
-                  "number": 30,
-                  "score": ""
-                },
-                {
                   "id": "675b80f7-7835-43f8-bb65-3be3c66e87f7",
                   "title": "Deny doing something",
                   "status": "Open",
@@ -362,8 +336,8 @@
                 }
               ],
               "threatFrequency": {
-                "spoofing": 1,
-                "tampering": 1,
+                "spoofing": 0,
+                "tampering": 0,
                 "repudiation": 1,
                 "informationDisclosure": 2,
                 "denialOfService": 1,
@@ -502,7 +476,7 @@
                   "severity": "High",
                   "type": "Tampering",
                   "description": "Through backend or direct access, the database record is being changed",
-                  "mitigation": "N/A",
+                  "mitigation": "Implement strict authorization",
                   "modelType": "STRIDE",
                   "new": false,
                   "number": 6,
@@ -511,99 +485,47 @@
                 {
                   "id": "8164d194-39ac-457f-8296-9d9d21d4ada2",
                   "title": "Sensitive data is exposed",
-                  "status": "Open",
+                  "status": "NotApplicable",
                   "severity": "High",
                   "type": "Information disclosure",
                   "description": "Data exposed through misconfiguration, insecure API endpoints, etc.",
-                  "mitigation": "Leak sensitive information about user",
+                  "mitigation": "No migitations, vague threat description",
                   "modelType": "STRIDE",
                   "new": false,
                   "number": 7,
                   "score": ""
                 },
                 {
-                  "id": "22b7dce1-1dd1-4371-97c6-102f91146b8c",
-                  "title": "Threat actor gains admin access",
-                  "status": "Open",
-                  "severity": "Critical",
-                  "type": "Denial of service",
-                  "description": "Attacker gain access through some means",
-                  "mitigation": "N/A",
-                  "modelType": "STRIDE",
-                  "new": false,
-                  "number": 8,
-                  "score": ""
-                },
-                {
-                  "id": "9dd1f459-4a10-4a71-b3f5-4f6316013d74",
-                  "title": "New STRIDE threat",
-                  "status": "Open",
-                  "severity": "TBD",
-                  "type": "Repudiation",
-                  "description": "Provide a description for this threat",
-                  "mitigation": "Provide remediation for this threat or a reason if status is N/A",
-                  "modelType": "STRIDE",
-                  "new": true,
-                  "number": 9,
-                  "score": ""
-                },
-                {
                   "id": "69a5dc5b-085c-4a27-b563-b63568438ed7",
                   "title": "No unchangable tracking mechanism",
-                  "status": "Open",
+                  "status": "Mitigated",
                   "severity": "Medium",
                   "type": "Repudiation",
                   "description": "Team cannot know who did what",
-                  "mitigation": "N/A",
+                  "mitigation": "Logging already exist in superbase",
                   "modelType": "STRIDE",
                   "new": false,
                   "number": 10,
                   "score": ""
                 },
                 {
-                  "id": "9119e214-9461-4f9a-a61e-8c573005c966",
-                  "title": "New STRIDE threat",
-                  "status": "Open",
-                  "severity": "TBD",
-                  "type": "Tampering",
-                  "description": "Provide a description for this threat",
-                  "mitigation": "Provide remediation for this threat or a reason if status is N/A",
+                  "id": "d8a13a7c-c6be-40e6-b239-8c46150822b5",
+                  "title": "get DDOS",
+                  "status": "Mitigated",
+                  "severity": "Medium",
+                  "type": "Denial of service",
+                  "description": "",
+                  "mitigation": "Accepted since it's rare",
                   "modelType": "STRIDE",
-                  "new": true,
-                  "number": 13,
-                  "score": ""
-                },
-                {
-                  "id": "15d4b06b-b3b5-4d71-aa5f-9b3e2a9ff001",
-                  "title": "New STRIDE threat",
-                  "status": "Open",
-                  "severity": "TBD",
-                  "type": "Tampering",
-                  "description": "Provide a description for this threat",
-                  "mitigation": "Provide remediation for this threat or a reason if status is N/A",
-                  "modelType": "STRIDE",
-                  "new": true,
-                  "number": 16,
-                  "score": ""
-                },
-                {
-                  "id": "9c5181b3-d64f-4311-89fe-90c428f64064",
-                  "title": "New STRIDE threat",
-                  "status": "Open",
-                  "severity": "TBD",
-                  "type": "Tampering",
-                  "description": "Provide a description for this threat",
-                  "mitigation": "Provide remediation for this threat or a reason if status is N/A",
-                  "modelType": "STRIDE",
-                  "new": true,
-                  "number": 41,
+                  "new": false,
+                  "number": 44,
                   "score": ""
                 }
               ],
               "threatFrequency": {
-                "tampering": 1,
-                "repudiation": 1,
-                "informationDisclosure": 2,
+                "tampering": 3,
+                "repudiation": 2,
+                "informationDisclosure": 4,
                 "denialOfService": 1
               }
             }
@@ -2096,6 +2018,6 @@
     ],
     "diagramTop": 2,
     "reviewer": "Richard Hoa",
-    "threatTop": 43
+    "threatTop": 45
   }
 }
