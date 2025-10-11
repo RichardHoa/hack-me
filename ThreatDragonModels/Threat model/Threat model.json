@@ -154,8 +154,8 @@
             },
             "visible": true,
             "shape": "trust-boundary-box",
-            "id": "6173fc49-3156-4031-be3e-04d2de5e851c",
             "zIndex": -1,
+            "id": "6173fc49-3156-4031-be3e-04d2de5e851c",
             "data": {
               "type": "tm.BoundaryBox",
               "name": "Trust Boundary",
@@ -348,16 +348,16 @@
                   "score": ""
                 },
                 {
-                  "id": "e71f168e-f0df-4d0e-b0cd-2647c56c6be7",
-                  "title": "New STRIDE threat",
+                  "id": "a13a7127-6596-45ab-9df2-d60414b46afc",
+                  "title": "See all the secrets",
                   "status": "Open",
-                  "severity": "TBD",
-                  "type": "Elevation of privilege",
-                  "description": "Provide a description for this threat",
-                  "mitigation": "Provide remediation for this threat or a reason if status is N/A",
+                  "severity": "Critical",
+                  "type": "Information disclosure",
+                  "description": "use doppler secrets to see all the secret",
+                  "mitigation": "Configure proper rights management",
                   "modelType": "STRIDE",
-                  "new": true,
-                  "number": 34,
+                  "new": false,
+                  "number": 43,
                   "score": ""
                 }
               ],
@@ -365,7 +365,7 @@
                 "spoofing": 1,
                 "tampering": 1,
                 "repudiation": 1,
-                "informationDisclosure": 1,
+                "informationDisclosure": 2,
                 "denialOfService": 1,
                 "elevationOfPrivilege": 0
               }
@@ -622,13 +622,11 @@
                 "text": "Vector database"
               },
               "topLine": {
-                "stroke": "red",
-                "strokeWidth": 2.5,
+                "strokeWidth": 1.5,
                 "strokeDasharray": null
               },
               "bottomLine": {
-                "stroke": "red",
-                "strokeWidth": 2.5,
+                "strokeWidth": 1.5,
                 "strokeDasharray": null
               }
             },
@@ -725,7 +723,7 @@
               "outOfScope": false,
               "isTrustBoundary": false,
               "reasonOutOfScope": "",
-              "hasOpenThreats": true,
+              "hasOpenThreats": false,
               "isALog": false,
               "isEncrypted": false,
               "isSigned": false,
@@ -748,11 +746,11 @@
                 {
                   "id": "1d068b68-ea49-4983-bb7e-712e5f25fb6d",
                   "title": "data get changed",
-                  "status": "Open",
+                  "status": "Mitigated",
                   "severity": "Critical",
                   "type": "Tampering",
                   "description": "change the data, leak to incorrect information for the user. They can include the link to malicious website in the response",
-                  "mitigation": "none",
+                  "mitigation": "Implement proper authorization, only one API",
                   "modelType": "STRIDE",
                   "new": false,
                   "number": 4,
@@ -761,11 +759,11 @@
                 {
                   "id": "175c2487-5138-4e7c-b676-2f3da599c211",
                   "title": "No tracking",
-                  "status": "Open",
+                  "status": "Mitigated",
                   "severity": "Medium",
                   "type": "Repudiation",
                   "description": "",
-                  "mitigation": "N/A",
+                  "mitigation": "Implement logging",
                   "modelType": "STRIDE",
                   "new": false,
                   "number": 11,
@@ -774,11 +772,11 @@
                 {
                   "id": "86ce1eb6-5af2-4c15-a65c-62f3296eb2e8",
                   "title": "Secret is leaked",
-                  "status": "Open",
+                  "status": "Mitigated",
                   "severity": "High",
                   "type": "Information disclosure",
                   "description": "",
-                  "mitigation": "",
+                  "mitigation": "Rotate secrets immediately after leaked",
                   "modelType": "STRIDE",
                   "new": false,
                   "number": 20,
@@ -786,9 +784,9 @@
                 }
               ],
               "threatFrequency": {
-                "tampering": 2,
-                "repudiation": 1,
-                "informationDisclosure": 5,
+                "tampering": 3,
+                "repudiation": 2,
+                "informationDisclosure": 9,
                 "denialOfService": 0
               }
             }
@@ -1416,8 +1414,8 @@
                 "text": "GenAI"
               },
               "body": {
-                "stroke": "red",
-                "strokeWidth": 2.5,
+                "stroke": "#333333",
+                "strokeWidth": 1.5,
                 "strokeDasharray": null
               }
             },
@@ -1514,17 +1512,17 @@
               "isTrustBoundary": false,
               "outOfScope": false,
               "reasonOutOfScope": "",
-              "hasOpenThreats": true,
+              "hasOpenThreats": false,
               "providesAuthentication": false,
               "threats": [
                 {
                   "id": "ec20faf2-ab28-4299-8346-897e018697ba",
                   "title": "Pretend to be gemini",
-                  "status": "Open",
-                  "severity": "TBD",
+                  "status": "Mitigated",
+                  "severity": "Medium",
                   "type": "Spoofing",
                   "description": "Someone pretend to be gemini, collecting data of user response",
-                  "mitigation": "Provide remediation for this threat or a reason if status is N/A",
+                  "mitigation": "Using HTTPs, do not put API in frontend code, hide API in secret",
                   "modelType": "STRIDE",
                   "new": false,
                   "number": 17,
@@ -1532,12 +1530,12 @@
                 },
                 {
                   "id": "04c5942a-1af8-4f11-ae70-850c3d5dd621",
-                  "title": "Does not show what request is being process and how",
-                  "status": "Open",
-                  "severity": "Medium",
+                  "title": "Logging",
+                  "status": "Mitigated",
+                  "severity": "Low",
                   "type": "Repudiation",
-                  "description": "Provide a description for this threat",
-                  "mitigation": "Provide remediation for this threat or a reason if status is N/A",
+                  "description": "Does not show what request is being process and what is the context and what is the answer",
+                  "mitigation": "Provide log to the console",
                   "modelType": "STRIDE",
                   "new": false,
                   "number": 40,
@@ -1545,8 +1543,8 @@
                 }
               ],
               "threatFrequency": {
-                "spoofing": 1,
-                "repudiation": 1
+                "spoofing": 2,
+                "repudiation": 2
               }
             }
           },
@@ -1755,7 +1753,7 @@
             },
             "attrs": {
               "text": {
-                "text": "GCP VM machine"
+                "text": "VM machine"
               },
               "body": {
                 "stroke": "red",
@@ -1851,7 +1849,7 @@
             "id": "acd4b3e8-7a40-4394-b0b3-ef4b8f776e93",
             "data": {
               "type": "tm.Process",
-              "name": "GCP VM machine",
+              "name": "VM machine",
               "description": "",
               "outOfScope": false,
               "isTrustBoundary": false,
@@ -1996,6 +1994,7 @@
             },
             "visible": true,
             "shape": "actor",
+            "zIndex": 15,
             "ports": {
               "groups": {
                 "top": {
@@ -2079,7 +2078,6 @@
               ]
             },
             "id": "4cdc9d62-15bb-4bb1-9301-0f327c70a6aa",
-            "zIndex": 15,
             "data": {
               "type": "tm.Actor",
               "name": "Browser",
@@ -2098,6 +2096,6 @@
     ],
     "diagramTop": 2,
     "reviewer": "Richard Hoa",
-    "threatTop": 42
+    "threatTop": 43
   }
 }
