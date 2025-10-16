@@ -289,7 +289,7 @@
                   "severity": "Low",
                   "type": "Repudiation",
                   "description": "Enforce proper logging",
-                  "mitigation": "Provide remediation for this threat or a reason if status is N/A",
+                  "mitigation": "Implement wazuh",
                   "modelType": "STRIDE",
                   "new": false,
                   "number": 31,
@@ -301,24 +301,11 @@
                   "status": "Open",
                   "severity": "Low",
                   "type": "Denial of service",
-                  "description": "Ensure resource consumption limit",
-                  "mitigation": "Provide remediation for this threat or a reason if status is N/A",
+                  "description": "",
+                  "mitigation": "Implement system constraint",
                   "modelType": "STRIDE",
                   "new": false,
                   "number": 32,
-                  "score": ""
-                },
-                {
-                  "id": "9a4401d0-8472-4158-ac65-6f0473f5c0ae",
-                  "title": "LEak system info",
-                  "status": "Open",
-                  "severity": "Medium",
-                  "type": "Information disclosure",
-                  "description": "Check response data carefully",
-                  "mitigation": "Provide remediation for this threat or a reason if status is N/A",
-                  "modelType": "STRIDE",
-                  "new": false,
-                  "number": 33,
                   "score": ""
                 },
                 {
@@ -338,9 +325,9 @@
               "threatFrequency": {
                 "spoofing": 0,
                 "tampering": 0,
-                "repudiation": 1,
-                "informationDisclosure": 2,
-                "denialOfService": 1,
+                "repudiation": 2,
+                "informationDisclosure": 3,
+                "denialOfService": 2,
                 "elevationOfPrivilege": 0
               }
             }
