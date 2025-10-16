@@ -302,7 +302,7 @@
                   "severity": "Low",
                   "type": "Denial of service",
                   "description": "",
-                  "mitigation": "Implement system constraint",
+                  "mitigation": "Implement system constraint, read ubuntu server docs",
                   "modelType": "STRIDE",
                   "new": false,
                   "number": 32,
@@ -327,7 +327,7 @@
                 "tampering": 0,
                 "repudiation": 2,
                 "informationDisclosure": 3,
-                "denialOfService": 2,
+                "denialOfService": 3,
                 "elevationOfPrivilege": 0
               }
             }
