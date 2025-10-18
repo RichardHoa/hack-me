@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
-	_ "net/http/pprof"
+	// _ "net/http/pprof"
 	"time"
 
 	"github.com/RichardHoa/hack-me/internal/app"

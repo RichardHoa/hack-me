@@ -5,7 +5,7 @@ GOVULNCHECK=govulncheck
 
 prod: check build
 
-check: update tidy vet fmt vulncheck
+check: update tidy vet fmt vulncheck gosec
 
 up:
 	docker compose up --build -d
@@ -23,6 +23,7 @@ test:
 	doppler run -- go test ./... -v
 
 
+
 # Builds the application binary.
 # Use: `make build`
 build:
@@ -33,6 +34,10 @@ build:
 fmt:
 	@echo "Formatting code..."
 	$(GOFMT) ./...
+
+gosec:
+	@echo "Scanning code for security"
+	gosec ./...
 
 # Use: `make vulncheck`
 vulncheck:

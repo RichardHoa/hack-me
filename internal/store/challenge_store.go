@@ -198,7 +198,7 @@ func (Store *DBChallengeStore) GetChallenges(freeQuery ChallengeFreeQuery) (*Cha
 	// Fetch comments only for exact queries (single challenge)
 	if isExactQuery && len(challenges) > 0 {
 		for i := range challenges {
-			challenges[i].Comments, err = Store.CommentStore.GetRootComments("challenge_id", challenges[i].ID)
+			challenges[i].Comments, err = Store.CommentStore.GetRootComments(ForeignChallengeIDKey, challenges[i].ID)
 			if err != nil {
 				return &Challenges{}, &MetaDataPage{}, err
 			}

@@ -2,7 +2,7 @@ package utils
 
 import (
 	"bufio"
-	"crypto/sha1"
+	"crypto/sha1" // #nosec G505 - only used for api call and not encryption
 	"encoding/hex"
 	"fmt"
 	"io"
@@ -32,7 +32,7 @@ func CheckPasswordValid(password string) PasswordCheckResult {
 	}
 
 	// SHA-1 hash
-	hash := sha1.Sum([]byte(password))
+	hash := sha1.Sum([]byte(password)) // #nosec G401 - use only for API call
 	sha1Hex := strings.ToUpper(hex.EncodeToString(hash[:]))
 	prefix := sha1Hex[:5]
 	suffix := sha1Hex[5:]

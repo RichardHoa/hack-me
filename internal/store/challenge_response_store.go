@@ -104,7 +104,7 @@ func (store *DBChallengeResponseStore) GetResponses(req GetChallengeResponseRequ
         challenge AS c ON cr.challenge_id = c.id
     WHERE %s
     ORDER BY cr.created_at ASC
-`, whereClause)
+`, whereClause) // #nosec G201 - static where clause
 
 	rows, err := store.DB.Query(query, arg)
 	if err != nil {
@@ -120,7 +120,7 @@ func (store *DBChallengeResponseStore) GetResponses(req GetChallengeResponseRequ
 			return nil, utils.NewCustomAppError(constants.InternalError, fmt.Sprintf("fail to scan challenge response: %v", err))
 		}
 
-		r.Comments, err = store.CommentStore.GetRootComments("challenge_response_id", r.ID)
+		r.Comments, err = store.CommentStore.GetRootComments(ForeignChallengeResponseIDKey, r.ID)
 		if err != nil {
 			return nil, utils.NewCustomAppError(constants.InternalError, fmt.Sprintf("fail to get comments: %v", err))
 		}

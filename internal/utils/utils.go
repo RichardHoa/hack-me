@@ -48,19 +48,21 @@ func NewMessage(message, errCode, errSource string) Message {
 /*
 WriteJSON is a helper function to send a JSON response.
 */
-func WriteJSON(w http.ResponseWriter, statusCode int, data Message) error {
+func WriteJSON(w http.ResponseWriter, statusCode int, data Message) {
 	jsonBytes, err := json.MarshalIndent(data, "", " ")
 	if err != nil {
-		return err
+		panic(err)
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Content-Language", "en-US")
 	w.WriteHeader(statusCode)
 
-	w.Write(jsonBytes)
+	_, err = w.Write(jsonBytes)
+	if err != nil {
+		panic(err)
+	}
 
-	return nil
 }
 
 /*

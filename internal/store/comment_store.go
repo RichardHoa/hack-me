@@ -21,7 +21,7 @@ type CommentStore interface {
 	PostComment(req PostCommentRequest) (commentID string, err error)
 	ModifyComment(req ModifyCommentRequest) error
 	DeleteComment(req DeleteCommentRequest) error
-	GetRootComments(foreignKey string, id string) ([]Comment, error)
+	GetRootComments(foreignKey ForeignKeyType, id string) ([]Comment, error)
 }
 
 type Comment struct {
@@ -51,6 +51,13 @@ type DeleteCommentRequest struct {
 	CommentID string `json:"commentID"`
 	UserID    string
 }
+
+type ForeignKeyType string
+
+const (
+	ForeignChallengeIDKey         ForeignKeyType = "challenge_id"
+	ForeignChallengeResponseIDKey ForeignKeyType = "challenge_response_id"
+)
 
 func (store *DBCommentStore) PostComment(req PostCommentRequest) (commentID string, err error) {
 	// TODO: Implement depth control when posting comment
@@ -188,10 +195,8 @@ func (store *DBCommentStore) DeleteComment(req DeleteCommentRequest) error {
 	return nil
 }
 
-func (store *DBCommentStore) GetRootComments(foreignKey string, id string) ([]Comment, error) {
-	if foreignKey != "challenge_id" && foreignKey != "challenge_response_id" {
-		return nil, fmt.Errorf("unsupported foreign key: %s", foreignKey)
-	}
+func (store *DBCommentStore) GetRootComments(foreignKey ForeignKeyType, id string) ([]Comment, error) {
+	foreignKeyStr := string(foreignKey)
 
 	query := fmt.Sprintf(`
 		SELECT 
@@ -200,7 +205,7 @@ func (store *DBCommentStore) GetRootComments(foreignKey string, id string) ([]Co
 		JOIN "user" u ON c.user_id = u.id
 		WHERE c.%s = $1 AND c.parent_id IS NULL
 		ORDER BY c.created_at ASC
-	`, foreignKey)
+	`, foreignKeyStr) // #nosec G201 - predefined foreignKey
 
 	rows, err := store.DB.Query(query, id)
 	if err != nil {
