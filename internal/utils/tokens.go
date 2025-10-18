@@ -14,6 +14,7 @@ import (
 
 	"github.com/RichardHoa/hack-me/internal/constants"
 	"github.com/golang-jwt/jwt/v5"
+	"golang.org/x/text/secure"
 )
 
 /*
@@ -33,6 +34,15 @@ SendEmptyTokens sends cookies to the client with past expiration dates.
 Effectively clean the tokens out of browser
 */
 func SendEmptyTokens(w http.ResponseWriter) {
+
+	secureAttribute := true
+	sameSiteAttribute := http.SameSiteStrictMode
+
+	if constants.IsDevMode {
+		secureAttribute = false
+		sameSiteAttribute = http.SameSiteLaxMode
+	}
+
 	http.SetCookie(w, &http.Cookie{
 		Name:     "accessToken",
 		Path:     "/",
@@ -40,8 +50,8 @@ func SendEmptyTokens(w http.ResponseWriter) {
 		MaxAge:   -1,
 		Expires:  time.Unix(0, 0),
 		HttpOnly: false,
-		Secure:   false,
-		SameSite: http.SameSiteLaxMode,
+		Secure:   secureAttribute,
+		SameSite: sameSiteAttribute,
 	})
 
 	http.SetCookie(w, &http.Cookie{
@@ -51,8 +61,8 @@ func SendEmptyTokens(w http.ResponseWriter) {
 		MaxAge:   -1,
 		Expires:  time.Unix(0, 0),
 		HttpOnly: false,
-		Secure:   false,
-		SameSite: http.SameSiteLaxMode,
+		Secure:   secureAttribute,
+		SameSite: sameSiteAttribute,
 	})
 
 	http.SetCookie(w, &http.Cookie{
@@ -62,8 +72,8 @@ func SendEmptyTokens(w http.ResponseWriter) {
 		MaxAge:   -1,
 		Expires:  time.Unix(0, 0),
 		HttpOnly: true,
-		Secure:   false,
-		SameSite: http.SameSiteLaxMode,
+		Secure:   secureAttribute,
+		SameSite: sameSiteAttribute,
 	})
 }
 
