@@ -42,7 +42,6 @@ func SendEmptyTokens(w http.ResponseWriter) {
 		sameSiteAttribute = http.SameSiteLaxMode
 	}
 
-	// nosemgrep
 	http.SetCookie(w, &http.Cookie{
 		Name:     "accessToken",
 		Path:     "/",
@@ -54,7 +53,6 @@ func SendEmptyTokens(w http.ResponseWriter) {
 		SameSite: sameSiteAttribute,
 	})
 
-	// nosemgrep
 	http.SetCookie(w, &http.Cookie{
 		Name:     "csrfToken",
 		Path:     "/",
@@ -66,7 +64,6 @@ func SendEmptyTokens(w http.ResponseWriter) {
 		SameSite: sameSiteAttribute,
 	})
 
-	// nosemgrep
 	http.SetCookie(w, &http.Cookie{
 		Name:     "refreshToken",
 		Path:     "/",
@@ -93,7 +90,6 @@ func SendTokens(w http.ResponseWriter, accessToken, refreshToken, csrfToken stri
 		sameSiteAttribute = http.SameSiteLaxMode
 	}
 
-	// nosemgrep
 	http.SetCookie(w, &http.Cookie{
 		Name:     "accessToken",
 		Path:     "/",
@@ -104,7 +100,6 @@ func SendTokens(w http.ResponseWriter, accessToken, refreshToken, csrfToken stri
 		SameSite: sameSiteAttribute,
 	})
 
-	// nosemgrep
 	http.SetCookie(w, &http.Cookie{
 		Name:     "csrfToken",
 		Path:     "/",
@@ -136,10 +131,8 @@ func SendTokens(w http.ResponseWriter, accessToken, refreshToken, csrfToken stri
 	issuedAtTime := time.Unix(iatUnix, 0)
 	expiresTime := time.Unix(expUnix, 0)
 
-	// refresh token rotation
 	refreshTokenTime := expiresTime.Sub(issuedAtTime)
 
-	// nosemgrep
 	http.SetCookie(w, &http.Cookie{
 		Name:     "refreshToken",
 		Path:     "/",

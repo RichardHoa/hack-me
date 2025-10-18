@@ -31,7 +31,7 @@ func CheckPasswordValid(password string) PasswordCheckResult {
 		return PasswordCheckResult{nil, "Password length is too long"}
 	}
 
-	// SHA-1 hash
+	// nosemgrep
 	hash := sha1.Sum([]byte(password)) // #nosec G401 - use only for API call
 	sha1Hex := strings.ToUpper(hex.EncodeToString(hash[:]))
 	prefix := sha1Hex[:5]

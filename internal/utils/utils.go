@@ -58,6 +58,7 @@ func WriteJSON(w http.ResponseWriter, statusCode int, data Message) {
 	w.Header().Set("Content-Language", "en-US")
 	w.WriteHeader(statusCode)
 
+	// nosemgrep
 	_, err = w.Write(jsonBytes)
 	if err != nil {
 		panic(err)

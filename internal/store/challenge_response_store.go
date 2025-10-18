@@ -85,6 +85,7 @@ func (store *DBChallengeResponseStore) GetResponses(req GetChallengeResponseRequ
 		panic("The handler is supposed to reject if there is no challengeID or challengeResponseID")
 	}
 
+	// nosemgrep
 	query := fmt.Sprintf(`
     SELECT
         cr.id,

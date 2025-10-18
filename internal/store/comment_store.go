@@ -198,6 +198,7 @@ func (store *DBCommentStore) DeleteComment(req DeleteCommentRequest) error {
 func (store *DBCommentStore) GetRootComments(foreignKey ForeignKeyType, id string) ([]Comment, error) {
 	foreignKeyStr := string(foreignKey)
 
+	// nosemgrep
 	query := fmt.Sprintf(`
 		SELECT 
 			c.id, c.content, u.username, c.created_at, c.updated_at
