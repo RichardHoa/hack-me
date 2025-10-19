@@ -285,7 +285,7 @@
                 {
                   "id": "675b80f7-7835-43f8-bb65-3be3c66e87f7",
                   "title": "Deny doing something",
-                  "status": "Open",
+                  "status": "Mitigated",
                   "severity": "Low",
                   "type": "Repudiation",
                   "description": "Enforce proper logging",
@@ -311,11 +311,11 @@
                 {
                   "id": "a13a7127-6596-45ab-9df2-d60414b46afc",
                   "title": "See all the secrets",
-                  "status": "Open",
+                  "status": "Mitigated",
                   "severity": "Critical",
                   "type": "Information disclosure",
                   "description": "use doppler secrets to see all the secret",
-                  "mitigation": "Configure proper rights management",
+                  "mitigation": "Accept the risk of exposing all the secrets.",
                   "modelType": "STRIDE",
                   "new": false,
                   "number": 43,
@@ -325,8 +325,8 @@
               "threatFrequency": {
                 "spoofing": 0,
                 "tampering": 0,
-                "repudiation": 2,
-                "informationDisclosure": 3,
+                "repudiation": 3,
+                "informationDisclosure": 4,
                 "denialOfService": 3,
                 "elevationOfPrivilege": 0
               }
@@ -1662,7 +1662,7 @@
             },
             "attrs": {
               "text": {
-                "text": "VM machine"
+                "text": "Machine"
               },
               "body": {
                 "stroke": "red",
@@ -1758,7 +1758,7 @@
             "id": "acd4b3e8-7a40-4394-b0b3-ef4b8f776e93",
             "data": {
               "type": "tm.Process",
-              "name": "VM machine",
+              "name": "Machine",
               "description": "",
               "outOfScope": false,
               "isTrustBoundary": false,
