@@ -1693,12 +1693,12 @@
             },
             "attrs": {
               "text": {
-                "text": "Machine"
+                "text": "Physical server"
               },
               "body": {
                 "stroke": "#333333",
                 "strokeWidth": 1.5,
-                "strokeDasharray": null
+                "strokeDasharray": "4 3"
               }
             },
             "visible": true,
@@ -1789,11 +1789,11 @@
             "id": "acd4b3e8-7a40-4394-b0b3-ef4b8f776e93",
             "data": {
               "type": "tm.Process",
-              "name": "Machine",
-              "description": "",
-              "outOfScope": false,
+              "name": "Physical server",
+              "description": "Lenovo machine in the house",
+              "outOfScope": true,
               "isTrustBoundary": false,
-              "reasonOutOfScope": "",
+              "reasonOutOfScope": "Not enough resource to tackle this",
               "hasOpenThreats": false,
               "handlesCardPayment": false,
               "handlesGoodsOrServices": false,
