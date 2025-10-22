@@ -178,8 +178,8 @@
                 "text": "Go backend"
               },
               "body": {
-                "stroke": "red",
-                "strokeWidth": 2.5,
+                "stroke": "#333333",
+                "strokeWidth": 1.5,
                 "strokeDasharray": null
               }
             },
@@ -276,7 +276,7 @@
               "outOfScope": false,
               "isTrustBoundary": false,
               "reasonOutOfScope": "",
-              "hasOpenThreats": true,
+              "hasOpenThreats": false,
               "handlesCardPayment": false,
               "handlesGoodsOrServices": false,
               "isWebApplication": false,
@@ -298,11 +298,11 @@
                 {
                   "id": "fa372223-55e1-48a6-bc4c-0ce8d3d2455f",
                   "title": "Get flooded",
-                  "status": "Open",
+                  "status": "NotApplicable",
                   "severity": "Low",
                   "type": "Denial of service",
-                  "description": "",
-                  "mitigation": "Implement system constraint, read ubuntu server docs",
+                  "description": "Malicious actor can flood the machine and make it stop working",
+                  "mitigation": "The risk is too small, skip this",
                   "modelType": "STRIDE",
                   "new": false,
                   "number": 32,
@@ -311,23 +311,49 @@
                 {
                   "id": "a13a7127-6596-45ab-9df2-d60414b46afc",
                   "title": "See all the secrets",
-                  "status": "Mitigated",
+                  "status": "NotApplicable",
                   "severity": "Critical",
                   "type": "Information disclosure",
                   "description": "use doppler secrets to see all the secret",
-                  "mitigation": "Accept the risk of exposing all the secrets.",
+                  "mitigation": "The risk is too small, skip it",
                   "modelType": "STRIDE",
                   "new": false,
                   "number": 43,
                   "score": ""
+                },
+                {
+                  "id": "00be6baf-d851-4b83-8353-789fa7b0192e",
+                  "title": "Pretend to be user",
+                  "status": "Mitigated",
+                  "severity": "Medium",
+                  "type": "Spoofing",
+                  "description": "Pretend to be other user",
+                  "mitigation": "Use proper authentication",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 47,
+                  "score": ""
+                },
+                {
+                  "id": "c5a59e35-bfd3-4d73-ba3f-192129788d0b",
+                  "title": "Tampering with log file",
+                  "status": "NotApplicable",
+                  "severity": "TBD",
+                  "type": "Tampering",
+                  "description": "Tampering with log file, etc",
+                  "mitigation": "Implement right permission and undestroyable logging\n\nNOTE: currently not implemented because lack of infrastructure",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 48,
+                  "score": ""
                 }
               ],
               "threatFrequency": {
-                "spoofing": 0,
-                "tampering": 0,
+                "spoofing": 1,
+                "tampering": 2,
                 "repudiation": 3,
-                "informationDisclosure": 4,
-                "denialOfService": 3,
+                "informationDisclosure": 5,
+                "denialOfService": 4,
                 "elevationOfPrivilege": 0
               }
             }
@@ -1045,52 +1071,6 @@
             "labels": [
               "hosted by"
             ],
-            "id": "4aa9452b-46a3-45c9-8da4-c1d16b769483",
-            "source": {
-              "cell": "6bf58dcd-ed58-4c3c-b894-8d75eb6525f1",
-              "port": "42d6eb40-680b-43ff-851c-e4f7265d63fb"
-            },
-            "target": {
-              "cell": "acd4b3e8-7a40-4394-b0b3-ef4b8f776e93",
-              "port": "24cace7d-ed8d-43f2-badb-4a441b0e18a5"
-            },
-            "vertices": []
-          },
-          {
-            "shape": "flow",
-            "attrs": {
-              "line": {
-                "stroke": "#333333",
-                "targetMarker": {
-                  "name": "block"
-                },
-                "sourceMarker": {
-                  "name": ""
-                },
-                "strokeDasharray": null
-              }
-            },
-            "width": 200,
-            "height": 100,
-            "zIndex": 10,
-            "connector": "smooth",
-            "data": {
-              "type": "tm.Flow",
-              "name": "hosted by",
-              "description": "",
-              "outOfScope": false,
-              "isTrustBoundary": false,
-              "reasonOutOfScope": "",
-              "hasOpenThreats": false,
-              "isBidirectional": false,
-              "isEncrypted": false,
-              "isPublicNetwork": false,
-              "protocol": "",
-              "threats": []
-            },
-            "labels": [
-              "hosted by"
-            ],
             "id": "ef76d153-6af5-4cd9-9e69-1749f0680862",
             "source": {
               "cell": "1c79bc62-9623-4db0-b03e-82cea2ed1728",
@@ -1310,6 +1290,57 @@
             ]
           },
           {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 10,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Hosted by",
+              "description": "",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": false,
+              "isPublicNetwork": false,
+              "protocol": "",
+              "threats": []
+            },
+            "labels": [
+              "Hosted by"
+            ],
+            "id": "feb7eca5-82f5-431b-81a8-7f28b59f44b6",
+            "source": {
+              "cell": "6bf58dcd-ed58-4c3c-b894-8d75eb6525f1",
+              "port": "42d6eb40-680b-43ff-851c-e4f7265d63fb"
+            },
+            "target": {
+              "cell": "acd4b3e8-7a40-4394-b0b3-ef4b8f776e93",
+              "port": "24cace7d-ed8d-43f2-badb-4a441b0e18a5"
+            },
+            "vertices": [
+              {
+                "x": 370,
+                "y": -260
+              }
+            ]
+          },
+          {
             "position": {
               "x": 94.99999999999997,
               "y": 145
@@ -1459,7 +1490,7 @@
           },
           {
             "position": {
-              "x": 505,
+              "x": 490,
               "y": -334.99999999999943
             },
             "size": {
@@ -1665,8 +1696,8 @@
                 "text": "Machine"
               },
               "body": {
-                "stroke": "red",
-                "strokeWidth": 2.5,
+                "stroke": "#333333",
+                "strokeWidth": 1.5,
                 "strokeDasharray": null
               }
             },
@@ -1763,97 +1794,18 @@
               "outOfScope": false,
               "isTrustBoundary": false,
               "reasonOutOfScope": "",
-              "hasOpenThreats": true,
+              "hasOpenThreats": false,
               "handlesCardPayment": false,
               "handlesGoodsOrServices": false,
               "isWebApplication": false,
               "privilegeLevel": "",
-              "threats": [
-                {
-                  "id": "59fd6456-9481-4b41-b006-f64279e96f58",
-                  "title": "Gain admin access to the VM",
-                  "status": "Open",
-                  "severity": "Critical",
-                  "type": "Information disclosure",
-                  "description": "",
-                  "mitigation": "",
-                  "modelType": "STRIDE",
-                  "new": false,
-                  "number": 22,
-                  "score": ""
-                },
-                {
-                  "id": "b7892d28-306f-4477-afca-58f7161f73eb",
-                  "title": "remove changing track",
-                  "status": "Open",
-                  "severity": "Critical",
-                  "type": "Repudiation",
-                  "description": "",
-                  "mitigation": "Provide remediation for this threat or a reason if status is N/A",
-                  "modelType": "STRIDE",
-                  "new": false,
-                  "number": 23,
-                  "score": ""
-                },
-                {
-                  "id": "f092c33d-192b-471f-8214-88b5641bcb0e",
-                  "title": "get flooded by request and lag",
-                  "status": "Open",
-                  "severity": "Medium",
-                  "type": "Denial of service",
-                  "description": "",
-                  "mitigation": "Provide remediation for this threat or a reason if status is N/A",
-                  "modelType": "STRIDE",
-                  "new": false,
-                  "number": 24,
-                  "score": ""
-                },
-                {
-                  "id": "b4353389-2048-42ca-899f-87be694e747e",
-                  "title": "Leak sensitive info",
-                  "status": "Open",
-                  "severity": "TBD",
-                  "type": "Information disclosure",
-                  "description": "Provide a description for this threat",
-                  "mitigation": "Provide remediation for this threat or a reason if status is N/A",
-                  "modelType": "STRIDE",
-                  "new": false,
-                  "number": 25,
-                  "score": ""
-                },
-                {
-                  "id": "1c6e599c-2b0e-4872-8712-db626b1577ce",
-                  "title": "change VM setting",
-                  "status": "Open",
-                  "severity": "Critical",
-                  "type": "Tampering",
-                  "description": "Through accessing the VM using user credentials or through the service",
-                  "mitigation": "Provide remediation for this threat or a reason if status is N/A",
-                  "modelType": "STRIDE",
-                  "new": false,
-                  "number": 27,
-                  "score": ""
-                },
-                {
-                  "id": "511c1ca0-a658-4528-9aeb-105ce9bd11ca",
-                  "title": "pretend to be real user",
-                  "status": "Open",
-                  "severity": "TBD",
-                  "type": "Spoofing",
-                  "description": "pretend to be real user",
-                  "mitigation": "Provide remediation for this threat or a reason if status is N/A",
-                  "modelType": "STRIDE",
-                  "new": false,
-                  "number": 28,
-                  "score": ""
-                }
-              ],
+              "threats": [],
               "threatFrequency": {
-                "spoofing": 2,
-                "tampering": 1,
-                "repudiation": 1,
-                "informationDisclosure": 2,
-                "denialOfService": 1,
+                "spoofing": 1,
+                "tampering": 0,
+                "repudiation": 0,
+                "informationDisclosure": 0,
+                "denialOfService": 0,
                 "elevationOfPrivilege": 1
               }
             }
@@ -2005,6 +1957,6 @@
     ],
     "diagramTop": 2,
     "reviewer": "Richard Hoa",
-    "threatTop": 45
+    "threatTop": 48
   }
 }
