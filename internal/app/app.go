@@ -1,7 +1,6 @@
 package app
 
 import (
-	"context"
 	"database/sql"
 	"log"
 	"os"
@@ -61,15 +60,15 @@ func NewApplication(isTesting bool) (*Application, error) {
 		if err != nil {
 			panic(err)
 		}
-		AIClient, err = store.InitAI(context.Background())
-		if err != nil {
-			panic(err)
-		}
-
-		QdrantClient, err = store.InitVectorDB(context.Background())
-		if err != nil {
-			panic(err)
-		}
+		// AIClient, err = store.InitAI(context.Background())
+		// if err != nil {
+		// 	panic(err)
+		// }
+		//
+		// QdrantClient, err = store.InitVectorDB(context.Background())
+		// if err != nil {
+		// 	panic(err)
+		// }
 	}
 
 	err = store.MigrateFS(db, migrations.FS, ".")
