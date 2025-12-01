@@ -87,6 +87,8 @@ func (handler *UserHandler) RegisterNewUser(w http.ResponseWriter, r *http.Reque
 		}
 	}
 
+	//TODO: We forget to check for email validity here
+
 	_, err = handler.UserStore.CreateUser(&User)
 	if err != nil {
 		switch utils.ClassifyError(err) {
