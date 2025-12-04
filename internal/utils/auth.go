@@ -53,6 +53,8 @@ func CheckPasswordValid(password string) PasswordCheckResult {
 		return PasswordCheckResult{err, ""}
 	}
 
+	//NOTE: Ensure the response is the correct format before using it
+
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return PasswordCheckResult{err, ""}

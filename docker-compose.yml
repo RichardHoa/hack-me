@@ -1,9 +1,9 @@
 services:
   db:
     container_name: "MainDB"
-    image: postgres:17
+    image: postgres:18.1
     volumes:
-      - "./database/postgres-data:/var/lib/postgresql/data:rw"
+      - "./database/postgres-data:/var/lib/postgresql:rw"
     ports:
       - "5432:5432"
     environment:
@@ -19,9 +19,9 @@ services:
 
   test_db:
     container_name: "TestingDB"
-    image: postgres:17
+    image: postgres:18.1
     volumes:
-      - "./database/postgres-test-data:/var/lib/postgresql/data:rw"
+      - "./database/postgres-test-data:/var/lib/postgresql:rw"
     ports:
       - "5433:5432"
     environment:

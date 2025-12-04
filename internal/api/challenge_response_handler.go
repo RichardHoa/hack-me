@@ -50,6 +50,8 @@ func (handler *ChallengeResponseHandler) PostChallengeResponse(w http.ResponseWr
 		return
 	}
 
+	//BUG: We did not check if the response author is the author of the challenge
+
 	challengeResponseID, err := handler.ChallengeResponseStore.PostResponse(req)
 	if err != nil {
 		switch utils.ClassifyError(err) {

@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -29,7 +28,6 @@ func MakeRequestAndExpectStatus(t *testing.T, client *http.Client, method, urlSt
 		if err != nil {
 			t.Errorf("Parse url string failed: %v", err)
 		}
-		fmt.Println("client jar: ", client.Jar)
 
 		cookies := client.Jar.Cookies(u)
 
