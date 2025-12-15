@@ -20,8 +20,6 @@ ensure_not_running() {
 start() {
   ensure_not_running
 
-  sudo systemctl restart caddy
-
   # Clear previous log and ensure first line is PID of the supervisor (written by the supervisor itself)
   : > "$LOGFILE"
 

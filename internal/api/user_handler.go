@@ -242,7 +242,7 @@ func (handler *UserHandler) ChangePassword(w http.ResponseWriter, r *http.Reques
 func (handler *UserHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
 
 	startTime := time.Now()
-	const targetDuration = 300 * time.Millisecond
+	const targetDuration = 400 * time.Millisecond
 
 	defer func() {
 		elapsed := time.Since(startTime)
