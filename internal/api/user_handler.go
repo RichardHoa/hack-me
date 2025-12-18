@@ -390,7 +390,7 @@ func (handler *UserHandler) RefreshTokenRotation(w http.ResponseWriter, r *http.
 	}
 
 	if DBRefreshToken.ID != refreshTokenID {
-		handler.Logger.Printf("ERROR: Refresh-token-rotation >  tokenID from browser %s, tokenID from database %s", refreshTokenID, DBRefreshToken.ID)
+		handler.Logger.Printf("ERROR: Refresh-token-rotation >  tokenID from browser |%s|, tokenID from database |%s|", refreshTokenID, DBRefreshToken.ID)
 		utils.WriteJSON(w, http.StatusForbidden, utils.NewMessage(constants.ForbiddenMessage, "", ""))
 		return
 	}

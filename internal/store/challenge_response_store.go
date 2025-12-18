@@ -120,6 +120,7 @@ func (store *DBChallengeResponseStore) GetResponses(req GetChallengeResponseRequ
 		if err := rows.Scan(&r.ID, &r.Name, &r.Content, &r.UpVote, &r.DownVote, &r.CreatedAt, &r.UpdatedAt, &r.AuthorName, &r.ChallengeName); err != nil {
 			return nil, utils.NewCustomAppError(constants.InternalError, fmt.Sprintf("fail to scan challenge response: %v", err))
 		}
+		
 
 		r.Comments, err = store.CommentStore.GetRootComments(ForeignChallengeResponseIDKey, r.ID)
 		if err != nil {

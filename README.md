@@ -127,8 +127,15 @@ When you create or modify a migration file, you **must reset both the main and t
     ```
     This ensures that both your development and testing environments are perfectly in sync with the latest schema.
 
+## Security
+- Doppler for secret management
+- Threat modelling using https://www.threatdragon.com. The model is stored in this repo
+- Security testing in the test file, I test at the handler level, spin up a test server instance and make sure the malformed request get rejected with the right error code and not 500 (which means the server crash)
+- While adding CIA comment to the database, I realize it has a very interesting insights of letting you know which information is pubic, which one is private but with some digging the user can find it. it gives me a much clearer picture of what will happen and force me to think about the consequences with that data
 
-# TODO lists
+
+
+## TODO lists
 - [ ] set up to reject NUL character
 - [ ] password recovery
 - [ ] email check

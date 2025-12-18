@@ -10,6 +10,10 @@ CREATE TABLE challenge_response_votes (
 );
 -- +goose StatementEnd
 
+COMMENT ON COLUMN challenge_response_votes.user_id IS '(confidentiality, low), (integrity, high), (availability, high), internal';
+COMMENT ON COLUMN challenge_response_votes.challenge_response_id IS '(confidentiality, n/a), (integrity, high), (availability, high), internal';
+COMMENT ON COLUMN challenge_response_votes.vote_type IS '(confidentiality, n/a), (integrity, high), (availability, high), public';
+
 -- +goose Down
 -- +goose StatementBegin
 DROP TABLE IF EXISTS challenge_response_votes;

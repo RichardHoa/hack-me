@@ -105,12 +105,15 @@ func (store *DBVoteStore) PostVote(req PostVoteRequest) error {
 
 	// Step 1: Check if user already voted on this response
 	var existingVote int
+	hasExistingVote := false
 	query := `
 		SELECT vote_type FROM challenge_response_votes
 		WHERE user_id = $1 AND challenge_response_id = $2
 	`
 	err = tx.QueryRow(query, req.UserID, req.ChallengeResponseID).Scan(&existingVote)
-	hasExistingVote := err != sql.ErrNoRows
+	if err != sql.ErrNoRows {
+		hasExistingVote = true
+	}
 	if err != nil && err != sql.ErrNoRows {
 		return err
 	}
