@@ -139,7 +139,7 @@ When you create or modify a migration file, you **must reset both the main and t
 - I use https://securityheaders.com/ to check to see if the security headers is enough, I follow https://web.dev/articles/strict-csp to minimize the chance of being XSS, it's very nice that our frontend framework make it convient for me to implement csp
 - I also use https://developer.mozilla.org to test the configuration again
 - I also use https://domsignal.com/secure-header-test, turn out there are a few headers that I have not implmented yet
-- Database security: we use superbase for security so....
+- Database security: we use superbase to host our postgres, so I follow all the superbase security recommendation so far
 
 
 
