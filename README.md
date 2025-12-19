@@ -133,6 +133,13 @@ When you create or modify a migration file, you **must reset both the main and t
 - Security testing in the test file, I test at the handler level, spin up a test server instance and make sure the malformed request get rejected with the right error code and not 500 (which means the server crash)
 - While adding CIA comment to the database, I realize it has a very interesting insights of letting you know which information is pubic, which one is private but with some digging the user can find it. it gives me a much clearer picture of what will happen and force me to think about the consequences with that data. One concrte example of this is when implementing the counting mechanism for `challenge_response_vote_store`. I initially do a transactions, I would update the `challenge_response_vote` table and then update the `challenge_response`, where the votes digits are stored. But when I consider the Integrity aspect and think about what if someone manage to change the number in the database, specifically the `challenge_response_vote` table, then that would have no effect on the store on the `challenge_response` table, thus I switch to using a trigger
 - I want the app to be secure as posible, so to track all the vulnerabilities, we use Software Composition Analysis (SCA) `govulncheck` and  Static Application Security Testing (SAST) of `gosec` 
+- I use ZAP to attack the frontend and backend to minimize information leakage and obvious error 
+- We have fuzz testing to check whether the server crash at any input, turn out it crashes at NUL character, but we don't have the time to fix it yet
+- I use www.ssllabs.com to check the SSl strength of the website, while the tool grade is not absolute, it's still good to check it to maximize our chances of discovering weakness
+- I use https://securityheaders.com/ to check to see if the security headers is enough, I follow https://web.dev/articles/strict-csp to minimize the chance of being XSS, it's very nice that our frontend framework make it convient for me to implement csp
+- I also use https://developer.mozilla.org to test the configuration again
+- I also use https://domsignal.com/secure-header-test, turn out there are a few headers that I have not implmented yet
+- Database security: we use superbase for security so....
 
 
 
@@ -144,9 +151,11 @@ When you create or modify a migration file, you **must reset both the main and t
 - [ ] email check
 - [ ] login blocking after `n` attempts
 - [ ] implement allowing app to consume only maximum 80% of resources, set timeout times
-- [ ] implement to allow only google domain on imageLink
 - [ ] instrumenting the server
 - [ ] design test for library to capture their behaviour, make sure future version still do what we expect it to do
+- [ ] design test for CSRF token
+- [ ] Implment all the proper security header
+
 
 # Behaviour
 - AI chat is very long since the AI response take 99% of the time
