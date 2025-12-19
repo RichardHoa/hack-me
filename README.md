@@ -131,7 +131,10 @@ When you create or modify a migration file, you **must reset both the main and t
 - Doppler for secret management
 - Threat modelling using https://www.threatdragon.com. The model is stored in this repo
 - Security testing in the test file, I test at the handler level, spin up a test server instance and make sure the malformed request get rejected with the right error code and not 500 (which means the server crash)
-- While adding CIA comment to the database, I realize it has a very interesting insights of letting you know which information is pubic, which one is private but with some digging the user can find it. it gives me a much clearer picture of what will happen and force me to think about the consequences with that data
+- While adding CIA comment to the database, I realize it has a very interesting insights of letting you know which information is pubic, which one is private but with some digging the user can find it. it gives me a much clearer picture of what will happen and force me to think about the consequences with that data. One concrte example of this is when implementing the counting mechanism for `challenge_response_vote_store`. I initially do a transactions, I would update the `challenge_response_vote` table and then update the `challenge_response`, where the votes digits are stored. But when I consider the Integrity aspect and think about what if someone manage to change the number in the database, specifically the `challenge_response_vote` table, then that would have no effect on the store on the `challenge_response` table, thus I switch to using a trigger
+- I want the app to be secure as posible, so to track all the vulnerabilities, we use Software Composition Analysis (SCA) `govulncheck` and  Static Application Security Testing (SAST) of `gosec` 
+
+
 
 
 
