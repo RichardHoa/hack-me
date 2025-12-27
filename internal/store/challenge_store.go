@@ -275,7 +275,7 @@ func (challengeStore *DBChallengeStore) DeleteChallenge(challengeName string, us
 
 func (challengeStore *DBChallengeStore) ModifyChallenge(updatedChallenge PutChallengeRequest) error {
 	query := `UPDATE challenge SET `
-	params := []interface{}{}
+	params := []any{}
 	paramCount := 1
 
 	if updatedChallenge.Name != "" {
@@ -323,7 +323,6 @@ func (challengeStore *DBChallengeStore) ModifyChallenge(updatedChallenge PutChal
 	query += fmt.Sprintf(", updated_at = now() WHERE name = $%d AND user_id = $%d", paramCount, paramCount+1)
 	params = append(params, updatedChallenge.OldName, updatedChallenge.UserID)
 
-	fmt.Printf("query: %v, params: %v", query, params)
 	// Execute the update
 	result, err := challengeStore.DB.Exec(query, params...)
 	if err != nil {

@@ -201,8 +201,6 @@ func (store *DBChallengeResponseStore) ModifyResponse(request PutChallengeRespon
 	if err != nil {
 		return err
 	}
-	fmt.Println(ownerID)
-	fmt.Println(request.UserID)
 
 	// Check if the user owns the challenge response
 	if ownerID != request.UserID {
