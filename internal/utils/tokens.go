@@ -162,19 +162,19 @@ regardless of the token key type
 func ExtractClaimsFromJWT(tokenStr string, keys []string) ([]string, error) {
 	token, _, err := new(jwt.Parser).ParseUnverified(tokenStr, jwt.MapClaims{})
 	if err != nil {
-		return nil, fmt.Errorf("failed to parse token: %w", err)
+		return nil, fmt.Errorf("failed to parse token |%s|: %w", tokenStr, err)
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
-		return nil, errors.New("invalid jwt claims")
+		return nil, errors.New("invalid jwt claims structure")
 	}
 
 	result := make([]string, len(keys))
 	for i, key := range keys {
 		val, exists := claims[key]
 		if !exists {
-			return nil, fmt.Errorf("missing claim: %s", key)
+			return nil, fmt.Errorf("missing required claim: %s", key)
 		}
 
 		var strVal string

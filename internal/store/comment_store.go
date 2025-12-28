@@ -38,18 +38,18 @@ type PostCommentRequest struct {
 	ChallengeID         string `json:"challengeID"`
 	ChallengeResponseID string `json:"challengeResponseID"`
 	Content             string `json:"content"`
-	UserID              string
+	UserID              string `json:"-"`
 }
 
 type ModifyCommentRequest struct {
 	CommentID string `json:"commentID"`
 	Content   string `json:"content"`
-	UserID    string
+	UserID    string `json:"-"`
 }
 
 type DeleteCommentRequest struct {
 	CommentID string `json:"commentID"`
-	UserID    string
+	UserID    string `json:"-"`
 }
 
 type ForeignKeyType string

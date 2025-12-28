@@ -24,12 +24,12 @@ func NewChallengeResponseStore(db *sql.DB, commentStore *DBCommentStore) *DBChal
 
 type DeleteChallengeResponseRequest struct {
 	ChallengeResponseID string `json:"challengeResponseID"`
-	UserID              string
+	UserID              string `json:"-"`
 }
 
 type PutChallengeResponseRequest struct {
 	ChallengeResponseID string `json:"challengeResponseID"`
-	UserID              string
+	UserID              string `json:"-"`
 	Name                string `json:"name"`
 	Content             string `json:"content"`
 }
@@ -56,7 +56,7 @@ type DetailChallengeResponse struct {
 
 type PostChallengeResponseRequest struct {
 	ChallengeID string `json:"challengeID"`
-	UserID      string
+	UserID      string `json:"-"`
 	Name        string `json:"name"`
 	Content     string `json:"content"`
 }

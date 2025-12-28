@@ -18,10 +18,10 @@ CREATE TABLE IF NOT EXISTS challenge_response (
 COMMENT ON COLUMN challenge_response.id IS '(confidentiality, n/a), (integrity, low), (availability, high), internal';
 COMMENT ON COLUMN challenge_response.challenge_id IS '(confidentiality, n/a), (integrity, high), (availability, high), internal';
 COMMENT ON COLUMN challenge_response.user_id IS '(confidentiality, n/a), (integrity, high), (availability, high), internal';
-COMMENT ON COLUMN challenge_response.name IS '(confidentiality, n/a), (integrity, moderate), (availability, high), public';
-COMMENT ON COLUMN challenge_response.content IS '(confidentiality, n/a), (integrity, moderate), (availability, high), public';
-COMMENT ON COLUMN challenge_response.up_vote IS '(confidentiality, n/a), (integrity, moderate), (availability, high), public';
-COMMENT ON COLUMN challenge_response.down_vote IS '(confidentiality, n/a), (integrity, moderate), (availability, high), public';
+COMMENT ON COLUMN challenge_response.name IS '(confidentiality, n/a), (integrity, high), (availability, high), public';
+COMMENT ON COLUMN challenge_response.content IS '(confidentiality, n/a), (integrity, high), (availability, high), public';
+COMMENT ON COLUMN challenge_response.up_vote IS '(confidentiality, n/a), (integrity, low), (availability, high), public';
+COMMENT ON COLUMN challenge_response.down_vote IS '(confidentiality, n/a), (integrity, low), (availability, high), public';
 -- +goose StatementEnd
 
 -- +goose Down

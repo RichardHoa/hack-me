@@ -18,13 +18,13 @@ func NewVoteStore(db *sql.DB) *DBVoteStore {
 
 type DeleteVoteRequest struct {
 	ChallengeResponseID string `json:"challengeResponseID"`
-	UserID              string
+	UserID              string `json:"-"`
 }
 
 type PostVoteRequest struct {
 	ChallengeResponseID string `json:"challengeResponseID"`
 	VoteType            string `json:"voteType"`
-	UserID              string
+	UserID              string `json:"-"`
 }
 
 type VoteStore interface {

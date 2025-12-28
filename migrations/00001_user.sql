@@ -23,8 +23,8 @@ COMMENT ON COLUMN "user".username IS '(confidentiality, n/a), (integrity, low), 
 COMMENT ON COLUMN "user".email IS '(confidentiality, moderate), (integrity, high), (availability, low), internal';
 COMMENT ON COLUMN "user".image_link IS '(confidentiality, n/a), (integrity, low), (availability, low), public';
 COMMENT ON COLUMN "user".password IS '(confidentiality, high), (integrity, high), (availability, high), restricted';
-COMMENT ON COLUMN "user".google_id IS '(confidentiality, high), (integrity, high), (availability, high), restricted';
-COMMENT ON COLUMN "user".github_id IS '(confidentiality, high), (integrity, high), (availability, high), restricted';
+COMMENT ON COLUMN "user".google_id IS '(confidentiality, low), (integrity, high), (availability, high), restricted';
+COMMENT ON COLUMN "user".github_id IS '(confidentiality, low), (integrity, high), (availability, high), restricted';
 -- +goose StatementEnd
 
 -- +goose Down

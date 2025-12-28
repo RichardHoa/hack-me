@@ -22,7 +22,7 @@ COMMENT ON COLUMN comment.id IS '(confidentiality, n/a), (integrity, low), (avai
 COMMENT ON COLUMN comment.parent_id IS '(confidentiality, n/a), (integrity, low), (availability, high), internal';
 COMMENT ON COLUMN comment.challenge_id IS '(confidentiality, n/a), (integrity, high), (availability, high), internal';
 COMMENT ON COLUMN comment.challenge_response_id IS '(confidentiality, n/a), (integrity, high), (availability, high), internal';
-COMMENT ON COLUMN comment.user_id IS '(confidentiality, n/a), (integrity, high), (availability, high), internal';
+COMMENT ON COLUMN comment.user_id IS '(confidentiality, low), (integrity, high), (availability, high), internal';
 COMMENT ON COLUMN comment.content IS '(confidentiality, n/a), (integrity, high), (availability, high), public';
 
 -- +goose StatementEnd

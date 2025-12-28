@@ -27,7 +27,7 @@ type PostChallengeRequest struct {
 	Name     string `json:"name"`
 	Category string `json:"category"`
 	Content  string `json:"content"`
-	UserID   string
+	UserID   string `json:"-"`
 }
 
 type DeleteChallengeRequest struct {
@@ -39,7 +39,7 @@ type PutChallengeRequest struct {
 	OldName  string `json:"oldName"`
 	Category string `json:"category"`
 	Content  string `json:"content"`
-	UserID   string
+	UserID   string `json:"-"`
 }
 
 type Challenge struct {

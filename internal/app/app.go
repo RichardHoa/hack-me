@@ -94,6 +94,7 @@ func NewApplication(isTesting bool) (*Application, error) {
 	challengeResponseHandler := api.NewChallengeResponseHandler(challengeResponseStore, logger)
 	challengeResponseVoteHandler := api.NewChallengeResponseVoteHandler(challengeResponseVoteStore, logger)
 	commentHandler := api.NewCommentHandler(commentStore, logger)
+	// NOTE: this chatbox handler is currently not used
 	chatboxHandler := api.NewChatboxHandler(logger, AIClient, QdrantClient)
 
 	//NOTE: Middleware creation

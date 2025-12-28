@@ -5,7 +5,7 @@ GOVULNCHECK=govulncheck
 
 prod: check build
 
-check: update tidy vet fmt vulncheck gosec
+check: update tidy vet fmt vulncheck gosec syft_and_grype
 
 up:
 	docker compose up --build -d
@@ -55,6 +55,10 @@ tidy:
 vet:
 	@echo "Checking for suspicious constructs..."
 	go vet ./...
+
+syft_and_grype:
+	@echo "Checking SBOMS and potential vulnerabilities..."
+	syft ./ -o cyclonedx-json | grype
 
 
 # Phony targets are not files.
