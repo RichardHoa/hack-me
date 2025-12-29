@@ -4,40 +4,9 @@
 ## Warning
 All the installation instructions is kind of obsolete since I move to [doppler](https://www.doppler.com/) as a secret manager rather than using .env file, as such a lot of code won't work because it lack the environment variables
 
-## 🐳 Run the whole app with Docker
-
-This is the fastest way to get the entire application stack running without installing Go locally.
-
-1.  **Configure Your Environment**
-
-    First, copy the example environment file:
-    ```bash
-    cp .env.example .env
-    ```
-    > **Important:** Open the new `.env` file and ensure the `DEV_MODE` variable is **NOT** set to `LOCAL`. It should be empty or set to another value.
-
-2.  **Launch the Application**
-
-    Build and run the containers in detached mode:
-    ```bash
-    make up
-    ```
-
-To view the backend server logs in real-time:
-```bash
-docker-compose logs
-```
-
-When you are finished, stop and remove all containers, networks, and volumes:
-```bash
-make down
-```
-
-NOTE: Some of the Makefile commands cannot be run in your machine, this github repo does not have a CI/CD pipeline so I use Makefile to automate some deploy
-
 ---
 
-## 🧑‍💻 Running the server locally
+## Running the server locally
 
 Follow these steps for local development and debugging.
 
@@ -58,19 +27,16 @@ Follow these steps for local development and debugging.
     ```
 4.  **Run the Go Server**
 
-    Start the server from the project root. You can use either the standard Go command or `air` for live reloading.
+    Start the server from the project root. You must set up doppler first for all the secrets management
 
     ```bash
     # Standard run
-    go run main.go
+    make run
 
-    # Or, for live-reloading with Air
-    air
     ```
-
 ---
 
-## 🧪 Running Tests
+##  Running Tests
 
 ### Standard Tests
 Run the complete test suite across all packages:
@@ -86,7 +52,7 @@ go test -run=TestUserRoutes -fuzz=FuzzUserSignUp -parallel=4
 
 ---
 
-## 🏗️ Project Structure
+## Project Structure
 
 The application follows a layered architecture to separate concerns. The data flows from the entry point to the database as follows:
 
@@ -107,7 +73,7 @@ The application follows a layered architecture to separate concerns. The data fl
 
 ### ⚠️ Database Schema Updates
 
-When you create or modify a migration file, you **must reset both the main and testing databases** to prevent schema conflicts.
+When you create or modify a migration file, you **must reset both the main and testing databases** to prevent schema conflicts between the dev server and the test server.
 
 1.  **Connect to each PostgreSQL instance:**
 
@@ -125,7 +91,6 @@ When you create or modify a migration file, you **must reset both the main and t
     DROP SCHEMA public CASCADE;
     CREATE SCHEMA public;
     ```
-    This ensures that both your development and testing environments are perfectly in sync with the latest schema.
 
 ## Security
 - Doppler for secret management
@@ -152,7 +117,6 @@ In app security:
 
 
 
-
 ## TODO lists
 - [ ] Check all the error message, a lot of them is vague and has no tracibility
 - [ ] set up to reject NUL character
@@ -166,5 +130,5 @@ In app security:
 - [ ] Implment all the proper security header
 
 
-# Behaviour
-- AI chat is very long since the AI response take 99% of the time
+## Observe behaviour in the project
+- AI chat is very long since the AI response take 99% of the time. NOTE: this function is currently not used

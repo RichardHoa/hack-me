@@ -68,7 +68,6 @@ func (tokenStore *DBTokenStore) GetRefreshToken(userID string) (RefreshToken, er
 		return RefreshToken{}, nil
 	}
 
-	// Token is valid, return it.
 	return RefreshToken{ID: ID, CreatedAt: CreatedAt}, nil
 }
 
