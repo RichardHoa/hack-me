@@ -91,9 +91,9 @@ var (
 
 // Defines the keys for standard claims within JSON Web Tokens.
 const (
-	TokenRefreshID = "refreshID"
-	TokenUserName  = "userName"
-	TokenUserID    = "userID"
+	JWTRefreshTokenID = "SomeThing"
+	JWTUserName       = "yeahyeah"
+	JWTUserID         = "someOtherThing"
 )
 
 // Defines constants for AI related functions
@@ -155,7 +155,6 @@ const (
 	CommentNestedLevel         = 5
 	DefaultPageSize            = 10
 	DefaultPage                = 1
-	MaxLengthName              = 50
 )
 
 // Defines standard error codes for API request validation failures.

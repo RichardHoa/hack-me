@@ -285,9 +285,9 @@ func CreateTokens(userID, userName string, refreshTokenTime int64) (signedAccess
 	}
 
 	refreshClaims := jwt.MapClaims{
-		constants.TokenRefreshID: refreshID,
-		constants.TokenUserName:  userName,
-		constants.TokenUserID:    userID,
+		constants.JWTRefreshTokenID: refreshID,
+		constants.JWTUserName:  userName,
+		constants.JWTUserID:    userID,
 		"exp":                    refreshTokenTime,
 		"iat":                    time.Now().Unix(),
 	}
@@ -351,7 +351,7 @@ func GetValuesFromCookie(r *http.Request, claimsList []string) (result []string,
 		return []string{}, fmt.Errorf("accessToken is not present")
 	}
 
-	accessToken, err := jwt.Parse(accessCookie.Value, func(token *jwt.Token) (interface{}, error) {
+	accessToken, err := jwt.Parse(accessCookie.Value, func(token *jwt.Token) (any, error) {
 		return []byte(constants.AccessTokenSecret), nil
 	},
 		jwt.WithValidMethods([]string{jwt.SigningMethodHS512.Alg()}),
@@ -367,7 +367,7 @@ func GetValuesFromCookie(r *http.Request, claimsList []string) (result []string,
 		return []string{}, fmt.Errorf("refreshToken is not present")
 	}
 
-	refreshToken, err := jwt.Parse(refreshCookie.Value, func(token *jwt.Token) (interface{}, error) {
+	refreshToken, err := jwt.Parse(refreshCookie.Value, func(token *jwt.Token) (any, error) {
 		return []byte(constants.RefreshTokenSecret), nil
 	},
 		jwt.WithValidMethods([]string{jwt.SigningMethodHS512.Alg()}),

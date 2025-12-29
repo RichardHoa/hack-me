@@ -22,13 +22,14 @@ CheckPasswordValid checks a password against local format rules and the 'Have I
 Been Pwned' public breach database.
 */
 func CheckPasswordValid(password string) PasswordCheckResult {
-	if utf8.RuneCountInString(password) < 8 {
-		return PasswordCheckResult{nil, "Password length must be over 8 character"}
+	passwordLength := utf8.RuneCountInString(password)
+	if passwordLength < 15 {
+		return PasswordCheckResult{nil, fmt.Sprintf("Password length must be at least 15 characters, your password is currently only %d characters", passwordLength)}
 	}
 
 	byteLen := len([]byte(password))
 	if byteLen > 256 {
-		return PasswordCheckResult{nil, "Password length is too long"}
+		return PasswordCheckResult{nil, "Your password length is too long"}
 	}
 
 	// nosemgrep

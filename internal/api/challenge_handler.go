@@ -2,12 +2,10 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
 	"strings"
-	"unicode/utf8"
 
 	"github.com/RichardHoa/hack-me/internal/constants"
 	"github.com/RichardHoa/hack-me/internal/store"
@@ -103,7 +101,7 @@ func (handler *ChallengeHandler) GetChallenges(w http.ResponseWriter, r *http.Re
 }
 
 func (handler *ChallengeHandler) PostChallenge(w http.ResponseWriter, r *http.Request) {
-	result, err := utils.GetValuesFromCookie(r, []string{constants.TokenUserID})
+	result, err := utils.GetValuesFromCookie(r, []string{constants.JWTUserID})
 	if err != nil {
 		handler.Logger.Printf("ERROR: PostChallenge > JWT token checking: %v", err)
 		utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, ""))
@@ -129,16 +127,6 @@ func (handler *ChallengeHandler) PostChallenge(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	nameLength := utf8.RuneCountInString(req.Name)
-
-	if nameLength > constants.MaxLengthName {
-		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(
-			fmt.Sprintf("Challenge name has the maximum of %d characters, your name %d characters", constants.MaxLengthName, nameLength),
-			constants.MSG_INVALID_REQUEST_DATA,
-			"name"))
-		return
-	}
-
 	if strings.Contains(req.Name, "#") {
 		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("You can't have symbol # in challenge name", constants.MSG_INVALID_REQUEST_DATA, "name"))
 		return
@@ -159,7 +147,7 @@ func (handler *ChallengeHandler) PostChallenge(w http.ResponseWriter, r *http.Re
 			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("Challenge name already exist", constants.MSG_INVALID_REQUEST_DATA, "name"))
 			return
 		case constants.PQCheckViolation:
-			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("Name must be at least 3 characters long with no leading or trailing whitespace", constants.MSG_INVALID_REQUEST_DATA, "name"))
+			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("Name length minimum 3 and maximum 50 characters long with no leading or trailing whitespace", constants.MSG_INVALID_REQUEST_DATA, "name"))
 			return
 		case constants.PQForeignKeyViolation:
 			handler.Logger.Printf("ERROR: Invalid User ID: %v", challenge.UserID)
@@ -181,7 +169,7 @@ func (handler *ChallengeHandler) PostChallenge(w http.ResponseWriter, r *http.Re
 }
 
 func (handler *ChallengeHandler) DeleteChallege(w http.ResponseWriter, r *http.Request) {
-	result, err := utils.GetValuesFromCookie(r, []string{constants.TokenUserID})
+	result, err := utils.GetValuesFromCookie(r, []string{constants.JWTUserID})
 
 	if err != nil {
 		handler.Logger.Printf("ERROR: DeleteChallenge > JWT token checking: %v", err)
@@ -229,7 +217,7 @@ func (handler *ChallengeHandler) DeleteChallege(w http.ResponseWriter, r *http.R
 
 func (handler *ChallengeHandler) ModifyChallenge(w http.ResponseWriter, r *http.Request) {
 
-	result, err := utils.GetValuesFromCookie(r, []string{constants.TokenUserID})
+	result, err := utils.GetValuesFromCookie(r, []string{constants.JWTUserID})
 	if err != nil {
 		handler.Logger.Printf("ERROR: ModifyChallenge > JWT token checking: %v", err)
 		utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, ""))

@@ -32,7 +32,7 @@ type TokenStore interface {
 
 func (tokenStore *DBTokenStore) AddRefreshToken(refreshToken string, userID string) error {
 
-	result, err := utils.ExtractClaimsFromJWT(refreshToken, []string{"refreshID"})
+	result, err := utils.ExtractClaimsFromJWT(refreshToken, []string{constants.JWTRefreshTokenID})
 	if err != nil {
 		return err
 	}

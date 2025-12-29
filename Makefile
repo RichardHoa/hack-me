@@ -20,7 +20,7 @@ air:
 	doppler run -- air
 
 test:
-	doppler run -- go test ./... -v
+	doppler run -- go test ./... -v -failfast
 
 
 

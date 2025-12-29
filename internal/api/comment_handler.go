@@ -22,7 +22,7 @@ func NewCommentHandler(store store.CommentStore, logger *log.Logger) *CommentHan
 
 func (handler *CommentHandler) PostComment(w http.ResponseWriter, r *http.Request) {
 
-	result, err := utils.GetValuesFromCookie(r, []string{constants.TokenUserID})
+	result, err := utils.GetValuesFromCookie(r, []string{constants.JWTUserID})
 
 	if err != nil {
 		handler.Logger.Printf("ERROR: PostComment > JWT token checking: %v", err)
@@ -77,7 +77,7 @@ func (handler *CommentHandler) PostComment(w http.ResponseWriter, r *http.Reques
 
 func (handler *CommentHandler) ModifyComment(w http.ResponseWriter, r *http.Request) {
 
-	result, err := utils.GetValuesFromCookie(r, []string{constants.TokenUserID})
+	result, err := utils.GetValuesFromCookie(r, []string{constants.JWTUserID})
 	if err != nil {
 		handler.Logger.Printf("ERROR: ModifyComment > JWT token checking: %v", err)
 		utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, ""))
@@ -131,7 +131,7 @@ func (handler *CommentHandler) ModifyComment(w http.ResponseWriter, r *http.Requ
 
 func (handler *CommentHandler) DeleteComment(w http.ResponseWriter, r *http.Request) {
 
-	result, err := utils.GetValuesFromCookie(r, []string{constants.TokenUserID})
+	result, err := utils.GetValuesFromCookie(r, []string{constants.JWTUserID})
 	if err != nil {
 		handler.Logger.Printf("ERROR: DeleteComment > JWT token checking: %v", err)
 		utils.WriteJSON(w, http.StatusUnauthorized, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, ""))

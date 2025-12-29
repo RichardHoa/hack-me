@@ -386,7 +386,7 @@ func (userStore *DBUserStore) LoginAndIssueTokens(user *User) (accessToken, refr
 
 	accessToken, refreshToken, err = utils.CreateTokens(userID, userName, 0)
 
-	result, err := utils.ExtractClaimsFromJWT(refreshToken, []string{"refreshID"})
+	result, err := utils.ExtractClaimsFromJWT(refreshToken, []string{constants.JWTRefreshTokenID})
 	if err != nil {
 		return "", "", "", utils.NewCustomAppError(constants.InternalError, fmt.Sprintf("fail to decode decode refreshToken %v", err))
 	}
