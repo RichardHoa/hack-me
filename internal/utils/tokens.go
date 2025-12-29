@@ -99,7 +99,7 @@ func SendTokens(w http.ResponseWriter, accessToken, refreshToken, csrfToken stri
 		Path:     "/",
 		Value:    accessToken,
 		MaxAge:   int(constants.AccessTokenTime.Seconds()),
-		HttpOnly: false,
+		HttpOnly: true,
 		Secure:   secureAttribute,
 		SameSite: sameSiteAttribute,
 	})
@@ -110,10 +110,12 @@ func SendTokens(w http.ResponseWriter, accessToken, refreshToken, csrfToken stri
 		Path:     "/",
 		Value:    csrfToken,
 		MaxAge:   int(constants.AccessTokenTime.Seconds()),
-		HttpOnly: false,
+		HttpOnly: true,
 		Secure:   secureAttribute,
 		SameSite: sameSiteAttribute,
 	})
+
+	//NOTE: HttpOnly of both csrfToken and accessToken are true because we are using Sveltekit, an SSR framework
 
 	refreshTokenResult, err := ExtractClaimsFromJWT(refreshToken, []string{"iat", "exp"})
 	if err != nil {
