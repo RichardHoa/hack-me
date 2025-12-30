@@ -43,9 +43,8 @@ To run a specific fuzz test (e.g., for user sign-up):
 go test -run=TestUserRoutes -fuzz=FuzzUserSignUp
 ```
 
-## 📝 Important Notes
 
-### ⚠️ Database Schema Updates
+## Note for Database Schema Updates
 
 When you create or modify a migration file, you **must reset both the main and testing databases** to prevent schema conflicts between the dev server and the test server.
 
@@ -66,31 +65,19 @@ When you create or modify a migration file, you **must reset both the main and t
     CREATE SCHEMA public;
     ```
 
-## Security
-- Doppler for secret management
-- Threat modelling using https://www.threatdragon.com. The model is stored in this repo
-- Security testing in the test file, I test at the handler level, spin up a test server instance and make sure the malformed request get rejected with the right error code and not 500 (which means the server crash)
-- you can see in all of my `.sql` files I always have comment for each column, this comment specify the CIA framework as specified in `NIST - Guide for Mapping Types of Information and Information Systems to Security Categories`. 
-- While adding CIA comment to the database, I realize it has a very interesting insights of letting you know which information is pubic, which one is private but with some digging the user can find it. it gives me a much clearer picture of what will happen and force me to think about the consequences with that data. One concrte example of this is when implementing the counting mechanism for `challenge_response_vote_store`. I initially do a transactions, I would update the `challenge_response_vote` table and then update the `challenge_response`, where the votes digits are stored. But when I consider the Integrity aspect and think about what if someone manage to change the number in the database, specifically the `challenge_response_vote` table, then that would have no effect on the store on the `challenge_response` table, thus I switch to using a trigger
-- After reading the mass assignment vulerability, I realize that some of my struct has UserID in the struct that get unmarshal from the json data from the client, I've already enabled 	decoder.DisallowUnknownFields()  but since there is no  `json:"-"`, it can still be subjected to Mass Assignment since in the user route I repurpose the User struct to contains the unmarshal data from frontend instead of creating a DTO, so I've learnt to add the json:"-" tag, which prevents the UserID to be assigned whatsoever
-- I want the app to be secure as posible, so to track all the vulnerabilities, we use Software Composition Analysis (SCA) `govulncheck` and  Static Application Security Testing (SAST) of `gosec`, I also use a combination of syft_and_grype as SBOM and checker to make sure that there is no ghost depencecies 
-- I also consult https://top10proactive.owasp.org/the-top-10/, which help me massively in finding more security releated bugs and doing all the toolings mention here
-- I use ZAP to attack the frontend and backend to minimize information leakage and obvious error 
-- We have fuzz testing to check whether the server crash at any input, turn out it crashes at NUL character, but we don't have the time to fix it yet
-- I use www.ssllabs.com to check the SSl strength of the website, while the tool grade is not absolute, it's still good to check it to maximize our chances of discovering weakness
-- I use https://securityheaders.com/ to check to see if the security headers is enough, I follow https://web.dev/articles/strict-csp to minimize the chance of being XSS, it's very nice that our frontend framework make it convient for me to implement csp
-- I also use https://developer.mozilla.org to test the configuration again
-- I also use https://domsignal.com/secure-header-test, turn out there are a few headers that I have not implmented yet
-- I use TruffleHog to scan for all the potential secrets leak in the repo, there is not any according to the scan
-- Database security: we use superbase to host our postgres, so I follow all the superbase security recommendation so far
-- Using the built-in fuzz test help me readlize my application is not protected against NUL character, so I add it into the future to-do lists.
+## Security Implementation and Lessons
 
-In app security:
-- We use attribute-based access control, which means user can only delete or modify what they've created and not others, we do not use role based access control, as recommended by OWASP
-- We are supposed to Classify the data sent, processed, and stored in your system, but I've only manage to classify the data being stored
+I approach security proactively rather than reacting to bugs. Before writing code, I performed threat modeling using `https://www.threatdragon.com` (the model is stored in this repo) and I consult `https://top10proactive.owasp.org/the-top-10/` to guide my defensive strategies. For access control, I implemented attribute-based access control (ABAC) instead of standard role-based access control. This ensures users can strictly only modify or delete resources they have created themselves. While I aim to classify all data sent and processed, I have currently completed classifying all stored data.
 
+This data classification process has been a major learning experience. In all my `.sql` files, I’ve added comments to every column specifying its CIA requirements based on the `NIST - Guide for Mapping Types of Information and Information Systems to Security Categories`. This exercise forced me to think about the consequences of data exposure. A concrete example of this is the `challenge_response_vote_store`. Initially, I used a standard transaction to update the vote table and then the response table. However, when considering the "Integrity" aspect, I realized that if someone managed to manipulate the database directly, the application logic wouldn't catch it. To fix this, I switched to using a database trigger, ensuring the vote counts remain accurate regardless of how the data is touched.
 
-### TODO lists
+I’ve also tightened my code against specific logic flaws like Mass Assignment. Since I repurpose the User struct to hold unmarshalled data from the frontend rather than creating a separate DTO, I realized my `decoder.DisallowUnknownFields()` configuration wasn't enough. I learned to add the `json:"-"` tag to sensitive fields like `UserID` to prevent them from being overwritten by a malicious payload. For secret management, I use `Doppler`, and I scan the repo with `TruffleHog` to ensure no secrets have leaked (the scan is currently clean).
+
+To track vulnerabilities, I maintain a rigorous pipeline using Software Composition Analysis (SCA) with `govulncheck` and Static Application Security Testing (SAST) with `gosec`. I also use a combination of `syft` and `grype` to generate an SBOM and check for "ghost dependencies." On the testing side, I run handler-level tests where I spin up a test server instance to ensure malformed requests are rejected with proper error codes rather than causing a 500 server crash. I also use fuzz testing, which helped me realize the application currently crashes on NUL characters, this is documented and on the to-do list to fix.
+
+Finally, I validate my configuration externally to minimize information leakage. I use `ZAP` to attack both the frontend and backend. I verify my SSL strength using `www.ssllabs.com` (while not absolute, it helps discover weaknesses). For headers, I follow `https://web.dev/articles/strict-csp` to minimize XSS risks and use `https://securityheaders.com/`, `https://developer.mozilla.org`, and `https://domsignal.com/secure-header-test` to double-check my work (the latter actually helped me find a few missing headers I have since added). For the database, since we use Supabase to host Postgres, I follow all their security recommendations
+
+## TODO lists
 - [ ] Check all the error message, a lot of them is vague and has no tracibility
 - [ ] set up to reject NUL character
 - [ ] password recovery
