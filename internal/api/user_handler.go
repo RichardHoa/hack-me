@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"net/url"
 	"strings"
 	"time"
 
@@ -62,6 +63,20 @@ func (handler *UserHandler) RegisterNewUser(w http.ResponseWriter, r *http.Reque
 	if err != nil {
 		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(constants.StatusInvalidJSONMessage, constants.MSG_MALFORMED_REQUEST_DATA, "request"))
 		return
+	}
+
+	if User.ImageLink != "" {
+		u, err := url.Parse(User.ImageLink)
+		if err != nil || u.Scheme == "" || u.Host == "" {
+			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("imageLink must be a valid absolute URL", constants.MSG_INVALID_REQUEST_DATA, "imageLink"))
+			return
+		}
+
+		host := strings.ToLower(u.Hostname())
+		if !strings.HasSuffix(host, "googleusercontent.com") && host != "avatars.githubusercontent.com" {
+			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("External CDN links are not allowed", constants.MSG_INVALID_REQUEST_DATA, "imageLink"))
+			return
+		}
 	}
 
 	if strings.TrimSpace(User.Username) == "" || strings.TrimSpace(User.Email) == "" {

@@ -17,13 +17,12 @@ type Message map[string]any
 BeautifyJSON marshals an interface into a pretty-printed JSON string.
 This function is primarily intended for logging or debugging purposes.
 */
-func BeautifyJSON(v any) string {
+func BeautifyJSON(v any) {
 	bytes, err := json.MarshalIndent(v, "", "  ")
 	if err != nil {
 		fmt.Printf("Error marshaling JSON: %v\n", err)
-		return ""
 	}
-	return (string(bytes))
+	fmt.Println((string(bytes)))
 }
 
 /*
