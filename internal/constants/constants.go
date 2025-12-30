@@ -92,7 +92,7 @@ var (
 // Defines the keys for standard claims within JSON Web Tokens.
 const (
 	JWTRefreshTokenID = "SomeThing"
-	JWTUserName       = "yeahyeah"
+	JWTUserName       = "userName"
 	JWTUserID         = "someOtherThing"
 )
 
