@@ -1,8 +1,7 @@
-# 🚀 Hack-Me Backend
+# Hack-Me Backend
+This is the Go backend, for frontend go to [frontend repo](https://github.com/RichardHoa/hack-me-frontend)
 
 ## Running the server locally
-
-Follow these steps for local development and debugging.
 
 1. **Comment out the code that build go app in the docker-compose, we'll run the server manually**
 
@@ -24,7 +23,6 @@ Follow these steps for local development and debugging.
     Start the server from the project root. You must set up doppler first for all the secrets management
 
     ```bash
-    # Standard run
     make run
 
     ```
@@ -42,7 +40,6 @@ To run a specific fuzz test (e.g., for user sign-up):
 ```bash
 go test -run=TestUserRoutes -fuzz=FuzzUserSignUp
 ```
-
 
 ## Note for Database Schema Updates
 
@@ -88,7 +85,6 @@ Finally, I validate my configuration externally to minimize information leakage.
 - [ ] design test for library to capture their behaviour, make sure future version still do what we expect it to do
 - [ ] design test for CSRF token
 - [ ] Implment all the proper security header
-
 
 ## Observe behaviour in the project
 - AI chat is very long since the AI response take 99% of the time. NOTE: this function is currently not used
