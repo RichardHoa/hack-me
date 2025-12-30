@@ -287,6 +287,8 @@ func (handler *UserHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
 			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("input contains null character", constants.MSG_INVALID_REQUEST_DATA, "email and password"))
 		case constants.InvalidData:
 			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(err.Error(), constants.MSG_INVALID_REQUEST_DATA, "email and password"))
+		case constants.ResourceNotFound:
+			utils.WriteJSON(w, http.StatusNotFound, utils.NewMessage(err.Error(), "your account is not found", ""))
 		default:
 			utils.WriteJSON(w, http.StatusInternalServerError, utils.NewMessage(constants.StatusInternalErrorMessage, "", ""))
 		}

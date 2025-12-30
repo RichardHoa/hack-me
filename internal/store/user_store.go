@@ -341,10 +341,10 @@ func (userStore *DBUserStore) LoginAndIssueTokens(user *User) (accessToken, refr
 	switch {
 	case user.GoogleID != "":
 		err = userStore.DB.QueryRow(`SELECT id, username FROM "user" WHERE google_id = $1`, user.GoogleID).Scan(&userID, &userName)
-		errMessage = "Your google auth has problem"
+		errMessage = "Google Login > Cannot find user from database"
 	case user.GithubID != "":
 		err = userStore.DB.QueryRow(`SELECT id, username FROM "user" WHERE github_id = $1`, user.GithubID).Scan(&userID, &userName)
-		errMessage = "Your github auth has problem"
+		errMessage = "Github Login > Cannot find user from database"
 	case user.Email != "" && user.Password.PlainText != "":
 		var hashed sql.NullString
 
@@ -377,7 +377,7 @@ func (userStore *DBUserStore) LoginAndIssueTokens(user *User) (accessToken, refr
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			// cannot find user in database
-			return "", "", "", utils.NewCustomAppError(constants.InvalidData, errMessage)
+			return "", "", "", utils.NewCustomAppError(constants.ResourceNotFound, errMessage)
 		}
 		return "", "", "", err
 	}
