@@ -1,11 +1,5 @@
 # 🚀 Hack-Me Backend
 
----
-## Warning
-All the installation instructions is kind of obsolete since I move to [doppler](https://www.doppler.com/) as a secret manager rather than using .env file, as such a lot of code won't work because it lack the environment variables
-
----
-
 ## Running the server locally
 
 Follow these steps for local development and debugging.
@@ -34,40 +28,20 @@ Follow these steps for local development and debugging.
     make run
 
     ```
----
 
 ##  Running Tests
 
 ### Standard Tests
 Run the complete test suite across all packages:
 ```bash
-go test ./...
+make test
 ```
 
 ### Fuzz Testing
 To run a specific fuzz test (e.g., for user sign-up):
 ```bash
-go test -run=TestUserRoutes -fuzz=FuzzUserSignUp -parallel=4
+go test -run=TestUserRoutes -fuzz=FuzzUserSignUp
 ```
-
----
-
-## Project Structure
-
-The application follows a layered architecture to separate concerns. The data flows from the entry point to the database as follows:
-
--   `main.go`
-    -   The entry point of the application. It initializes the database connection, runs migrations, and starts the HTTP server.
--   `app.go`
-    -   Defines the core `application` struct. This struct holds dependencies like the database store and is passed to the routers to create handlers.
--   `handler/`
-    -   Contains functions that directly handle incoming HTTP requests, parse data, and call the appropriate services.
--   `store/`
-    -   Contains all database logic. It's responsible for executing SQL queries and managing data persistence.
--   `migrations/`
-    -   Contains all `.sql` files for database schema migrations. These are run automatically when the server starts up to ensure the database schema is up-to-date.
-
----
 
 ## 📝 Important Notes
 
@@ -100,6 +74,7 @@ When you create or modify a migration file, you **must reset both the main and t
 - While adding CIA comment to the database, I realize it has a very interesting insights of letting you know which information is pubic, which one is private but with some digging the user can find it. it gives me a much clearer picture of what will happen and force me to think about the consequences with that data. One concrte example of this is when implementing the counting mechanism for `challenge_response_vote_store`. I initially do a transactions, I would update the `challenge_response_vote` table and then update the `challenge_response`, where the votes digits are stored. But when I consider the Integrity aspect and think about what if someone manage to change the number in the database, specifically the `challenge_response_vote` table, then that would have no effect on the store on the `challenge_response` table, thus I switch to using a trigger
 - After reading the mass assignment vulerability, I realize that some of my struct has UserID in the struct that get unmarshal from the json data from the client, I've already enabled 	decoder.DisallowUnknownFields()  but since there is no  `json:"-"`, it can still be subjected to Mass Assignment since in the user route I repurpose the User struct to contains the unmarshal data from frontend instead of creating a DTO, so I've learnt to add the json:"-" tag, which prevents the UserID to be assigned whatsoever
 - I want the app to be secure as posible, so to track all the vulnerabilities, we use Software Composition Analysis (SCA) `govulncheck` and  Static Application Security Testing (SAST) of `gosec`, I also use a combination of syft_and_grype as SBOM and checker to make sure that there is no ghost depencecies 
+- I also consult https://top10proactive.owasp.org/the-top-10/, which help me massively in finding more security releated bugs and doing all the toolings mention here
 - I use ZAP to attack the frontend and backend to minimize information leakage and obvious error 
 - We have fuzz testing to check whether the server crash at any input, turn out it crashes at NUL character, but we don't have the time to fix it yet
 - I use www.ssllabs.com to check the SSl strength of the website, while the tool grade is not absolute, it's still good to check it to maximize our chances of discovering weakness
@@ -115,9 +90,7 @@ In app security:
 - We are supposed to Classify the data sent, processed, and stored in your system, but I've only manage to classify the data being stored
 
 
-
-
-## TODO lists
+### TODO lists
 - [ ] Check all the error message, a lot of them is vague and has no tracibility
 - [ ] set up to reject NUL character
 - [ ] password recovery
