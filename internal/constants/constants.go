@@ -96,7 +96,7 @@ const (
 	JWTUserID         = "someOtherThing"
 )
 
-// Defines constants for AI related functions
+// Defines constants for AI related functions.
 const (
 	AIModel          = "gemini-2.5-flash"
 	AIEmbededModel   = "text-embedding-004"
