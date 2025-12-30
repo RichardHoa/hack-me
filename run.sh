@@ -4,6 +4,17 @@ set -Eeuo pipefail
 LOGFILE="${LOGFILE:-output.log}"
 PIDFILE="${PIDFILE:-run.pid}"
 
+update_and_rebuild() {
+  echo ">>> Pulling latest changes from git..."
+  git pull origin main
+
+  echo ">>> Updating Go modules..."
+  go mod download
+  go mod tidy
+
+  echo ">>> Update complete."
+}
+
 ensure_not_running() {
   if [[ -f "$PIDFILE" ]]; then
     local pid
@@ -116,12 +127,23 @@ status() {
 }
 
 case "${1:-start}" in
-  start|--start) start ;;
-  stop|--stop)   stop ;;
-  status|--status) status ;;
+  start|--start) 
+    start 
+    ;;
+  stop|--stop)   
+    stop 
+    ;;
+  status|--status) 
+    status 
+    ;;
+  all|--all)
+    echo ">>> Performing full update and restart..."
+    stop
+    update_and_rebuild
+    start
+    ;;
   *)
-    echo "Usage: $0 [start|--start|stop|--stop|status|--status]"
+    echo "Usage: $0 [start|stop|status|all]"
     exit 2
     ;;
 esac
-
