@@ -84,11 +84,6 @@ func (handler *UserHandler) RegisterNewUser(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	if User.Password.PlainText == "" && User.GoogleID == "" && User.GithubID == "" {
-		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("One of the three fields must exist", constants.MSG_LACKING_MANDATORY_FIELDS, "googleID and githubID and password"))
-		return
-	}
-
 	if User.Password.PlainText != "" {
 		checkResult := utils.CheckPasswordValid(User.Password.PlainText)
 		if checkResult.Error == nil && checkResult.ErrorMessage != "" {
@@ -112,6 +107,10 @@ func (handler *UserHandler) RegisterNewUser(w http.ResponseWriter, r *http.Reque
 		case constants.PQUniqueViolation:
 			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("User already exist, please try again with a different account", constants.MSG_INVALID_REQUEST_DATA, "userName or email"))
 			return
+		case constants.PQCheckViolation:
+			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("One of the three fields must exist", constants.MSG_LACKING_MANDATORY_FIELDS, "googleID and githubID and password"))
+			return
+
 		default:
 			handler.Logger.Printf("ERROR: RegisterNewUser > CreateUser: %v", err)
 			utils.WriteJSON(w, http.StatusInternalServerError, utils.NewMessage(err.Error(), "", ""))

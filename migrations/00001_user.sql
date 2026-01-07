@@ -2,7 +2,7 @@
 -- +goose StatementBegin
 CREATE TABLE IF NOT EXISTS "user" (
     id UUID PRIMARY KEY, 
-    username TEXT NOT NULL UNIQUE,
+    username TEXT NOT NULL UNIQUE CHECK(length(trim(username)) >= 3 AND trim(username) = username AND length(trim(username)) <= 50), 
     email TEXT NOT NULL UNIQUE, 
     image_link TEXT, 
     password TEXT, 

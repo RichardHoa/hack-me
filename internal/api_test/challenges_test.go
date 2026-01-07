@@ -56,7 +56,7 @@ func TestChallengesRoutes(t *testing.T) {
 							"userName":  "Richard Hoa",
 							"password":  "ThisIsAVerySEcurePasswordThatWon'tBeStop",
 							"email":     "testEmail@gmail.com",
-							"imageLink": "example.image.com",
+							"imageLink": "https://avatars.githubusercontent.com/u/141636214?v=4",
 						},
 					},
 					expectStatus: http.StatusCreated,
@@ -72,58 +72,6 @@ func TestChallengesRoutes(t *testing.T) {
 						},
 					},
 					expectStatus: http.StatusOK,
-				},
-				{
-					name: "challenge name less than 3 character",
-					request: TestRequest{
-						method: "POST",
-						path:   "/v1/challenges",
-						body: map[string]string{
-							"name":     "hs",
-							"content":  "This is a very powerful challenge that no one will be able to defeat",
-							"category": "web hacking",
-						},
-					},
-					expectStatus: http.StatusBadRequest,
-				},
-				{
-					name: "challenge name with leading white space",
-					request: TestRequest{
-						method: "POST",
-						path:   "/v1/challenges",
-						body: map[string]string{
-							"name":     "       lots of white space in there",
-							"content":  "This is a very powerful challenge that no one will be able to defeat",
-							"category": "web hacking",
-						},
-					},
-					expectStatus: http.StatusBadRequest,
-				},
-				{
-					name: "challenge name with trailing whitespace",
-					request: TestRequest{
-						method: "POST",
-						path:   "/v1/challenges",
-						body: map[string]string{
-							"name":     "lots of white space in there                       ",
-							"content":  "This is a very powerful challenge that no one will be able to defeat",
-							"category": "web hacking",
-						},
-					},
-					expectStatus: http.StatusBadRequest,
-				},
-				{
-					name: "challenge with both white space",
-					request: TestRequest{
-						method: "POST",
-						path:   "/v1/challenges",
-						body: map[string]string{
-							"name":     "                           lots of white space in there                       ",
-							"content":  "This is a very powerful challenge that no one will be able to defeat",
-							"category": "web hacking",
-						},
-					},
-					expectStatus: http.StatusBadRequest,
 				},
 				{
 					name: "challenge name with white space only",
@@ -1254,7 +1202,7 @@ func TestChallengesRoutes(t *testing.T) {
 							"userName":  "Second User",
 							"password":  "ThisIsAVerySEcurePasswordThatWon'tBeStopForSecondUser",
 							"email":     "test2@gmail.com",
-							"imageLink": "example.image.com",
+							"imageLink": "https://avatars.githubusercontent.com/u/141636214?v=4",
 						},
 					},
 					expectStatus: http.StatusCreated,

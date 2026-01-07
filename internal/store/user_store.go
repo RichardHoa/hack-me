@@ -304,8 +304,8 @@ func (userStore *DBUserStore) CreateUser(user *User) (uuid.UUID, error) {
 	_, err = userStore.DB.Exec(
 		query,
 		userUUID,
-		utils.NullIfEmpty(user.Username),
-		utils.NullIfEmpty(user.Email),
+		user.Username,
+		user.Email,
 		user.ImageLink,
 		utils.NullIfEmpty(hashedPassword),
 		utils.NullIfEmpty(user.GoogleID),

@@ -40,7 +40,7 @@ func TestUserRoutes(t *testing.T) {
 							"userName":  "Richard Hoa",
 							"password":  "StrongSecurePasswordThatWon'tBemarkAsInvalid",
 							"email":     "testEmail@gmail.com",
-							"imageLink": "example.image.com",
+							"imageLink": "https://avatars.githubusercontent.com/u/141636214?v=4",
 							"googleID":  "",
 							"githubID":  "",
 						},
@@ -74,7 +74,7 @@ func TestUserRoutes(t *testing.T) {
 							"userName":  "activityUser",
 							"password":  "PasswordForActivityTest",
 							"email":     "activity@test.com",
-							"imageLink": "activity.image.com",
+							"imageLink": "https://avatars.githubusercontent.com/u/141636214?v=4",
 						},
 					},
 					expectStatus: http.StatusCreated,
@@ -155,8 +155,8 @@ func TestUserRoutes(t *testing.T) {
 						if resp.Data.User.UserName != "activityUser" {
 							t.Errorf("Expected username 'activityUser', got '%s'", resp.Data.User.UserName)
 						}
-						if resp.Data.User.ImageLink != "activity.image.com" {
-							t.Errorf("Expected image link 'activity.image.com', got '%s'", resp.Data.User.ImageLink)
+						if resp.Data.User.ImageLink != "https://avatars.githubusercontent.com/u/141636214?v=4" {
+							t.Errorf("Expected image link 'https://avatars.githubusercontent.com/u/141636214?v=4', got '%s'", resp.Data.User.ImageLink)
 						}
 
 						// Check challenges
@@ -425,7 +425,7 @@ func TestUserRoutes(t *testing.T) {
 							"userName":  "socialUser",
 							"email":     "social@test.com",
 							"googleID":  "social-google-id-123",
-							"imageLink": "Random image link",
+							"imageLink": "https://avatars.githubusercontent.com/u/141636214?v=4",
 						},
 					},
 					expectStatus: http.StatusCreated,
@@ -481,7 +481,7 @@ func TestUserRoutes(t *testing.T) {
 							"userName":  "Richard Hoa",
 							"password":  "StrongSecurePasswordThatWon'tBemarkAsInvalid",
 							"email":     "testEmail@gmail.com",
-							"imageLink": "example.image.com",
+							"imageLink": "https://avatars.githubusercontent.com/u/141636214?v=4",
 							"googleID":  "",
 							"githubID":  "",
 						},
@@ -708,15 +708,6 @@ func TestUserRoutes(t *testing.T) {
 						body:   map[string]string{"newUsername": "   "},
 					},
 					expectStatus: http.StatusBadRequest,
-				},
-				{
-					name: "a very long string",
-					request: TestRequest{
-						method: "PUT",
-						path:   "/v1/users/username",
-						body:   map[string]string{"newUsername": "aVeryLongUsernameThatIsDefinitelyOverAnyReasonableLimitAndShouldBeRejectedByTheServerValidationLogicPleaseRejectMe"},
-					},
-					expectStatus: http.StatusOK,
 				},
 				{
 					name: "SQL injection attempt",

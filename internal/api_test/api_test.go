@@ -116,7 +116,7 @@ type TestStep struct {
 // 							"userName":  "Richard Hoa",
 // 							"password":  "ThisIsAVerySEcurePasswordThatWon'tBeStop",
 // 							"email":     "testEmail@gmail.com",
-// 							"imageLink": "example.image.com",
+// 							"imageLink": "https://avatars.githubusercontent.com/u/141636214?v=4",
 // 						},
 // 					},
 // 					expectStatus: http.StatusCreated,

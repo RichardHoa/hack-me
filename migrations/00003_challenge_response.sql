@@ -6,8 +6,8 @@ CREATE TABLE IF NOT EXISTS challenge_response (
     user_id UUID NOT NULL REFERENCES "user"(id) ON DELETE CASCADE, 
     name TEXT NOT NULL, 
     content TEXT NOT NULL, 
-    up_vote INT NOT NULL DEFAULT 0, 
-    down_vote INT NOT NULL DEFAULT 0, 
+    up_vote INT NOT NULL DEFAULT 0 CHECK (up_vote >= 0), 
+    down_vote INT NOT NULL DEFAULT 0 CHECK (down_vote >= 0),
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
 
