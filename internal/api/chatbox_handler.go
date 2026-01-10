@@ -62,7 +62,7 @@ type RelevantVectorDoc struct {
 func (handler *ChatboxHandler) HandleChat(w http.ResponseWriter, r *http.Request) {
 	var req ChatRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		handler.Logger.Printf("ERROR: HandleChat > json encoding: %v", err)
+		handler.Logger.Printf("ERROR: HandleChat > jsonDecoding: %v", err)
 		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(constants.StatusInvalidJSONMessage, constants.MSG_MALFORMED_REQUEST_DATA, "request"))
 		return
 	}

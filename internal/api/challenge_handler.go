@@ -117,7 +117,7 @@ func (handler *ChallengeHandler) PostChallenge(w http.ResponseWriter, r *http.Re
 	decoder.DisallowUnknownFields()
 	err = decoder.Decode(&req)
 	if err != nil {
-		handler.Logger.Printf("ERROR: PostChallenge > json encoding: %v", err)
+		handler.Logger.Printf("ERROR: PostChallenge > jsonDecoding: %v", err)
 		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(constants.StatusInvalidJSONMessage, constants.MSG_MALFORMED_REQUEST_DATA, "request"))
 		return
 	}
@@ -184,7 +184,7 @@ func (handler *ChallengeHandler) DeleteChallege(w http.ResponseWriter, r *http.R
 	decoder.DisallowUnknownFields()
 	err = decoder.Decode(&req)
 	if err != nil {
-		handler.Logger.Printf("ERROR: DeleteChallenge > json encoding: %v", err)
+		handler.Logger.Printf("ERROR: DeleteChallenge > jsonDecoding: %v", err)
 		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(constants.StatusInvalidJSONMessage, constants.MSG_MALFORMED_REQUEST_DATA, "request"))
 		return
 	}
@@ -231,7 +231,7 @@ func (handler *ChallengeHandler) ModifyChallenge(w http.ResponseWriter, r *http.
 	decoder.DisallowUnknownFields()
 	err = decoder.Decode(&req)
 	if err != nil {
-		handler.Logger.Printf("ERROR: ModifyChallenge > json encoding: %v", err)
+		handler.Logger.Printf("ERROR: ModifyChallenge > jsonDecoding: %v", err)
 		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(constants.StatusInvalidJSONMessage, constants.MSG_MALFORMED_REQUEST_DATA, "request"))
 		return
 	}

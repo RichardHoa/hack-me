@@ -286,10 +286,10 @@ func CreateTokens(userID, userName string, refreshTokenTime int64) (signedAccess
 
 	refreshClaims := jwt.MapClaims{
 		constants.JWTRefreshTokenID: refreshID,
-		constants.JWTUserName:  userName,
-		constants.JWTUserID:    userID,
-		"exp":                    refreshTokenTime,
-		"iat":                    time.Now().Unix(),
+		constants.JWTUserName:       userName,
+		constants.JWTUserID:         userID,
+		"exp":                       refreshTokenTime,
+		"iat":                       time.Now().Unix(),
 	}
 	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS512, refreshClaims)
 	signedRefreshToken, err = refreshToken.SignedString([]byte(constants.RefreshTokenSecret))

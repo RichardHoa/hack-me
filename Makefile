@@ -5,7 +5,7 @@ GOVULNCHECK=govulncheck
 
 prod: check build
 
-check: update tidy vet fmt vulncheck gosec syft_and_grype
+check: update vet fmt vulncheck gosec syft_and_grype tidy
 
 up:
 	docker compose up --build -d
@@ -58,6 +58,7 @@ vet:
 
 syft_and_grype:
 	@echo "Checking SBOMS and potential vulnerabilities..."
+	grype db update
 	syft ./ -o cyclonedx-json | grype
 
 

@@ -75,6 +75,9 @@ To track vulnerabilities, I maintain a rigorous pipeline using Software Composit
 Finally, I validate my configuration externally to minimize information leakage. I use `ZAP` to attack both the frontend and backend. I verify my SSL strength using `www.ssllabs.com` (while not absolute, it helps discover weaknesses). For headers, I follow `https://web.dev/articles/strict-csp` to minimize XSS risks and use `https://securityheaders.com/`, `https://developer.mozilla.org`, and `https://domsignal.com/secure-header-test` to double-check my work (the latter actually helped me find a few missing headers I have since added). For the database, since we use Supabase to host Postgres, I follow all their security recommendations
 
 ## TODO lists
+- [ ] Specify the allow size of each file in the input data (in postgres)
+- [ ] Check JSON validity before parsing to save resources
+- [ ] use https://github.com/tidwall/gjson to check for json BEFORE parsing it into struct
 - [ ] Check all the error message, a lot of them is vague and has no tracibility
 - [ ] set up to reject NUL character
 - [ ] password recovery
