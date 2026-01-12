@@ -37,7 +37,7 @@ func (handler *ChallengeResponseVoteHandler) PostVote(w http.ResponseWriter, r *
 	err = decoder.Decode(&req)
 	if err != nil {
 		handler.Logger.Printf("ERROR: PostChallengeResponseVote > jsonDecoding: %v", err)
-		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(constants.StatusInvalidJSONMessage, constants.MSG_MALFORMED_REQUEST_DATA, "request"))
+		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(constants.StatusInvalidBodyMessage, constants.MSG_MALFORMED_REQUEST_DATA, "request"))
 		return
 	}
 
@@ -95,7 +95,7 @@ func (handler *ChallengeResponseVoteHandler) DeleteVote(w http.ResponseWriter, r
 	err = decoder.Decode(&req)
 	if err != nil {
 		handler.Logger.Printf("ERROR: DeleteChallengeResponseVote > jsonDecoding: %v", err)
-		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(constants.StatusInvalidJSONMessage, constants.MSG_MALFORMED_REQUEST_DATA, "request"))
+		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(constants.StatusInvalidBodyMessage, constants.MSG_MALFORMED_REQUEST_DATA, "request"))
 		return
 	}
 

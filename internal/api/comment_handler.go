@@ -39,7 +39,7 @@ func (handler *CommentHandler) PostComment(w http.ResponseWriter, r *http.Reques
 	err = decoder.Decode(&req)
 	if err != nil {
 		handler.Logger.Printf("ERROR: PostComment > jsonDecoding: %v", err)
-		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(constants.StatusInvalidJSONMessage, constants.MSG_MALFORMED_REQUEST_DATA, "request"))
+		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(constants.StatusInvalidBodyMessage, constants.MSG_MALFORMED_REQUEST_DATA, "request"))
 		return
 	}
 
@@ -93,7 +93,7 @@ func (handler *CommentHandler) ModifyComment(w http.ResponseWriter, r *http.Requ
 	err = decoder.Decode(&req)
 	if err != nil {
 		handler.Logger.Printf("ERROR: ModifyComment > jsonDecoding: %v", err)
-		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(constants.StatusInvalidJSONMessage, constants.MSG_MALFORMED_REQUEST_DATA, "request"))
+		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(constants.StatusInvalidBodyMessage, constants.MSG_MALFORMED_REQUEST_DATA, "request"))
 		return
 	}
 
@@ -147,7 +147,7 @@ func (handler *CommentHandler) DeleteComment(w http.ResponseWriter, r *http.Requ
 	err = decoder.Decode(&req)
 	if err != nil {
 		handler.Logger.Printf("ERROR: DeleteComment > jsonDecoding: %v", err)
-		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(constants.StatusInvalidJSONMessage, constants.MSG_MALFORMED_REQUEST_DATA, "request"))
+		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(constants.StatusInvalidBodyMessage, constants.MSG_MALFORMED_REQUEST_DATA, "request"))
 		return
 	}
 

@@ -17,6 +17,13 @@ func NewMiddleWare(logger *log.Logger) MiddleWare {
 	return MiddleWare{Logger: logger}
 }
 
+func (middleware *MiddleWare) LimitSizeMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		r.Body = http.MaxBytesReader(w, r.Body, int64(constants.MaxRequestBodySize))
+		next.ServeHTTP(w, r)
+	})
+}
+
 func (middleware *MiddleWare) CorsMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")

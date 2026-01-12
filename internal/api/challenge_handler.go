@@ -5,9 +5,9 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-	"strings"
 
 	"github.com/RichardHoa/hack-me/internal/constants"
+	"github.com/RichardHoa/hack-me/internal/domains"
 	"github.com/RichardHoa/hack-me/internal/store"
 	"github.com/RichardHoa/hack-me/internal/utils"
 )
@@ -29,15 +29,33 @@ func (handler *ChallengeHandler) GetChallenges(w http.ResponseWriter, r *http.Re
 
 	popularity := query.Get("popularity")
 	categories := query["category"]
-	name := query.Get("name")
-	exactName := query.Get("exactName")
+	nameDTO := query.Get("name")
+	exactNameDTO := query.Get("exactName")
 	pageSize := query.Get("pageSize")
 	page := query.Get("page")
 
-	trimmedName := strings.TrimSpace(name)
-	trimmedExactName := strings.TrimSpace(exactName)
+	getChallengeParams := store.GetChallengeParams{}
 
-	if trimmedName != "" && trimmedExactName != "" {
+	if nameDTO != "" {
+		name, err := domains.NewChallengeName(nameDTO)
+		if err != nil {
+			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(err.Error(), constants.MSG_INVALID_REQUEST_DATA, "query"))
+			return
+		}
+		getChallengeParams.Name = &name
+	}
+
+	if exactNameDTO != "" {
+		exactName, err := domains.NewChallengeName(exactNameDTO)
+		if err != nil {
+			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(err.Error(), constants.MSG_INVALID_REQUEST_DATA, "query"))
+			return
+		}
+		getChallengeParams.ExactName = &exactName
+
+	}
+
+	if getChallengeParams.Name != nil && getChallengeParams.ExactName != nil {
 		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("name and exactName cannot both be present", constants.MSG_INVALID_REQUEST_DATA, "query"))
 		return
 	}
@@ -52,6 +70,8 @@ func (handler *ChallengeHandler) GetChallenges(w http.ResponseWriter, r *http.Re
 			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("page cannot be negative or 0", constants.MSG_MALFORMED_REQUEST_DATA, "page"))
 			return
 		}
+
+		getChallengeParams.Page = &pageNum
 	}
 
 	if pageSize != "" {
@@ -65,18 +85,19 @@ func (handler *ChallengeHandler) GetChallenges(w http.ResponseWriter, r *http.Re
 			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("pageSize cannot be negative or 0", constants.MSG_MALFORMED_REQUEST_DATA, "pageSize"))
 			return
 		}
+
+		getChallengeParams.PageSize = &pageSizeNum
 	}
 
-	freeQuery := store.ChallengeFreeQuery{
-		Popularity: popularity,
-		Category:   categories,
-		Name:       name,
-		ExactName:  exactName,
-		PageSize:   pageSize,
-		Page:       page,
+	if popularity != "" {
+		getChallengeParams.Popularity = &popularity
 	}
 
-	challenges, metaPage, err := handler.ChallengeStore.GetChallenges(freeQuery)
+	if len(categories) != 0 {
+		getChallengeParams.Category = &categories
+	}
+
+	challenges, metaPage, err := handler.ChallengeStore.GetChallenges(getChallengeParams)
 
 	if err != nil {
 		handler.Logger.Printf("ERROR: GetChallenges -> storeGetChallenges: %v", err)
@@ -111,46 +132,47 @@ func (handler *ChallengeHandler) PostChallenge(w http.ResponseWriter, r *http.Re
 
 	userID := result[0]
 
-	var req store.PostChallengeRequest
+	var dto store.PostChallengeRequest
 
 	decoder := json.NewDecoder(r.Body)
 	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&req)
+	err = decoder.Decode(&dto)
 	if err != nil {
 		handler.Logger.Printf("ERROR: PostChallenge > jsonDecoding: %v", err)
-		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(constants.StatusInvalidJSONMessage, constants.MSG_MALFORMED_REQUEST_DATA, "request"))
+		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(constants.StatusInvalidBodyMessage, constants.MSG_MALFORMED_REQUEST_DATA, "request"))
 		return
 	}
 
-	err = utils.ValidateJSONFieldsNotEmpty(w, req)
+	err = utils.ValidateJSONFieldsNotEmpty(w, dto)
 	if err != nil {
 		return
 	}
 
-	if strings.Contains(req.Name, "#") {
-		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("You can't have symbol # in challenge name", constants.MSG_INVALID_REQUEST_DATA, "name"))
+	challengeName, err := domains.NewChallengeName(dto.Name)
+	if err != nil {
+		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(err.Error(), constants.MSG_MALFORMED_REQUEST_DATA, "request"))
 		return
 	}
 
-	challenge := store.Challenge{
+	postChallengeParams := store.PostChallengeParams{
 		UserID:   userID,
-		Name:     req.Name,
-		Content:  req.Content,
-		Category: req.Category,
+		Name:     challengeName,
+		Content:  dto.Content,
+		Category: dto.Category,
 	}
 
-	err = handler.ChallengeStore.CreateChallenges(&challenge)
+	err = handler.ChallengeStore.CreateChallenges(&postChallengeParams)
 	if err != nil {
 		switch utils.ClassifyError(err) {
 		case constants.PQUniqueViolation:
-			handler.Logger.Printf("User ID: %v try to add challenge name that already exist\n", challenge.UserID)
+			handler.Logger.Printf("User ID: %v try to add challenge name that already exist\n", postChallengeParams.UserID)
 			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("Challenge name already exist", constants.MSG_INVALID_REQUEST_DATA, "name"))
 			return
 		case constants.PQCheckViolation:
 			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("Name length minimum 3 and maximum 50 characters long with no leading or trailing whitespace", constants.MSG_INVALID_REQUEST_DATA, "name"))
 			return
 		case constants.PQForeignKeyViolation:
-			handler.Logger.Printf("ERROR: Invalid User ID: %v", challenge.UserID)
+			handler.Logger.Printf("ERROR: Invalid User ID: %v", postChallengeParams.UserID)
 			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, "cookies"))
 			return
 		case constants.PQInvalidTextRepresentation:
@@ -178,23 +200,29 @@ func (handler *ChallengeHandler) DeleteChallege(w http.ResponseWriter, r *http.R
 	}
 	userID := result[0]
 
-	var req store.DeleteChallengeRequest
+	var dto store.DeleteChallengeRequest
 
 	decoder := json.NewDecoder(r.Body)
 	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&req)
+	err = decoder.Decode(&dto)
 	if err != nil {
 		handler.Logger.Printf("ERROR: DeleteChallenge > jsonDecoding: %v", err)
-		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(constants.StatusInvalidJSONMessage, constants.MSG_MALFORMED_REQUEST_DATA, "request"))
+		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(constants.StatusInvalidBodyMessage, constants.MSG_MALFORMED_REQUEST_DATA, "request"))
 		return
 	}
 
-	err = utils.ValidateJSONFieldsNotEmpty(w, req)
+	challengeName, err := domains.NewChallengeName(dto.Name)
 	if err != nil {
+		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(err.Error(), constants.MSG_MALFORMED_REQUEST_DATA, "request"))
 		return
 	}
 
-	err = handler.ChallengeStore.DeleteChallenge(req.Name, userID)
+	deleteChallengeParams := store.DeleteChallengeParams{
+		ChallengeName: challengeName,
+		UserID:        userID,
+	}
+
+	err = handler.ChallengeStore.DeleteChallenge(deleteChallengeParams)
 	if err != nil {
 		handler.Logger.Printf("ERROR: DeleteChallenge > store Delete challenge: %v", err)
 		switch utils.ClassifyError(err) {
@@ -225,30 +253,46 @@ func (handler *ChallengeHandler) ModifyChallenge(w http.ResponseWriter, r *http.
 	}
 	userID := result[0]
 
-	var req store.PutChallengeRequest
+	var dto store.ModifyChallengeRequest
 
 	decoder := json.NewDecoder(r.Body)
 	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&req)
+	err = decoder.Decode(&dto)
 	if err != nil {
 		handler.Logger.Printf("ERROR: ModifyChallenge > jsonDecoding: %v", err)
-		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(constants.StatusInvalidJSONMessage, constants.MSG_MALFORMED_REQUEST_DATA, "request"))
+		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(constants.StatusInvalidBodyMessage, constants.MSG_MALFORMED_REQUEST_DATA, "request"))
 		return
 	}
 
-	req.UserID = userID
-
-	if req.OldName == "" {
-		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("Previous challenge name must be provided", constants.MSG_LACKING_MANDATORY_FIELDS, "oldName"))
+	oldName, err := domains.NewChallengeName(dto.OldName)
+	if err != nil {
+		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(err.Error(), constants.MSG_LACKING_MANDATORY_FIELDS, "oldName"))
 		return
 	}
 
-	if req.Name == "" && req.Category == "" && req.Content == "" {
-		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("One of the three fields must exist", constants.MSG_LACKING_MANDATORY_FIELDS, "name, category, content"))
-		return
+	modifyChallengeParams := store.ModifyChallengeParams{
+		UserID:  userID,
+		OldName: oldName,
 	}
 
-	err = handler.ChallengeStore.ModifyChallenge(req)
+	if dto.NewName != "" {
+		newName, err := domains.NewChallengeName(dto.NewName)
+		if err != nil {
+			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(err.Error(), constants.MSG_LACKING_MANDATORY_FIELDS, "oldName"))
+			return
+		}
+		modifyChallengeParams.NewName = &newName
+	}
+
+	if dto.Category != "" {
+		modifyChallengeParams.Category = &dto.Category
+	}
+
+	if dto.Content != "" {
+		modifyChallengeParams.Content = &dto.Content
+	}
+
+	err = handler.ChallengeStore.ModifyChallenge(modifyChallengeParams)
 	if err != nil {
 		handler.Logger.Printf("ERROR: ModifyChallenge > store modify challenge: %v", err)
 		switch utils.ClassifyError(err) {

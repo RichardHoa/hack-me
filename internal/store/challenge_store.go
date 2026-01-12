@@ -2,12 +2,14 @@ package store
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/RichardHoa/hack-me/internal/constants"
+	"github.com/RichardHoa/hack-me/internal/domains"
 	"github.com/RichardHoa/hack-me/internal/utils"
 )
 
@@ -23,45 +25,62 @@ func NewChallengeStore(db *sql.DB, commentStore *DBCommentStore) *DBChallengeSto
 	}
 }
 
+type PostChallengeParams struct {
+	UserID   string
+	Name     domains.ChallengeName
+	Category string
+	Content  string
+}
+
 type PostChallengeRequest struct {
 	Name     string `json:"name"`
 	Category string `json:"category"`
 	Content  string `json:"content"`
-	UserID   string `json:"-"`
 }
 
 type DeleteChallengeRequest struct {
 	Name string `json:"name"`
 }
 
-type PutChallengeRequest struct {
-	Name     string `json:"name"`
+type DeleteChallengeParams struct {
+	ChallengeName domains.ChallengeName
+	UserID        string
+}
+
+type ModifyChallengeRequest struct {
+	NewName  string `json:"name"`
 	OldName  string `json:"oldName"`
 	Category string `json:"category"`
 	Content  string `json:"content"`
-	UserID   string `json:"-"`
+}
+
+type ModifyChallengeParams struct {
+	OldName  domains.ChallengeName
+	NewName  *domains.ChallengeName
+	Category *string
+	Content  *string
+	UserID   string
 }
 
 type Challenge struct {
-	ID        string    `json:"id"`
-	UserID    string    `json:"-"`
-	UserName  string    `json:"userName"`
-	Name      string    `json:"name"`
-	Category  string    `json:"category"`
-	Content   string    `json:"content"`
-	CreatedAt time.Time `json:"createdAt"`
-	UpdatedAt time.Time `json:"updatedAt"`
-	Comments  []Comment `json:"comments"`
+	ID        string                `json:"id"`
+	UserName  string                `json:"userName"`
+	Name      domains.ChallengeName `json:"name"`
+	Category  string                `json:"category"`
+	Content   string                `json:"content"`
+	CreatedAt time.Time             `json:"createdAt"`
+	UpdatedAt time.Time             `json:"updatedAt"`
+	Comments  []Comment             `json:"comments"`
 }
 type Challenges []Challenge
 
-type ChallengeFreeQuery struct {
-	Popularity string
-	Category   []string
-	Name       string
-	ExactName  string
-	PageSize   string
-	Page       string
+type GetChallengeParams struct {
+	Popularity *string
+	Category   *[]string
+	Name       *domains.ChallengeName
+	ExactName  *domains.ChallengeName
+	PageSize   *int
+	Page       *int
 }
 
 type MetaDataPage struct {
@@ -71,13 +90,13 @@ type MetaDataPage struct {
 }
 
 type ChallengeStore interface {
-	GetChallenges(freeQuery ChallengeFreeQuery) (*Challenges, *MetaDataPage, error)
-	CreateChallenges(challenge *Challenge) error
-	DeleteChallenge(challengeName string, userID string) error
-	ModifyChallenge(updatedChallenge PutChallengeRequest) error
+	GetChallenges(params GetChallengeParams) (*Challenges, *MetaDataPage, error)
+	CreateChallenges(params *PostChallengeParams) error
+	DeleteChallenge(params DeleteChallengeParams) error
+	ModifyChallenge(params ModifyChallengeParams) error
 }
 
-func (Store *DBChallengeStore) GetChallenges(freeQuery ChallengeFreeQuery) (*Challenges, *MetaDataPage, error) {
+func (Store *DBChallengeStore) GetChallenges(params GetChallengeParams) (*Challenges, *MetaDataPage, error) {
 	baseQuery := `
 		SELECT 
 			c.id,
@@ -92,29 +111,29 @@ func (Store *DBChallengeStore) GetChallenges(freeQuery ChallengeFreeQuery) (*Cha
 	`
 	countQuery := `SELECT COUNT(*) FROM challenge c`
 	isExactQuery := false
-	conditions := make([]string, 0, 3) // Pre-allocate with max possible conditions
+	conditions := make([]string, 0, 3)
 	args := []any{}
 	argIndex := 1
 
 	// Filter by name (case-insensitive)
-	if freeQuery.Name != "" {
+	if params.Name != nil {
 		conditions = append(conditions, fmt.Sprintf("LOWER(c.name) LIKE LOWER($%d)", argIndex))
-		args = append(args, "%"+freeQuery.Name+"%")
+		args = append(args, "%"+params.Name.String()+"%")
 		argIndex++
 	}
 
 	// Filter by name (case sensitive, filter by exact)
-	if freeQuery.ExactName != "" {
+	if params.ExactName != nil {
 		isExactQuery = true
 		conditions = append(conditions, fmt.Sprintf("c.name = $%d", argIndex))
-		args = append(args, freeQuery.ExactName)
+		args = append(args, params.ExactName)
 		argIndex++
 	}
 
 	// Filter by category
-	if len(freeQuery.Category) > 0 {
-		placeholders := make([]string, len(freeQuery.Category)) // Pre-allocate exact size
-		for i, cat := range freeQuery.Category {
+	if params.Category != nil && len(*params.Category) > 0 {
+		placeholders := make([]string, len(*params.Category))
+		for i, cat := range *params.Category {
 			placeholders[i] = fmt.Sprintf("$%d", argIndex)
 			args = append(args, cat)
 			argIndex++
@@ -128,22 +147,25 @@ func (Store *DBChallengeStore) GetChallenges(freeQuery ChallengeFreeQuery) (*Cha
 		countQuery += whereClause
 	}
 
-	switch strings.ToLower(freeQuery.Popularity) {
-	case "asc":
-		baseQuery += " ORDER BY c.popular_score ASC"
-	default:
-		baseQuery += " ORDER BY c.popular_score DESC"
+	if params.Popularity != nil {
+		switch strings.ToLower(*params.Popularity) {
+		case "asc":
+			baseQuery += " ORDER BY c.popular_score ASC"
+		case "desc":
+			baseQuery += " ORDER BY c.popular_score DESC"
+		default:
+			return &Challenges{}, &MetaDataPage{}, errors.New("Invalid popularity parameters")
+		}
 	}
 
 	pageSize := constants.DefaultPageSize
-	if ps, err := strconv.Atoi(freeQuery.PageSize); err == nil && ps > 0 {
-		pageSize = ps
+	if params.PageSize != nil {
+		pageSize = *params.PageSize
 	}
 
 	page := constants.DefaultPage
-
-	if p, err := strconv.Atoi(freeQuery.Page); err == nil && p > 0 {
-		page = p
+	if params.Page != nil {
+		page = *params.Page
 	}
 
 	offset := (page - 1) * pageSize
@@ -155,7 +177,7 @@ func (Store *DBChallengeStore) GetChallenges(freeQuery ChallengeFreeQuery) (*Cha
 		return &Challenges{}, &MetaDataPage{}, err
 	}
 
-	// Early return if no results - avoid unnecessary work
+	// Early return if no results
 	if total == 0 {
 		return &Challenges{}, &MetaDataPage{
 			MaxPage:     "0",
@@ -208,7 +230,7 @@ func (Store *DBChallengeStore) GetChallenges(freeQuery ChallengeFreeQuery) (*Cha
 	return &challenges, &metaPage, nil
 }
 
-func (challengeStore *DBChallengeStore) CreateChallenges(challenge *Challenge) error {
+func (challengeStore *DBChallengeStore) CreateChallenges(params *PostChallengeParams) error {
 	query := `
 		INSERT INTO challenge (
 			name, 
@@ -220,10 +242,10 @@ func (challengeStore *DBChallengeStore) CreateChallenges(challenge *Challenge) e
 
 	_, err := challengeStore.DB.Exec(
 		query,
-		challenge.Name,
-		challenge.Content,
-		challenge.UserID,
-		challenge.Category,
+		params.Name,
+		params.Content,
+		params.UserID,
+		params.Category,
 	)
 
 	if err != nil {
@@ -234,12 +256,12 @@ func (challengeStore *DBChallengeStore) CreateChallenges(challenge *Challenge) e
 
 }
 
-func (challengeStore *DBChallengeStore) DeleteChallenge(challengeName string, userID string) error {
+func (challengeStore *DBChallengeStore) DeleteChallenge(params DeleteChallengeParams) error {
 	var challengeExists bool
 
 	err := challengeStore.DB.QueryRow(`
         SELECT EXISTS (SELECT 1 FROM challenge WHERE name = $1)
-    `, challengeName).Scan(&challengeExists)
+    `, params.ChallengeName).Scan(&challengeExists)
 	if err != nil {
 		return fmt.Errorf("failed to check challenge existence: %v", err)
 	}
@@ -256,7 +278,7 @@ func (challengeStore *DBChallengeStore) DeleteChallenge(challengeName string, us
         WHERE name = $1 AND user_id = $2
     `
 
-	result, err := challengeStore.DB.Exec(query, challengeName, userID)
+	result, err := challengeStore.DB.Exec(query, params.ChallengeName, params.UserID)
 	if err != nil {
 		return err
 	}
@@ -273,21 +295,21 @@ func (challengeStore *DBChallengeStore) DeleteChallenge(challengeName string, us
 	return nil
 }
 
-func (challengeStore *DBChallengeStore) ModifyChallenge(updatedChallenge PutChallengeRequest) error {
+func (challengeStore *DBChallengeStore) ModifyChallenge(params ModifyChallengeParams) error {
 	query := `UPDATE challenge SET `
-	params := []any{}
+	queryParams := []any{}
 	paramCount := 1
 
-	if updatedChallenge.Name != "" {
+	if params.NewName != nil {
 		query += fmt.Sprintf("name = $%d, ", paramCount)
-		params = append(params, updatedChallenge.Name)
+		queryParams = append(queryParams, params.NewName)
 		paramCount++
 
 		var count int
 		err := challengeStore.DB.QueryRow(`
 			SELECT COUNT(*) FROM challenge 
 			 WHERE lower(name) = lower($1)
-			`, updatedChallenge.Name).Scan(&count)
+			`, params.NewName).Scan(&count)
 
 		if err != nil {
 			return utils.NewCustomAppError(constants.InternalError, fmt.Sprintf("check name conflict failed: %v", err))
@@ -299,32 +321,29 @@ func (challengeStore *DBChallengeStore) ModifyChallenge(updatedChallenge PutChal
 
 	}
 
-	if updatedChallenge.Category != "" {
+	if params.Category != nil {
 		query += fmt.Sprintf("category = $%d, ", paramCount)
-		params = append(params, updatedChallenge.Category)
+		queryParams = append(queryParams, params.Category)
 		paramCount++
 	}
 
-	if updatedChallenge.Content != "" {
+	if params.Content != nil {
 		query += fmt.Sprintf("content = $%d, ", paramCount)
-		params = append(params, updatedChallenge.Content)
+		queryParams = append(queryParams, params.Content)
 		paramCount++
 	}
 
-	// If no valid fields to update
 	if paramCount == 1 {
 		return utils.NewCustomAppError(constants.InvalidData, "No valid field provided for challenge update")
 	}
 
-	// Remove trailing comma and space
 	query = query[:len(query)-2]
 
-	// Add WHERE clause with both name and user_id check
 	query += fmt.Sprintf(", updated_at = now() WHERE name = $%d AND user_id = $%d", paramCount, paramCount+1)
-	params = append(params, updatedChallenge.OldName, updatedChallenge.UserID)
+	queryParams = append(queryParams, params.OldName, params.UserID)
 
 	// Execute the update
-	result, err := challengeStore.DB.Exec(query, params...)
+	result, err := challengeStore.DB.Exec(query, queryParams...)
 	if err != nil {
 		return err
 	}

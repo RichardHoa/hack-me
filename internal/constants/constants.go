@@ -147,9 +147,10 @@ const (
 // Defines general application constants
 const (
 	StatusInternalErrorMessage = "Internal server error"
-	StatusInvalidJSONMessage   = "Invalid JSON format"
+	StatusInvalidBodyMessage   = "Invalid request body > ERROR 100"
 	UnauthorizedMessage        = "Unauthorized"
 	ForbiddenMessage           = "Forbidden"
+	MaxRequestBodySize         = 5 * 1024 * 1024 // 5MB
 	AccessTokenTime            = 15 * time.Minute
 	RefreshTokenTime           = 7 * (24 * time.Hour)
 	CommentNestedLevel         = 5

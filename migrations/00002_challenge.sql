@@ -18,7 +18,7 @@ END$$;
 -- Create challenge table
 CREATE TABLE IF NOT EXISTS challenge (
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY, 
-    name TEXT NOT NULL,
+    name TEXT NOT NULL CHECK (char_length(name) <= 1000),
     content TEXT NOT NULL, 
     category challenge_category NOT NULL,
     popular_score INT NOT NULL DEFAULT 0, 

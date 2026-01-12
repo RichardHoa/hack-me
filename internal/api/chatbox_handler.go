@@ -63,13 +63,13 @@ func (handler *ChatboxHandler) HandleChat(w http.ResponseWriter, r *http.Request
 	var req ChatRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		handler.Logger.Printf("ERROR: HandleChat > jsonDecoding: %v", err)
-		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(constants.StatusInvalidJSONMessage, constants.MSG_MALFORMED_REQUEST_DATA, "request"))
+		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(constants.StatusInvalidBodyMessage, constants.MSG_MALFORMED_REQUEST_DATA, "request"))
 		return
 	}
 
 	trimmedQuestion := strings.TrimSpace(req.Question)
 	if trimmedQuestion == "" {
-		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(constants.StatusInvalidJSONMessage, constants.MSG_LACKING_MANDATORY_FIELDS, "question"))
+		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(constants.StatusInvalidBodyMessage, constants.MSG_LACKING_MANDATORY_FIELDS, "question"))
 		return
 	}
 
@@ -143,12 +143,12 @@ func (handler *ChatboxHandler) AddDocsToVectorDB(w http.ResponseWriter, r *http.
 	var req IngestRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(
-			constants.StatusInvalidJSONMessage, constants.MSG_MALFORMED_REQUEST_DATA, "request"))
+			constants.StatusInvalidBodyMessage, constants.MSG_MALFORMED_REQUEST_DATA, "request"))
 		return
 	}
 	if len(req.Docs) == 0 {
 		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(
-			constants.StatusInvalidJSONMessage, constants.MSG_LACKING_MANDATORY_FIELDS, "docs"))
+			constants.StatusInvalidBodyMessage, constants.MSG_LACKING_MANDATORY_FIELDS, "docs"))
 		return
 	}
 

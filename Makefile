@@ -20,7 +20,11 @@ air:
 	doppler run -- air
 
 test:
+	doppler run -- go test ./...
+
+test-debug:
 	doppler run -- go test ./... -v -failfast
+
 
 
 
