@@ -154,25 +154,20 @@ func (handler *ChallengeHandler) PostChallenge(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	postChallengeParams := store.PostChallengeParams{
-		UserID:   userID,
-		Name:     challengeName,
-		Content:  dto.Content,
-		Category: dto.Category,
-	}
+	postChallengeParams := store.NewPostChallengeParams(userID, challengeName, dto.Content, dto.Category)
 
-	err = handler.ChallengeStore.CreateChallenges(&postChallengeParams)
+	err = handler.ChallengeStore.CreateChallenges(postChallengeParams)
 	if err != nil {
 		switch utils.ClassifyError(err) {
 		case constants.PQUniqueViolation:
-			handler.Logger.Printf("User ID: %v try to add challenge name that already exist\n", postChallengeParams.UserID)
+			handler.Logger.Printf("User ID: %v try to add challenge name that already exist\n", postChallengeParams.UserID())
 			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("Challenge name already exist", constants.MSG_INVALID_REQUEST_DATA, "name"))
 			return
 		case constants.PQCheckViolation:
 			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("Name length minimum 3 and maximum 50 characters long with no leading or trailing whitespace", constants.MSG_INVALID_REQUEST_DATA, "name"))
 			return
 		case constants.PQForeignKeyViolation:
-			handler.Logger.Printf("ERROR: Invalid User ID: %v", postChallengeParams.UserID)
+			handler.Logger.Printf("ERROR: Invalid User ID: %v", postChallengeParams.UserID())
 			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, "cookies"))
 			return
 		case constants.PQInvalidTextRepresentation:

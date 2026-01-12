@@ -26,10 +26,23 @@ func NewChallengeStore(db *sql.DB, commentStore *DBCommentStore) *DBChallengeSto
 }
 
 type PostChallengeParams struct {
-	UserID   string
-	Name     domains.ChallengeName
-	Category string
-	Content  string
+	userID   string
+	name     domains.ChallengeName
+	category string
+	content  string
+}
+
+func NewPostChallengeParams(userID string, name domains.ChallengeName, content, category string) PostChallengeParams {
+	return PostChallengeParams{
+		userID:   userID,
+		name:     name,
+		content:  content,
+		category: category,
+	}
+}
+
+func (params *PostChallengeParams) UserID() string {
+	return params.userID
 }
 
 type PostChallengeRequest struct {
@@ -91,7 +104,7 @@ type MetaDataPage struct {
 
 type ChallengeStore interface {
 	GetChallenges(params GetChallengeParams) (*Challenges, *MetaDataPage, error)
-	CreateChallenges(params *PostChallengeParams) error
+	CreateChallenges(params PostChallengeParams) error
 	DeleteChallenge(params DeleteChallengeParams) error
 	ModifyChallenge(params ModifyChallengeParams) error
 }
@@ -230,7 +243,7 @@ func (Store *DBChallengeStore) GetChallenges(params GetChallengeParams) (*Challe
 	return &challenges, &metaPage, nil
 }
 
-func (challengeStore *DBChallengeStore) CreateChallenges(params *PostChallengeParams) error {
+func (challengeStore *DBChallengeStore) CreateChallenges(params PostChallengeParams) error {
 	query := `
 		INSERT INTO challenge (
 			name, 
@@ -242,10 +255,10 @@ func (challengeStore *DBChallengeStore) CreateChallenges(params *PostChallengePa
 
 	_, err := challengeStore.DB.Exec(
 		query,
-		params.Name,
-		params.Content,
-		params.UserID,
-		params.Category,
+		params.name,
+		params.content,
+		params.userID,
+		params.category,
 	)
 
 	if err != nil {
