@@ -25,9 +25,21 @@ test:
 test-debug:
 	doppler run -- go test ./... -v -failfast
 
+cpu:
+	doppler run -- go test -bench . -cpuprofile cpu.prof ./internal/api_test
 
+stats:
+	doppler run -- go test -bench=. -benchmem ./internal/api_test
 
+cpu_server:
+	go tool pprof -http=:8080 cpu.prof
 
+trace:
+	doppler run -- go test -trace trace.out ./internal/api_test
+
+trace_server:
+	go tool trace trace.out
+	
 # Builds the application binary.
 # Use: `make build`
 build:
