@@ -154,7 +154,19 @@ func (handler *ChallengeHandler) PostChallenge(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	postChallengeParams := store.NewPostChallengeParams(userID, challengeName, dto.Content, dto.Category)
+	content, err := domains.NewContent(dto.Content)
+	if err != nil {
+		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(err.Error(), constants.MSG_MALFORMED_REQUEST_DATA, "content"))
+		return
+	}
+
+	category, err := domains.NewCategory(dto.Category)
+	if err != nil {
+		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(err.Error(), constants.MSG_MALFORMED_REQUEST_DATA, "category"))
+		return
+	}
+
+	postChallengeParams := store.NewPostChallengeParams(userID, challengeName, content, category)
 
 	err = handler.ChallengeStore.CreateChallenges(postChallengeParams)
 	if err != nil {
@@ -212,10 +224,7 @@ func (handler *ChallengeHandler) DeleteChallege(w http.ResponseWriter, r *http.R
 		return
 	}
 
-	deleteChallengeParams := store.DeleteChallengeParams{
-		ChallengeName: challengeName,
-		UserID:        userID,
-	}
+	deleteChallengeParams := store.NewDeleteChallengeParams(challengeName, userID)
 
 	err = handler.ChallengeStore.DeleteChallenge(deleteChallengeParams)
 	if err != nil {
@@ -265,10 +274,7 @@ func (handler *ChallengeHandler) ModifyChallenge(w http.ResponseWriter, r *http.
 		return
 	}
 
-	modifyChallengeParams := store.ModifyChallengeParams{
-		UserID:  userID,
-		OldName: oldName,
-	}
+	modifyChallengeParams := store.NewModifyChallengeParams(oldName, userID)
 
 	if dto.NewName != "" {
 		newName, err := domains.NewChallengeName(dto.NewName)
@@ -280,11 +286,21 @@ func (handler *ChallengeHandler) ModifyChallenge(w http.ResponseWriter, r *http.
 	}
 
 	if dto.Category != "" {
-		modifyChallengeParams.Category = &dto.Category
+		category, err := domains.NewCategory(dto.Category)
+		if err != nil {
+			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(err.Error(), constants.MSG_INVALID_REQUEST_DATA, "category"))
+			return
+		}
+		modifyChallengeParams.Category = &category
 	}
 
 	if dto.Content != "" {
-		modifyChallengeParams.Content = &dto.Content
+		content, err := domains.NewContent(dto.Content)
+		if err != nil {
+			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(err.Error(), constants.MSG_INVALID_REQUEST_DATA, "content"))
+			return
+		}
+		modifyChallengeParams.Content = &content
 	}
 
 	err = handler.ChallengeStore.ModifyChallenge(modifyChallengeParams)

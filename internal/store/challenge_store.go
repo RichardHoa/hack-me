@@ -28,11 +28,11 @@ func NewChallengeStore(db *sql.DB, commentStore *DBCommentStore) *DBChallengeSto
 type PostChallengeParams struct {
 	userID   string
 	name     domains.ChallengeName
-	category string
-	content  string
+	category domains.Category
+	content  domains.Content
 }
 
-func NewPostChallengeParams(userID string, name domains.ChallengeName, content, category string) PostChallengeParams {
+func NewPostChallengeParams(userID string, name domains.ChallengeName, content domains.Content, category domains.Category) PostChallengeParams {
 	return PostChallengeParams{
 		userID:   userID,
 		name:     name,
@@ -56,8 +56,15 @@ type DeleteChallengeRequest struct {
 }
 
 type DeleteChallengeParams struct {
-	ChallengeName domains.ChallengeName
-	UserID        string
+	challengeName domains.ChallengeName
+	userID        string
+}
+
+func NewDeleteChallengeParams(challengeName domains.ChallengeName, userID string) DeleteChallengeParams {
+	return DeleteChallengeParams{
+		challengeName: challengeName,
+		userID:        userID,
+	}
 }
 
 type ModifyChallengeRequest struct {
@@ -68,19 +75,26 @@ type ModifyChallengeRequest struct {
 }
 
 type ModifyChallengeParams struct {
-	OldName  domains.ChallengeName
+	oldName  domains.ChallengeName
 	NewName  *domains.ChallengeName
-	Category *string
-	Content  *string
-	UserID   string
+	Category *domains.Category
+	Content  *domains.Content
+	userID   string
+}
+
+func NewModifyChallengeParams(oldName domains.ChallengeName, userID string) ModifyChallengeParams {
+	return ModifyChallengeParams{
+		oldName: oldName,
+		userID:  userID,
+	}
 }
 
 type Challenge struct {
-	ID        string                `json:"id"`
-	UserName  string                `json:"userName"`
+	ID        domains.ChallengeID   `json:"id"`
+	UserName  domains.UserName      `json:"userName"`
 	Name      domains.ChallengeName `json:"name"`
-	Category  string                `json:"category"`
-	Content   string                `json:"content"`
+	Category  domains.Category      `json:"category"`
+	Content   domains.Content       `json:"content"`
 	CreatedAt time.Time             `json:"createdAt"`
 	UpdatedAt time.Time             `json:"updatedAt"`
 	Comments  []Comment             `json:"comments"`
@@ -233,7 +247,7 @@ func (Store *DBChallengeStore) GetChallenges(params GetChallengeParams) (*Challe
 	// Fetch comments only for exact queries (single challenge)
 	if isExactQuery && len(challenges) > 0 {
 		for i := range challenges {
-			challenges[i].Comments, err = Store.CommentStore.GetRootComments(ForeignChallengeIDKey, challenges[i].ID)
+			challenges[i].Comments, err = Store.CommentStore.GetRootComments(ForeignChallengeIDKey, challenges[i].ID.String())
 			if err != nil {
 				return &Challenges{}, &MetaDataPage{}, err
 			}
@@ -274,7 +288,7 @@ func (challengeStore *DBChallengeStore) DeleteChallenge(params DeleteChallengePa
 
 	err := challengeStore.DB.QueryRow(`
         SELECT EXISTS (SELECT 1 FROM challenge WHERE name = $1)
-    `, params.ChallengeName).Scan(&challengeExists)
+    `, params.challengeName).Scan(&challengeExists)
 	if err != nil {
 		return fmt.Errorf("failed to check challenge existence: %v", err)
 	}
@@ -291,7 +305,7 @@ func (challengeStore *DBChallengeStore) DeleteChallenge(params DeleteChallengePa
         WHERE name = $1 AND user_id = $2
     `
 
-	result, err := challengeStore.DB.Exec(query, params.ChallengeName, params.UserID)
+	result, err := challengeStore.DB.Exec(query, params.challengeName, params.userID)
 	if err != nil {
 		return err
 	}
@@ -353,7 +367,7 @@ func (challengeStore *DBChallengeStore) ModifyChallenge(params ModifyChallengePa
 	query = query[:len(query)-2]
 
 	query += fmt.Sprintf(", updated_at = now() WHERE name = $%d AND user_id = $%d", paramCount, paramCount+1)
-	queryParams = append(queryParams, params.OldName, params.UserID)
+	queryParams = append(queryParams, params.oldName, params.userID)
 
 	// Execute the update
 	result, err := challengeStore.DB.Exec(query, queryParams...)
