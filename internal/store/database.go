@@ -43,7 +43,8 @@ func Open() (*sql.DB, *pgxpool.Pool, error) {
 		host := os.Getenv("DB_HOST")
 		user := os.Getenv("DB_USER")
 
-		connStr = fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=require",
+		//NOTE: sslmode=disabled because our "production" database is just a local docker postgres
+		connStr = fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
 			host, user, password, dbname, port)
 
 	}
