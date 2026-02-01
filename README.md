@@ -75,7 +75,6 @@ To track vulnerabilities, I maintain a rigorous pipeline using Software Composit
 Finally, I validate my configuration externally to minimize information leakage. I use `ZAP` to attack both the frontend and backend. I verify my SSL strength using `www.ssllabs.com` (while not absolute, it helps discover weaknesses). For headers, I follow `https://web.dev/articles/strict-csp` to minimize XSS risks and use `https://securityheaders.com/`, `https://developer.mozilla.org`, and `https://domsignal.com/secure-header-test` to double-check my work (the latter actually helped me find a few missing headers I have since added). For the database, since we use Supabase to host Postgres, I follow all their security recommendations
 
 ## TODO lists
-- [ ] Create performance test suite to measure server performance
 - [ ] Create a constructor function for every params in `challenge_store.go`
 - [ ] Check all the error message, a lot of them is vague and has no tracibility
 - [ ] set up to reject NUL character

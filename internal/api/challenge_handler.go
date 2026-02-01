@@ -160,22 +160,22 @@ func (handler *ChallengeHandler) PostChallenge(w http.ResponseWriter, r *http.Re
 	if err != nil {
 		switch utils.ClassifyError(err) {
 		case constants.PQUniqueViolation:
-			handler.Logger.Printf("User ID: %v try to add challenge name that already exist\n", postChallengeParams.UserID())
+			handler.Logger.Printf("ERROR: postchallenge > store createchallenges: User ID: %v try to add challenge name that already exist\n", postChallengeParams.UserID())
 			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("Challenge name already exist", constants.MSG_INVALID_REQUEST_DATA, "name"))
 			return
 		case constants.PQCheckViolation:
-			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("Name length minimum 3 and maximum 50 characters long with no leading or trailing whitespace", constants.MSG_INVALID_REQUEST_DATA, "name"))
+			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("Name must be below 1000 characters", constants.MSG_INVALID_REQUEST_DATA, "name"))
 			return
 		case constants.PQForeignKeyViolation:
-			handler.Logger.Printf("ERROR: Invalid User ID: %v", postChallengeParams.UserID())
+			handler.Logger.Printf("ERROR: postchallenge > store createchallenges: Invalid User ID: %v", postChallengeParams.UserID())
 			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage(constants.UnauthorizedMessage, constants.MSG_LACKING_MANDATORY_FIELDS, "cookies"))
 			return
 		case constants.PQInvalidTextRepresentation:
-			handler.Logger.Printf("ERROR: Invalid Data format: %v", err)
+			handler.Logger.Printf("ERROR: postchallenge > store createchallenges: Invalid Data format: %v", err)
 			utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("category data is invalid", constants.MSG_INVALID_REQUEST_DATA, "category"))
 			return
 		default:
-			handler.Logger.Printf("ERROR: PostChallenge > store CreateChallenges: %v", err)
+			handler.Logger.Printf("ERROR: postchallenge > store createchallenges: %v", err)
 			utils.WriteJSON(w, http.StatusInternalServerError, utils.NewMessage(constants.StatusInternalErrorMessage, "", ""))
 			return
 		}

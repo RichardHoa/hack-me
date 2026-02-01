@@ -12,14 +12,14 @@ type ChallengeName struct {
 }
 
 func NewChallengeName(name string) (ChallengeName, error) {
+	if len(name) > 1000 {
+		return ChallengeName{}, fmt.Errorf("challenge name is too long (%d/1000 characters)", len(name))
+	}
+
 	trimmed := strings.TrimSpace(name)
 
 	if trimmed == "" {
 		return ChallengeName{}, errors.New("challenge name cannot be empty")
-	}
-
-	if len(trimmed) > 1000 {
-		return ChallengeName{}, fmt.Errorf("challenge name is too long (%d/1000 characters)", len(trimmed))
 	}
 
 	if strings.Contains(trimmed, "#") {
