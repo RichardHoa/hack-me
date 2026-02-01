@@ -21,13 +21,14 @@ Open establishes and verifies a connection to the main application database.
 func Open() (*sql.DB, *pgxpool.Pool, error) {
 	var connStr string
 
+	port := "5432"
+	dbname := "postgres"
+
 	if constants.IsDevMode {
 		fmt.Println("DEV MODE")
 		host := "localhost"
 		user := "postgres"
 		password := "postgres"
-		port := "5432"
-		dbname := "postgres"
 
 		connStr = fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
 			host, user, password, dbname, port)
@@ -41,8 +42,6 @@ func Open() (*sql.DB, *pgxpool.Pool, error) {
 
 		host := os.Getenv("DB_HOST")
 		user := os.Getenv("DB_USER")
-		port := "5432"
-		dbname := "postgres"
 
 		connStr = fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=require",
 			host, user, password, dbname, port)
