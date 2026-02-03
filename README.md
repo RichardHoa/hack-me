@@ -53,6 +53,9 @@ When you create or modify a migration file, you **must reset both the main and t
 
     # Connect to the testing database in a separate terminal
     psql -U postgres -h localhost -p 5433
+
+    # Connect using docke
+    docker compose exec db psql -U postgres
     ```
 
 2.  **Inside each `psql` shell**, run the following SQL commands to completely wipe and recreate the schema:
@@ -60,6 +63,7 @@ When you create or modify a migration file, you **must reset both the main and t
     ```sql
     DROP SCHEMA public CASCADE;
     CREATE SCHEMA public;
+
     ```
 
 ## Security Implementation and Lessons

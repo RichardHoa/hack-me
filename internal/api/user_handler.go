@@ -177,6 +177,8 @@ func (handler *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	}
 	userID := result[0]
 
+	//NOTE: We need to check for password
+
 	err = handler.UserStore.DeleteUser(userID)
 	if err != nil {
 		switch utils.ClassifyError(err) {
