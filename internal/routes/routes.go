@@ -49,7 +49,7 @@ func SetUpRoutes(app *app.Application) *chi.Mux {
 			r.Get("/", app.ChallengeHandler.GetChallenges)
 
 			r.Group(func(csrfRouter chi.Router) {
-				csrfRouter.Use(app.Middleware.RequireCSRFToken)
+				// csrfRouter.Use(app.Middleware.RequireCSRFToken)
 				csrfRouter.Post("/", app.ChallengeHandler.PostChallenge)
 				csrfRouter.Put("/", app.ChallengeHandler.ModifyChallenge)
 				csrfRouter.Delete("/", app.ChallengeHandler.DeleteChallege)
