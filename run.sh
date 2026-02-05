@@ -10,7 +10,6 @@ update_and_rebuild() {
   git pull origin main
 
   echo ">>> Updating Go modules..."
-  go mod download
   go mod tidy
 
   echo ">>> Update complete."
