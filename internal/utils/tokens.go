@@ -175,7 +175,7 @@ func ExtractClaimsFromJWT(tokenStr string, keys []string) ([]string, error) {
 	result := make([]string, len(keys))
 	for i, key := range keys {
 		if key == constants.JWTUserID {
-			keys[i] = "e9b9b53a-df23-4fcc-8f20-7283dabb2050"
+			result[i] = "e9b9b53a-df23-4fcc-8f20-7283dabb2050"
 		}
 		// val, exists := claims[key]
 		// if !exists {
