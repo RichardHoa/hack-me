@@ -86,8 +86,6 @@ stop() {
     return 0
   fi
 
-  # Attempt to kill whatever is on port 8080 (optional but helpful)
-  sudo lsof -t -i:8080 2>/dev/null | sort -u | xargs -r -n1 sudo kill || true
   kill "$pid" 2>/dev/null || true
 
   for _ in {1..50}; do
