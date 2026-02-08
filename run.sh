@@ -3,65 +3,53 @@ set -Eeuo pipefail
 
 # --- Configuration ---
 LOGFILE="${LOGFILE:-output.log}"
-PIDFILE="${PIDFILE:-run.pid}"
+# No PIDFILE needed anymore
 PORT=8080
+SEARCH_PATTERN="make.*hack-me"
 
 # --- Helper Functions ---
 
-# Pulls latest code and ensures it actually compiles before we try to restart
+# Force matching the remote source of truth
 update_and_rebuild() {
-  echo ">>> Pulling latest changes..."
-  git pull origin main
+  echo ">>> Forcing local to match remote main..."
+  git fetch origin main
+  git reset --hard origin/main
+  git clean -fd
 
   echo ">>> Cleaning dependencies..."
   go mod tidy
-
-  echo ">>> Verifying build..."
-  # Better to check if it builds before killing the old process
-  if ! go build ./...; then
-    echo "ERROR: Build failed. Aborting update."
-    exit 1
-  fi
 }
 
-# Finds and kills the supervisor and any processes it started
-stop_process() {
-  if [[ -f "$PIDFILE" ]]; then
-    local pid
-    pid=$(cat "$PIDFILE")
+# Checks if the 'make' supervisor is currently active
+is_running() {
+  pgrep -f "$SEARCH_PATTERN" > /dev/null
+}
 
-    echo ">>> Stopping Supervisor (PID $pid) and its children..."
-    
-    # 1. Kill the parent supervisor process
-    # 2. Kill all processes belonging to that parent's process group
-    pkill -P "$pid" || true
-    kill "$pid" 2>/dev/null || true
-    
-    # Optional: Cleanup specific port if still bound
-    lsof -t -i:"$PORT" | xargs kill -9 2>/dev/null || true
-    
-    rm -f "$PIDFILE"
-    echo ">>> Stopped."
+# Kills the entire process group (make + doppler + go + main)
+stop_process() {
+  local target_pid
+  target_pid=$(pgrep -f "$SEARCH_PATTERN") || true
+
+  if [ -n "$target_pid" ]; then
+    echo ">>> Stopping process group for PID $target_pid..."
+    # Using the negative PID to kill the entire group
+    sudo kill -9 -"$target_pid" 2>/dev/null || true
+    echo ">>> Server stopped."
   else
-    echo ">>> Not running (no $PIDFILE found)."
+    echo ">>> No running server found matching '$SEARCH_PATTERN'."
   fi
 }
 
 # The actual loop that keeps the server alive
 run_supervisor() {
-  # Write the PID of THIS subshell to the pidfile
-  echo "$$" > "$PIDFILE"
-
-  # Ensure the logfile exists and is empty
-  : > "$LOGFILE"
-
   echo ">>> Supervisor started (PID $$)"
   
+  # Note: Since we are running 'make run' here, this script's PID 
+  # will effectively be the 'Root' of the chain.
   while true; do
     echo "[$(date)] Starting server..." >> "$LOGFILE"
     
-    # Run the server. Using 'exec' here isn't ideal because we want to loop, 
-    # so we run it in the foreground and wait.
+    # Executing make run. If it fails or is killed, we loop.
     make run >> "$LOGFILE" 2>&1 || true
     
     echo "[$(date)] Server exited. Restarting in 2s..." >> "$LOGFILE"
@@ -73,11 +61,11 @@ run_supervisor() {
 
 case "${1:-start}" in
   start)
-    if [[ -f "$PIDFILE" ]] && kill -0 "$(cat "$PIDFILE")" 2>/dev/null; then
-      echo "Already running (PID $(cat "$PIDFILE"))."
+    if is_running; then
+      echo "Already running. Use 'stop' or 'restart' first."
       exit 1
     fi
-    # Launch the supervisor function in the background
+    # Run supervisor in background and disown so it stays alive
     run_supervisor &
     echo "Server started in background. Logs: $LOGFILE"
     ;;
@@ -87,8 +75,10 @@ case "${1:-start}" in
     ;;
 
   status)
-    if [[ -f "$PIDFILE" ]] && kill -0 "$(cat "$PIDFILE")" 2>/dev/null; then
-      echo "Status: RUNNING (PID $(cat "$PIDFILE"))"
+    if is_running; then
+      echo "Status: RUNNING"
+      # Show the tree so you can see the active PIDs
+      pgrep -f "$SEARCH_PATTERN" | xargs pstree -p -s
     else
       echo "Status: STOPPED"
       exit 1
