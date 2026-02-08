@@ -1,141 +1,108 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
+# --- Configuration ---
 LOGFILE="${LOGFILE:-output.log}"
 PIDFILE="${PIDFILE:-run.pid}"
+PORT=8080
 
-# --- Added Update Logic ---
+# --- Helper Functions ---
+
+# Pulls latest code and ensures it actually compiles before we try to restart
 update_and_rebuild() {
-  echo ">>> Pulling latest changes from git..."
+  echo ">>> Pulling latest changes..."
   git pull origin main
 
-  echo ">>> Updating Go modules..."
+  echo ">>> Cleaning dependencies..."
   go mod tidy
 
-  echo ">>> Update complete."
-}
-
-ensure_not_running() {
-  if [[ -f "$PIDFILE" ]]; then
-    local pid
-    pid="$(cat "$PIDFILE" 2>/dev/null || true)"
-    if [[ -n "${pid:-}" ]] && kill -0 "$pid" 2>/dev/null; then
-      echo "Already running (PID $pid). Use --stop first." >&2
-      exit 1
-    else
-      rm -f "$PIDFILE"
-    fi
+  echo ">>> Verifying build..."
+  # Better to check if it builds before killing the old process
+  if ! go build ./...; then
+    echo "ERROR: Build failed. Aborting update."
+    exit 1
   fi
 }
 
-start() {
-  ensure_not_running
+# Finds and kills the supervisor and any processes it started
+stop_process() {
+  if [[ -f "$PIDFILE" ]]; then
+    local pid
+    pid=$(cat "$PIDFILE")
 
+    echo ">>> Stopping Supervisor (PID $pid) and its children..."
+    
+    # 1. Kill the parent supervisor process
+    # 2. Kill all processes belonging to that parent's process group
+    pkill -P "$pid" || true
+    kill "$pid" 2>/dev/null || true
+    
+    # Optional: Cleanup specific port if still bound
+    lsof -t -i:"$PORT" | xargs kill -9 2>/dev/null || true
+    
+    rm -f "$PIDFILE"
+    echo ">>> Stopped."
+  else
+    echo ">>> Not running (no $PIDFILE found)."
+  fi
+}
+
+# The actual loop that keeps the server alive
+run_supervisor() {
+  # Write the PID of THIS subshell to the pidfile
+  echo "$$" > "$PIDFILE"
+
+  # Ensure the logfile exists and is empty
   : > "$LOGFILE"
 
-  nohup bash -c '
-    set -Eeuo pipefail
-    child_pid=""
-
-    cleanup() {
-      if [[ -n "${child_pid:-}" ]] && kill -0 "$child_pid" 2>/dev/null; then
-        kill "$child_pid" 2>/dev/null || true
-        for _ in {1..20}; do
-          kill -0 "$child_pid" 2>/dev/null || break
-          sleep 0.1
-        done
-        kill -9 "$child_pid" 2>/dev/null || true
-      fi
-    }
-
-    trap "cleanup; exit 0" INT TERM EXIT
-    echo "$$" > "'"$LOGFILE"'"
-
-    while true; do
-      echo "Starting Go server at $(date)" >> "'"$LOGFILE"'"
-      make run >> "'"$LOGFILE"'" 2>&1 &
-      child_pid=$!
-      echo "CHILD_PID=$child_pid" >> "'"$LOGFILE"'"
-      wait "$child_pid" || true
-      echo "Server exited at $(date). Restarting in 2s..." >> "'"$LOGFILE"'"
-      sleep 2
-    done
-  ' >/dev/null 2>&1 &
-
-  echo $! > "$PIDFILE"
-  echo "Started. Supervisor PID $(cat "$PIDFILE"). Logs: $LOGFILE"
-}
-
-stop() {
-  if [[ ! -f "$PIDFILE" ]]; then
-    echo "Not running (no $PIDFILE)."
-    return 0
-  fi
-
-  local pid
-  pid="$(cat "$PIDFILE" 2>/dev/null || true)"
-  if [[ -z "${pid:-}" ]]; then
-    echo "PID file empty. Removing."
-    rm -f "$PIDFILE"
-    return 0
-  fi
-
-  if ! kill -0 "$pid" 2>/dev/null; then
-    echo "Process $pid not alive. Cleaning up."
-    rm -f "$PIDFILE"
-    return 0
-  fi
-
-  # Attempt to kill whatever is on port 8080 (optional but helpful)
-  sudo lsof -t -i:8080 2>/dev/null | sort -u | xargs -r -n1 sudo kill || true
-  kill "$pid" 2>/dev/null || true
-
-  for _ in {1..50}; do
-    kill -0 "$pid" 2>/dev/null || { rm -f "$PIDFILE"; echo "Stopped."; return 0; }
-    sleep 0.1
+  echo ">>> Supervisor started (PID $$)"
+  
+  while true; do
+    echo "[$(date)] Starting server..." >> "$LOGFILE"
+    
+    # Run the server. Using 'exec' here isn't ideal because we want to loop, 
+    # so we run it in the foreground and wait.
+    make run >> "$LOGFILE" 2>&1 || true
+    
+    echo "[$(date)] Server exited. Restarting in 2s..." >> "$LOGFILE"
+    sleep 2
   done
-
-  echo "Supervisor did not exit in time; forcing."
-  kill -9 "$pid" 2>/dev/null || true
-  rm -f "$PIDFILE"
-  echo "Stopped (forced)."
 }
 
-status() {
-  if [[ -f "$PIDFILE" ]]; then
-    local pid
-    pid="$(cat "$PIDFILE" 2>/dev/null || true)"
-    if [[ -n "${pid:-}" ]] && kill -0 "$pid" 2>/dev/null; then
-      echo "Running (PID $pid). Log: $LOGFILE"
-      exit 0
-    fi
-  fi
-  echo "Not running."
-  exit 1
-}
+# --- Main Commands ---
 
-# --- Main Logic ---
 case "${1:-start}" in
-  start|--start) 
-    start 
+  start)
+    if [[ -f "$PIDFILE" ]] && kill -0 "$(cat "$PIDFILE")" 2>/dev/null; then
+      echo "Already running (PID $(cat "$PIDFILE"))."
+      exit 1
+    fi
+    # Launch the supervisor function in the background
+    run_supervisor &
+    echo "Server started in background. Logs: $LOGFILE"
     ;;
-  stop|--stop)   
-    stop 
+
+  stop)
+    stop_process
     ;;
-  status|--status) 
-    status 
+
+  status)
+    if [[ -f "$PIDFILE" ]] && kill -0 "$(cat "$PIDFILE")" 2>/dev/null; then
+      echo "Status: RUNNING (PID $(cat "$PIDFILE"))"
+    else
+      echo "Status: STOPPED"
+      exit 1
+    fi
     ;;
-  all|--all)
-    echo ">>> Performing full update and restart..."
-    # 1. Stop current process
-    stop
-    # 2. Update code and dependencies
+
+  restart|all)
+    stop_process
     update_and_rebuild
-    # 3. Start new process
-    start
+    $0 start
     ;;
+
   *)
-    echo "Usage: $0 [start|stop|status|all]"
+    echo "Usage: $0 {start|stop|status|restart}"
     exit 2
     ;;
 esac
