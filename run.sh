@@ -26,23 +26,8 @@ is_running() {
   pgrep -f "$SEARCH_PATTERN" > /dev/null
 }
 
-# Kills the entire process group (make -> doppler -> go -> main)
 stop_process() {
-  # We find the PID of 'make run'
-  local target_pid
-  target_pid=$(pgrep -f "$SEARCH_PATTERN") || true
-
-  if [ -n "$target_pid" ]; then
-    echo ">>> Found 'make run' at PID $target_pid. Terminating group..."
-    # Killing the negative PID targets the entire process group
-    sudo kill -9 -"$target_pid" 2>/dev/null || true
-    
-    # Safety check: ensures the port is actually free
-    sudo fuser -k -9 8080/tcp 2>/dev/null || true
-    echo ">>> Server stopped and port 8080 cleared."
-  else
-    echo ">>> 'make run' is not currently active."
-  fi
+  sudo lsof -t -i:8080 | xargs pstree -p -s
 }
 
 # The loop that restarts the server
