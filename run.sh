@@ -62,7 +62,6 @@ run_supervisor() {
 }
 
 # --- Main Commands ---
-
 case "${1:-status}" in
   start)
     if is_running; then
