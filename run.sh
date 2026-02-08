@@ -3,9 +3,10 @@ set -Eeuo pipefail
 
 # --- Configuration ---
 LOGFILE="${LOGFILE:-output.log}"
-# No PIDFILE needed anymore
-PORT=8080
-SEARCH_PATTERN="make.*hack-me"
+# We identify the root by the exact command you use to start it
+SEARCH_PATTERN="^make run"
+# We'll also keep a secondary check for the main binary path just in case
+BINARY_PATH="/home/ubuntu/codes/hack-me/main"
 
 # --- Helper Functions ---
 
@@ -20,36 +21,39 @@ update_and_rebuild() {
   go mod tidy
 }
 
-# Checks if the 'make' supervisor is currently active
+# Checks if the 'make run' command is active
 is_running() {
   pgrep -f "$SEARCH_PATTERN" > /dev/null
 }
 
-# Kills the entire process group (make + doppler + go + main)
+# Kills the entire process group (make -> doppler -> go -> main)
 stop_process() {
+  # We find the PID of 'make run'
   local target_pid
   target_pid=$(pgrep -f "$SEARCH_PATTERN") || true
 
   if [ -n "$target_pid" ]; then
-    echo ">>> Stopping process group for PID $target_pid..."
-    # Using the negative PID to kill the entire group
+    echo ">>> Found 'make run' at PID $target_pid. Terminating group..."
+    # Killing the negative PID targets the entire process group
     sudo kill -9 -"$target_pid" 2>/dev/null || true
-    echo ">>> Server stopped."
+    
+    # Safety check: ensures the port is actually free
+    sudo fuser -k -9 8080/tcp 2>/dev/null || true
+    echo ">>> Server stopped and port 8080 cleared."
   else
-    echo ">>> No running server found matching '$SEARCH_PATTERN'."
+    echo ">>> 'make run' is not currently active."
   fi
 }
 
-# The actual loop that keeps the server alive
+# The loop that restarts the server
 run_supervisor() {
   echo ">>> Supervisor started (PID $$)"
   
-  # Note: Since we are running 'make run' here, this script's PID 
-  # will effectively be the 'Root' of the chain.
   while true; do
-    echo "[$(date)] Starting server..." >> "$LOGFILE"
+    echo "[$(date)] Starting server via make run..." >> "$LOGFILE"
     
-    # Executing make run. If it fails or is killed, we loop.
+    # We use 'exec' logic or just direct call. 
+    # Since it's in a loop, we just call it.
     make run >> "$LOGFILE" 2>&1 || true
     
     echo "[$(date)] Server exited. Restarting in 2s..." >> "$LOGFILE"
@@ -59,15 +63,20 @@ run_supervisor() {
 
 # --- Main Commands ---
 
-case "${1:-start}" in
+case "${1:-status}" in
   start)
     if is_running; then
-      echo "Already running. Use 'stop' or 'restart' first."
+      echo "Already running. Use 'stop' or 'restart'."
       exit 1
     fi
-    # Run supervisor in background and disown so it stays alive
-    run_supervisor &
+    # Run in background and detach from the current terminal
+    nohup "$0" run-internal >> "$LOGFILE" 2>&1 &
     echo "Server started in background. Logs: $LOGFILE"
+    ;;
+
+  run-internal)
+    # Hidden command used by 'start' to run the loop
+    run_supervisor
     ;;
 
   stop)
@@ -76,17 +85,17 @@ case "${1:-start}" in
 
   status)
     if is_running; then
-      echo "Status: RUNNING"
-      # Show the tree so you can see the active PIDs
-      pgrep -f "$SEARCH_PATTERN" | xargs pstree -p -s
+      local pid
+      pid=$(pgrep -f "$SEARCH_PATTERN")
+      echo "Status: RUNNING (Root PID: $pid)"
+      pstree -p -s "$pid"
     else
       echo "Status: STOPPED"
-      exit 1
     fi
     ;;
 
   restart|all)
-    stop_process
+    $0 stop
     update_and_rebuild
     $0 start
     ;;
