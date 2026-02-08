@@ -3,63 +3,71 @@ set -Eeuo pipefail
 
 # --- Configuration ---
 LOGFILE="${LOGFILE:-output.log}"
-# We identify the root by the exact command you use to start it
-SEARCH_PATTERN="^make run"
-# We'll also keep a secondary check for the main binary path just in case
-BINARY_PATH="/home/ubuntu/codes/hack-me/main"
+PORT=8080
 
 # --- Helper Functions ---
 
-# Force matching the remote source of truth
-update_and_rebuild() {
-  echo ">>> Forcing local to match remote main..."
+# 1. STOP: Kills supervisor first, then port
+stop_process() {
+  echo ">>> [1/3] Killing Supervisor loop (run.sh)..."
+  # Finds the background 'run-internal' loop
+  local supervisor_pid
+  supervisor_pid=$(pgrep -f "run.sh run-internal") || true
+  
+  if [ -n "$supervisor_pid" ]; then
+    sudo kill -9 "$supervisor_pid" 2>/dev/null || true
+    echo "    Supervisor (PID $supervisor_pid) terminated."
+  else
+    echo "    No supervisor found."
+  fi
+
+  echo ">>> [2/3] Wiping port $PORT..."
+  # Clears the workers (make, doppler, go, main)
+  sudo fuser -k -9 "$PORT/tcp" 2>/dev/null || true
+
+  echo ">>> [3/3] Final verification..."
+  if sudo lsof -i :$PORT > /dev/null; then
+    echo "    ERROR: Port $PORT still occupied. Forcing one last wipe..."
+    sudo fuser -k -9 "$PORT/tcp"
+  else
+    echo "    SUCCESS: Port $PORT is clear."
+  fi
+}
+
+# 2. UPDATE: Force match remote
+update_source() {
+  echo ">>> Fetching and Overriding with remote origin/main..."
   git fetch origin main
   git reset --hard origin/main
   git clean -fd
-
-  echo ">>> Cleaning dependencies..."
+  echo ">>> Updating Go dependencies..."
   go mod tidy
 }
 
-# Checks if the 'make run' command is active
-is_running() {
-  pgrep -f "$SEARCH_PATTERN" > /dev/null
-}
-
-stop_process() {
-  sudo lsof -t -i:8080 | xargs pstree -p -s
-}
-
-# The loop that restarts the server
+# 3. SUPERVISOR: The loop
 run_supervisor() {
-  echo ">>> Supervisor started (PID $$)"
-  
   while true; do
-    echo "[$(date)] Starting server via make run..." >> "$LOGFILE"
-    
-    # We use 'exec' logic or just direct call. 
-    # Since it's in a loop, we just call it.
+    echo "[$(date)] Starting server..." >> "$LOGFILE"
     make run >> "$LOGFILE" 2>&1 || true
-    
-    echo "[$(date)] Server exited. Restarting in 2s..." >> "$LOGFILE"
+    echo "[$(date)] Server exited. Respawning in 2s..." >> "$LOGFILE"
     sleep 2
   done
 }
 
 # --- Main Commands ---
+
 case "${1:-status}" in
   start)
-    if is_running; then
-      echo "Already running. Use 'stop' or 'restart'."
+    if sudo lsof -i :$PORT > /dev/null; then
+      echo "Port $PORT is already in use. Run 'stop' first."
       exit 1
     fi
-    # Run in background and detach from the current terminal
+    # Start loop in background
     nohup "$0" run-internal >> "$LOGFILE" 2>&1 &
-    echo "Server started in background. Logs: $LOGFILE"
+    echo "Server started. Logs: $LOGFILE"
     ;;
 
   run-internal)
-    # Hidden command used by 'start' to run the loop
     run_supervisor
     ;;
 
@@ -68,24 +76,22 @@ case "${1:-status}" in
     ;;
 
   status)
-    if is_running; then
-      local pid
-      pid=$(pgrep -f "$SEARCH_PATTERN")
-      echo "Status: RUNNING (Root PID: $pid)"
-      pstree -p -s "$pid"
+    if sudo lsof -i :$PORT > /dev/null; then
+      echo "Status: RUNNING"
+      sudo lsof -t -i:$PORT | xargs pstree -p -s
     else
       echo "Status: STOPPED"
     fi
     ;;
 
-  restart|all)
-    $0 stop
-    update_and_rebuild
-    $0 start
+  update)
+    stop_process
+    update_source
+    echo "Update complete. Run './run.sh start' to resume."
     ;;
 
   *)
-    echo "Usage: $0 {start|stop|status|restart}"
+    echo "Usage: $0 {start|stop|status|update}"
     exit 2
     ;;
 esac
