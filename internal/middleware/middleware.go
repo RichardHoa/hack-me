@@ -41,7 +41,7 @@ func (middleware *MiddleWare) CorsMiddleware(next http.Handler) http.Handler {
 
 func (middleware *MiddleWare) NoCacheMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0")
+		w.Header().Set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, private")
 		w.Header().Set("Pragma", "no-cache")
 		w.Header().Set("Expires", "0")
 
