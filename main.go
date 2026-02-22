@@ -18,6 +18,7 @@ import (
 // 	runtime.SetMutexProfileFraction(1) // capture all mutex contention
 // }
 
+
 func main() {
 
 	application, err := app.NewApplication(false)
