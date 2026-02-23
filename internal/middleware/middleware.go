@@ -39,6 +39,24 @@ func (middleware *MiddleWare) CorsMiddleware(next http.Handler) http.Handler {
 	})
 }
 
+func (middleware *MiddleWare) NoOptionsMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodOptions {
+			w.Header().Set("Allow", "nah, find out by yourself")
+			w.WriteHeader(http.StatusTeapot)
+
+			_, err := w.Write([]byte("I'm a teapot"))
+			if err != nil {
+				panic(err)
+			}
+
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
+}
+
 func (middleware *MiddleWare) NoCacheMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, private")

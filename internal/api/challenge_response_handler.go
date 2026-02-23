@@ -190,6 +190,12 @@ func (handler *ChallengeResponseHandler) GetChallengeResponse(w http.ResponseWri
 		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("challengeID and challengeResponseID cannot be present at the same time", constants.MSG_MALFORMED_REQUEST_DATA, "query parameter"))
 		return
 	}
+
+	if trimmedChallengeID == "" && trimmedChallengeResponseID == "" {
+		utils.WriteJSON(w, http.StatusBadRequest, utils.NewMessage("challengeID and challengeResponseID cannot be empty at the same time", constants.MSG_MALFORMED_REQUEST_DATA, "query parameter"))
+		return
+	}
+
 	req := store.GetChallengeResponseRequest{
 		ChallengeID:         trimmedChallengeID,
 		ChallengeResponseID: trimmedChallengeResponseID,
